@@ -1,0 +1,22 @@
+status: draft
+round: r02
+date: 2026-10-21
+author: Claude (Opus 5.5), draft for the user's next plan mode round
+baseline_same_as_last_round:
+  # r01 measured, regraded (fentry variant), mean pass across T1 to T7
+  A: 0.14
+  B: 0.83
+  C: 0.96
+  per_task_regraded:
+    T1: {A: 0.00, B: 0.86, C: 1.00}
+    T2: {A: 0.00, B: 1.00, C: 1.00}
+    T3: {A: 0.00, B: 1.00, C: 0.86}
+    T4: {A: 0.00, B: 1.00, C: 1.00}
+    T5: {A: 0.00, B: 1.00, C: 1.00}
+    T6: {A: 1.00, B: 0.80, C: 0.86}
+    T7: {A: 0.00, B: 0.14, C: 1.00}
+lesson_from_r01: predictions hedged toward 0.8 and missed both the floor and the ceiling. Start from the measured values above and move a number only for a stated reason. Give each number a band.
+open_choices:
+  - Adopt P1 as config D (C root plus children) or ship C alone
+  - Whether to spend on P7 (real tool trials cost more per trial than text-only trials)
+  - Harder tasks (P6) will lower every config, so the baseline above is an upper bound for r02

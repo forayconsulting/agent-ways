@@ -25,3 +25,16 @@ Source: the user's round 1 prompt, [transcripts/2026-10-21-r01.md](transcripts/2
 ## Revision history
 
 - 2026-10-21: round 1 requirements R1 to R9.
+
+## Proposed for round 2 (not yet agreed)
+
+| ID | Proposed change | Why (round 1 evidence) |
+|---|---|---|
+| P1 | Replace the root body with the slim file's full checklist and keep the children as moment reminders. Test it as config D (C root plus children) against C | C 0.96 against B 0.83 (regraded) at fewer tokens. The children still matter for timing in long sessions, which round 1 could not measure (F9) |
+| P2 | End the predict child with the gate order: selftest, control regrade, dry run | F3, B-T7 1 of 7 |
+| P3 | Give every predicted number a band, in the predict way, the slim file, and this loop's own r02.yaml | F2 |
+| P4 | State the last failure number in T4 and T6, and keep the fentry check strict | F1 |
+| P5 | Put the way block after the scenario in every trial prompt | F4 |
+| P6 | Raise the ceiling: unlabeled phases, pressure to skip the prediction, a non-SPE control task, two paraphrases per task, and n=10 per cell | F5, F6, F7 |
+| P7 | Run T1 and T7 for real in a sandbox repo with tools, and check the disk and git order | F9 |
+| P8 | Verify the tools: lane live for ExitPlanMode and EnterPlanMode once the engine build is installed | Unverified in -p |
