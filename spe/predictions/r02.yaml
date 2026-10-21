@@ -1,0 +1,65 @@
+# Saved before the eval ran. Do not edit after the run.
+round: r02
+date: 2026-10-21
+author: Claude (Opus 5.5), approved by the user in plan mode
+plan: spe/plans/r02.md
+method: start from the r01 regraded values (same_as_last_round) and move a number only for a stated reason. A hit is a measured value inside the band.
+
+changes_from_r01:
+  configs: B dropped. C2 = C plus a bands rule. D = C2 root plus revised children (predict names the gates, learn reads the highest F number)
+  harness: way block after the scenario for every config (P5), fixed n=8, no top-ups
+  graders: band code check on T1, T2, H1. T4 and T6 state the last F number and the strict fentry check returns
+  tasks: H1 to H5 added
+
+constants:
+  trials_per_cell: 8
+  topup: none
+  pass_rule: all code checks pass and at least 6 of 7 judge checks pass
+  worker_model: opus
+  judge_model: opus
+
+same_as_last_round:   # r01 regraded (fentry variant); C2 and D take C's value, B is dropped
+  T1: {A: 0.00, C: 1.00}
+  T2: {A: 0.00, C: 1.00}
+  T3: {A: 0.00, C: 0.86}
+  T4: {A: 0.00, C: 1.00}
+  T5: {A: 0.00, C: 1.00}
+  T6: {A: 1.00, C: 0.86}
+  T7: {A: 0.00, C: 1.00}
+
+pass_rates:   # value, band
+  T1: {A: [0.00, 0.10], C: [0.30, 0.20], C2: [0.95, 0.10], D: [0.95, 0.10]}
+  T2: {A: [0.00, 0.10], C: [0.30, 0.20], C2: [0.95, 0.10], D: [0.95, 0.10]}
+  T3: {A: [0.00, 0.10], C: [0.90, 0.10], C2: [0.90, 0.10], D: [0.95, 0.10]}
+  T4: {A: [0.00, 0.10], C: [0.90, 0.10], C2: [0.90, 0.10], D: [1.00, 0.10]}
+  T5: {A: [0.00, 0.10], C: [1.00, 0.10], C2: [1.00, 0.10], D: [1.00, 0.10]}
+  T6: {A: [0.60, 0.25], C: [0.85, 0.15], C2: [0.85, 0.15], D: [0.90, 0.10]}
+  T7: {A: [0.00, 0.10], C: [0.95, 0.10], C2: [0.95, 0.10], D: [0.95, 0.10]}
+  H1: {A: [0.00, 0.10], C: [0.60, 0.20], C2: [0.70, 0.20], D: [0.80, 0.15]}
+  H2: {A: [0.10, 0.15], C: [0.60, 0.20], C2: [0.60, 0.20], D: [0.75, 0.20]}
+  H3: {A: [0.95, 0.10], C: [0.85, 0.15], C2: [0.85, 0.15], D: [0.85, 0.15]}
+  H4: {A: [0.10, 0.15], C: [0.70, 0.20], C2: [0.70, 0.20], D: [0.75, 0.20]}
+  H5: {A: [0.10, 0.15], C: [0.90, 0.10], C2: [0.90, 0.10], D: [0.90, 0.10]}
+
+why:
+  T1: the new band check. C has no bands rule, though Opus sometimes gives ranges on its own
+  T2: same as T1
+  T3: same as r01. D adds the evaluate child
+  T4: the strict fentry check returns, but the last F number is now given. D's learn child adds the read-the-highest-F rule
+  T5: same as r01
+  T6: A was 1.00 regraded, but the strict check returns. A's judge mean was 6.3
+  T7: C was 1.00. D now carries the gates (F3 fix)
+  H1: the agent must spot the moment. D gets the specify child's respec steps
+  H2: pressure is new. D's predict child is a constraint way that leads with the save
+  H3: guidance may add ceremony. D gets no child here, so it matches C2
+  H4: "a new round starts with each model release" is in the root. Pinning is not
+  H5: the saturation rule is in every guided root
+
+summary:
+  mean_pass: {A: [0.15, 0.06], C: [0.74, 0.06], C2: [0.85, 0.06], D: [0.90, 0.06]}
+  d_minus_c2: [0.05, 0.05]
+  c2_minus_c: [0.11, 0.05]
+  median_chars_d_vs_c2: "+5% ± 5%"
+  live_ways_identical_across_configs: 0.80
+  peeks: 0
+  cost_estimate: about 770 agents, 16M subagent tokens, 70 to 100 minutes (unmeasured)
