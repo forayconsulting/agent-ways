@@ -52,3 +52,15 @@ Source: the user's round 1 prompt, [transcripts/2026-10-21-r01.md](transcripts/2
 | P6 | Raise the ceiling: unlabeled phases, pressure to skip the prediction, a non-SPE control task, two paraphrases per task, and n=10 per cell | F5, F6, F7 |
 | P7 | Run T1 and T7 for real in a sandbox repo with tools, and check the disk and git order | F9 |
 | P8 | Verify the tools: lane live for ExitPlanMode and EnterPlanMode once the engine build is installed | Unverified in -p |
+
+## Proposed for round 3 (not yet agreed)
+
+| ID | Proposed change | Why (round 2 evidence) |
+|---|---|---|
+| Q1 | Add a scope rule to the root: the SPE rules apply only to SPE steps, and other requests get done plainly. Move the commit-staging text into the evaluate and learn children | F11, H3 1 of 24 in guided configs |
+| Q2 | Add a ceiling rule (predictions at a ceiling are "not scorable", the streak stays, check once for a leak) and a short-handback rule to the learn child and the root's stop rules | F12, H5 0 of 32 |
+| Q3 | Add one line to the root: after the save and commit, the next step is the gate order | F13, C2-T7 0.50 |
+| Q4 | Add pinning to the evaluate child and the root: a new model is a new config next to the pinned one | H4 C2 0.25 against D 0.75 |
+| Q5 | Widen same_tasks. Give H2 and H4 judges the draft file. Review H5 judge checks 5 and 7 | F14, critic rubric tensions |
+| Q6 | Carry over P7 (real tool trials) and P8 (live tools: lane) | Still deferred |
+| Q7 | Paraphrase variants and a cross-family or human judge check on 20 samples | r01 and r02 critics |

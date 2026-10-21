@@ -1,0 +1,13 @@
+status: draft
+round: r03
+date: 2026-10-21
+author: Claude (Opus 5.5), draft for the user's next plan mode round
+baseline_same_as_last_round:   # r02 measured, pre-registered checks
+  mean: {A: 0.15, C: 0.50, C2: 0.71, D: 0.77}
+  D: {T1: 1.00, T2: 1.00, T3: 1.00, T4: 1.00, T5: 0.88, T6: 0.75, T7: 0.88, H1: 1.00, H2: 1.00, H3: 0.00, H4: 0.75, H5: 0.00}
+  C2: {T1: 1.00, T2: 1.00, T3: 1.00, T4: 1.00, T5: 0.88, T6: 1.00, T7: 0.50, H1: 1.00, H2: 0.88, H3: 0.00, H4: 0.25, H5: 0.00}
+lesson_from_r02: hits rose to 28 of 48, but the naive guess still edged the predictions on T tasks (10 against 8). Big misses came from tasks with no guidance text behind them (H3, H5). Predict 0 or near 0 where no guidance covers the behavior.
+open_choices:
+  - Config E = D plus Q1 to Q4 against D as the anchor
+  - Whether to drop C (it has served as the anchor twice)
+  - Whether to run P7 now (needs a fixture inside a project with spe/README.md)

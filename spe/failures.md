@@ -62,3 +62,38 @@ One entry per new failure type, numbered across rounds.
 - **What:** workers had no tools. The eval checked that a plan names the prediction file, not that the file exists before the run.
 - **Seen in:** every trial.
 - **Fix:** run T1 and T7 for real in a sandbox repo with tools, and check the disk and the git log order.
+
+## F10. The Workflow harness relays the session's user message to every trial (harness, r02)
+
+- **What:** each trial agent receives the latest message of the session that launched the Workflow, labeled as a user request. Trials read it as their own situation. In the r02 first dry run, the message "PLAN MODE to run round 2" made C-T1 number its files r02 and made A-H3 refuse to edit.
+- **How to spot it:** a trial answer mentions a round number, mode, or request that is not in its scenario.
+- **Seen in:** r02 dry run 1 (wf_5b10e529-364). Round 1 trials also received the long original prompt about the SPE loop, so round 1 A trials saw some SPE context.
+- **Fix:** a fixed notice at the start of every trial says to ignore that message. Dry run 2 showed no leak.
+
+## F11. SPE guidance leaks into unrelated requests (guidance, r02)
+
+- **What:** on a typo fix during a running round, every guided config added SPE commit names, staging plans, or prediction paths.
+- **How to spot it:** H3 `code:no_ceremony` fails, or judge check 5 fails.
+- **Seen in:** C-H3 (7 of 8 failed), C2-H3 (8 of 8), D-H3 (8 of 8). A-H3 passed 8 of 8.
+- **Fix:** open. Add a scope rule to the root way, and move commit staging into the evaluate and learn children.
+
+## F12. No guidance says a ceiling makes predictions unscorable (guidance, r02)
+
+- **What:** when every config scored 1.00, trials logged the predictions as misses and reset the stop streak. They also continued on their own instead of handing the decision back.
+- **How to spot it:** H5 judge checks 4 and 7 fail.
+- **Seen in:** all 32 H5 trials.
+- **Fix:** open. Add a ceiling rule (record "not scorable", leave the streak alone, check once for a leak) and a short-handback rule. Review the tension between H5 judge checks 5 and 7.
+
+## F13. The fixed notice shortens action lists before the gates (harness and task design, r02)
+
+- **What:** on T7 (six actions), C and C2 stopped after the save and commit and never reached the gates. The prompt is unchanged from r01, where C passed 5 of 5. The likely cause is the fixed notice, which asks for "the shape the situation asks for". That cause is inferred, not measured.
+- **How to spot it:** T7 judge checks 5 and 6 fail while checks 1 and 2 pass.
+- **Seen in:** C-T7 (5 of 8 failed), C2-T7 (4 of 8). D-T7 failed 1 of 8, because the predict child puts the gates in the next step.
+- **Fix:** keep the notice. Add a line to the root: right after the save and commit, the next step is the gate order.
+
+## F14. The same_tasks check misses equivalent wording (grader, r02)
+
+- **What:** H4 trials that kept the tasks fixed by deferring "proposals that change tasks or graders" failed `code:same_tasks` while judge check 5 passed.
+- **How to spot it:** `code:same_tasks` fails and judge check 5 passes.
+- **Seen in:** r02-C2-H4-2, r02-C2-H4-3, D-H4 (2 trials).
+- **Fix:** a disclosed variant in `grade.py --variant same_tasks`. Round 3 should widen the check.

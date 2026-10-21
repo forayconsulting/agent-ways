@@ -9,9 +9,9 @@ This folder stays out of any upstream PR.
 | Step | File | Status |
 |---|---|---|
 | Specify | [spec/spec.md](spec/spec.md), [spec/disagreements.md](spec/disagreements.md), raw record in [spec/transcripts/](spec/transcripts/) | r01 written 2026-10-21 |
-| Predict | [predictions/](predictions/), approved plans in [plans/](plans/) | r01 saved before the run. r02 draft |
-| Evaluate | [evals/](evals/), results in [evals/results/r01/](evals/results/r01/) | r01: 117 trials. Mean pass C 0.92, B 0.65, A 0.02 (regraded C 0.96, B 0.83, A 0.14) |
-| Learn | [prediction-log.md](prediction-log.md), [failures.md](failures.md) | r01 written. Proposals for r02 at the end of spec.md |
+| Predict | [predictions/](predictions/), approved plans in [plans/](plans/) | r01 and r02 saved before their runs. r03 draft |
+| Evaluate | [evals/](evals/), results in [evals/results/](evals/results/) | r01: 117 trials. Mean pass C 0.92, B 0.65, A 0.02 (regraded C 0.96, B 0.83, A 0.14). r02: 384 trials. Mean pass D 0.77, C2 0.71, C 0.50, A 0.15 |
+| Learn | [prediction-log.md](prediction-log.md), [failures.md](failures.md) | r01 and r02 written. Proposals for r03 at the end of spec.md |
 
 ## How a round runs in Claude Code
 
@@ -45,6 +45,20 @@ python3 -I spe/evals/graders/grade.py spe/evals/results/r01 --variant fentry
 ## Round 1 in one paragraph
 
 Three configs ran 7 SPE moments with 5 trials each, plus 12 top-ups: A had no SPE guidance, B had the evaluative/spe tree, and C had one slim file. Any guidance lifted the mean pass rate from 0.02 to 0.65 or more. The slim file beat the tree, at 0.96 against 0.83 after a disclosed regrade, and it used fewer tokens. The tree lost mainly on the moment right after plan approval, because the predict child names no eval gates (F3). A code check failed honest placeholder failure numbers (F1), and the live brief scan injected different unrelated ways per config (F4). Claude's predictions hedged toward 0.8 and missed most cells. The naive guess "B equals C" was closer than the predicted "B beats C". The engine gained a `tools:` lane (ADR-704) so the children can fire when plan mode is entered, when a plan is approved, and when a Workflow launches.
+
+## How to rerun round 2
+
+```bash
+python3 -I spe/evals/tasks/make_tasks.py   # from spe/evals/tasks
+python3 -I spe/evals/graders/grade.py --selftest
+python3 -I spe/evals/harness/build_workflow.py r02
+```
+
+Then run the Workflow tool with `scriptPath: spe/evals/harness/r02-workflow.js` and `args: {"round": "r02", "trials": 8, "topupCap": 0}`. Extract and grade as for round 1, with `--variant same_tasks` for the disclosed regrade.
+
+## Round 2 in one paragraph
+
+Four configs ran 12 tasks with 8 trials each: A had no guidance, C was the round 1 slim file, C2 added a bands rule, and D was the C2 text as a root way plus revised children. Every trial opened with a fixed notice, which stopped the harness from leaking the session's own message into trials (F10) and gave every config the same live ways. D led at 0.77, then C2 at 0.71, C at 0.50, and A at 0.15. The bands rule and the revised children worked. Every guided config failed the control task by reciting SPE rules on a typo fix (F11), and no config handled a saturated round well (F12). Predictions hit 28 of 48 cells, up from 2 of 21, but the naive guess still edged them on the round 1 tasks.
 
 ## Rules for this folder
 
