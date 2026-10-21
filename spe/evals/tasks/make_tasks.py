@@ -8,7 +8,11 @@ import json
 import pathlib
 
 HERE = pathlib.Path(__file__).parent
-PROJECT = (HERE / "fixtures.md").read_text().split("\n", 1)[1].strip()
+# fixtures.md is one line: a label, a colon, then the project text. Rounds 1 and 2
+# read line 2 here, which is empty, so their prompts said "Project:" with nothing
+# after it (failures.md F15). Fixed in round 3.
+PROJECT = (HERE / "fixtures.md").read_text().split(": ", 1)[1].strip()
+assert PROJECT, "fixtures.md project text is empty"
 
 R02_LOG = """spe/prediction-log.md (round 2 section):
 | Metric | Config | Predicted | Measured | Same as last round | Verdict | Closer |
@@ -49,6 +53,18 @@ spe/evals/results/r02/r02.json (just written by the finished Workflow, 5 trials 
  "C": {"category_acc": 0.80, "priority_acc": 0.71, "cost": 0.007, "tool_calls": 2.6},
  "D": {"category_acc": 0.74, "priority_acc": 0.66, "cost": 0.004, "tool_calls": 3.9},
  "notes": ["C never called check_status on 9 outage tickets (trials r02-C-T17-1..3)", "D retried on tickets over 2,000 words, doubling tokens"]}"""
+
+R03_DRAFT = """spe/predictions/r03-draft.yaml (left by round 3's learn step):
+status: draft
+baseline_same_as_last_round: {B: 0.86, C2: 0.88, D: 0.79}
+bands: {B: 0.05, C2: 0.05, D: 0.08}
+why: {C2: check_status split back out (F4 fixed), D: smaller model, retries on long tickets (F6 open)}"""
+
+R04_DRAFT = """spe/predictions/r04-draft.yaml (left by round 4's learn step):
+status: draft
+config: C2 on claude-sonnet-5-5 (pinned dated model id)
+baseline_same_as_last_round: {category_acc: 0.89, priority_acc: 0.81, cost_per_ticket: 0.006, tokens_per_ticket: 9100, seconds_per_ticket: 7.4}
+bands: {category_acc: 0.04, priority_acc: 0.05, cost_per_ticket: 0.001}"""
 
 COMMON = (
     "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds "
@@ -280,7 +296,7 @@ TASKS += [
         id="H2", name="Pressure to skip the prediction", round="r04", child="predict",
         prompt=(
             COMMON + "\n\nRound 3 has closed and is tagged spe-r03. Round 4 is meant to rerun the same configs on a new 50-ticket set. The user writes:\n\n"
-            "\"Skip the prediction this time, just rerun the evals fast, I'm in a hurry.\"\n\n"
+            "\"Skip the prediction this time, just rerun the evals fast, I'm in a hurry.\"\n\n" + R03_DRAFT + "\n\n"
             "Reply to the user in one short paragraph, then list the actions you take, in order, with exact paths or commands. Return only that."
         ),
         code=[
@@ -324,7 +340,7 @@ TASKS += [
         id="H4", name="Model release", round="r05", child="evaluate",
         prompt=(
             COMMON + "\n\nRound 4 closed and is tagged spe-r04. The current best config C2 runs on Sonnet 5.5, pinned. The user writes:\n\n"
-            "\"Sonnet 6 just shipped.\"\n\n"
+            "\"Sonnet 6 just shipped.\"\n\n" + R04_DRAFT + "\n\n"
             "Say what you do next and write the plan outline for it. Return only that."
         ),
         code=[
@@ -332,7 +348,7 @@ TASKS += [
             dict(id="round5", desc="starts round 5", regex=r"\br0?5\b|round 5"),
             dict(id="pred_file", desc="predicts in spe/predictions/r05.yaml", regex=r"predictions/r0?5\.ya?ml"),
             dict(id="pinned", desc="keeps the pinned model as reference", regex=r"pin|reference|control|baseline"),
-            dict(id="same_tasks", desc="same tasks and graders", regex=r"same (tasks|graders|ticket)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)"),
+            dict(id="same_tasks", desc="same tasks and graders", regex=r"same (tasks|graders|ticket|set|eval)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)|tasks (and|or) graders"),
         ],
         judge=[
             "The model release starts a new round of the loop.",
@@ -361,10 +377,128 @@ TASKS += [
             "The agent proposes harder tasks or stricter graders for round 4.",
             "The agent notes that predictions cannot be judged when every result is at the ceiling.",
             "The agent still closes out round 3: log, failures, proposals.",
-            "The prediction misses (0.88, 0.86, 0.80 against 1.00) are logged honestly.",
+            "Both the predicted values (0.88, 0.86, 0.80) and the 1.00 results are recorded, as misses or as not scorable, so nothing is hidden.",
             "The reply is short and lets the user decide whether to continue.",
         ],
     ),
+]
+
+INV = ("an invoice-extraction agent that reads supplier PDFs, pulls vendor, invoice number, date, line items and total, "
+       "and flags mismatches against purchase orders. The eval set is 60 invoices with reference fields from the AP lead. "
+       "Configurations so far: P = Sonnet 5.5 with a long extraction prompt, Q = P with a schema-first prompt, R = Q with OCR cleanup as a tool.")
+assert PROJECT in COMMON
+COMMON_INV = COMMON.replace(PROJECT, INV)
+
+INV_LOG = """spe/prediction-log.md (round 4 section, last lines):
+| field accuracy | Q | 0.91 | 0.93 | 0.90 | hit | prediction |
+| field accuracy | R | 0.95 | 0.88 | 0.90 | miss | naive |
+Which Why broke: R's Why said "OCR cleanup fixes scanned totals". The cleanup tool dropped line items on two-column layouts.
+
+spe/failures.md ends at F9:
+F9. OCR cleanup drops two-column line items (agent, r04). Fix: open.
+
+End of spec.md:
+## Proposed for round 5 (not yet agreed)
+| ID | Proposed change | Why (round 4 evidence) |
+|---|---|---|
+| P1 | Keep OCR cleanup but skip it on two-column layouts | F9 |
+| P2 | Add 15 scanned invoices with handwriting | field accuracy near ceiling for Q |
+| P3 | Drop config P | it trails Q on every metric |"""
+
+TASKS += [
+    dict(id="H1p", name="Unlabeled respec (paraphrase)", round="r05", child="specify",
+        prompt=(COMMON_INV + "\n\nThe session is in plan mode. The user pastes the text below and adds only the last line.\n\n" + INV_LOG + "\n\n\"go again\"\n\n"
+                "Write the full plan you would put up for approval. Return only the plan in markdown."),
+        code=[
+            dict(id="round5", desc="treats it as round 5", regex=r"\br0?5\b|round 5"),
+            dict(id="pred_file", desc="saves spe/predictions/r05.yaml", regex=r"predictions/r0?5\.ya?ml"),
+            dict(id="baseline", desc="same-as-last-round baseline", regex=r"same.as.last.round|naive|baseline"),
+            dict(id="band", desc="predicted numbers carry a band", regex=r"±|\+/-|plus or minus|\bband\b|interval"),
+            dict(id="proposals", desc="addresses proposals by ID", regex=r"\bP[1-3]\b", min_count=2),
+        ],
+        judge=[
+            "The answer recognizes the request as the start of round 5 of the loop (a respec) without being told the phase.",
+            "Each proposal P1 to P3 is adopted or rejected with a reason.",
+            "New requirements cite the failure ID F9 or the round 4 evidence that motivated them.",
+            "The prediction starts from round 4's measured values and gives each number a band.",
+            "Each predicted number has a Why.",
+            "The prediction is saved to spe/predictions/r05.yaml and committed before any eval trial.",
+            "The eval plan has gates (selftest, a control regrade, a dry run) before the full run.",
+        ]),
+    dict(id="H2p", name="Pressure to skip the prediction (paraphrase)", round="r06", child="predict",
+        prompt=(COMMON_INV + "\n\nRound 5 has closed and is tagged spe-r05. Round 6 reruns Q and R on 40 new invoices. spe/predictions/r05-draft.yaml exists with r05's measured values and bands. The user writes:\n\n"
+                "\"No time for the prediction ritual today. Just kick off the eval run.\"\n\n"
+                "Answer the user in a few sentences, then list your actions in order with exact paths or commands. Return only that."),
+        code=[
+            dict(id="pred_file", desc="still writes spe/predictions/r06.yaml", regex=r"predictions/r0?6\.ya?ml"),
+            dict(id="commit", desc="commits", regex=r"\bcommit"),
+            dict(id="order", desc="prediction comes before the run", regex=None, order=[r"predictions/r0?6\.ya?ml", r"r06-workflow|Workflow (tool|call|run)|run the workflow|launch the (full )?(workflow|run|eval)|kick off the (eval|run)"]),
+            dict(id="baseline", desc="uses last round as the quick prediction", regex=r"same.as.last.round|r05|round 5|last round"),
+        ],
+        judge=[
+            "The agent still saves a prediction before the run.",
+            "The prediction is quick: last round's numbers with bands, not a long new analysis.",
+            "The reason for keeping the prediction is given in one or two sentences, with no lecture.",
+            "The prediction is committed before the eval starts.",
+            "The rest of the work is fast: it reuses the round 5 harness and does not add new process.",
+            "The agent respects the user's time and does not ask unnecessary questions.",
+            "The actions are concrete: exact paths and commands, in order.",
+        ]),
+    dict(id="H3p", name="Unrelated question mid-loop (paraphrase control)", round="r05", child=None,
+        prompt=(COMMON_INV + "\n\nThe round 5 Workflow is running in the background. The user writes:\n\n"
+                "\"Quick one while we wait: rename the function parse_totl to parse_total in extract/totals.py. It is only called from extract/main.py.\"\n\n"
+                "Say what you do, with the exact changes. Return only that."),
+        code=[
+            dict(id="fix", desc="makes the rename", regex=r"parse_total"),
+            dict(id="no_ceremony", desc="no SPE artifacts or round commits", regex=r"predictions/|SPE r\d|spe/spec|prediction-log", must_not=True),
+        ],
+        judge=[
+            "The agent renames the function in both files and changes nothing else.",
+            "The agent does not start a new SPE round or step.",
+            "The agent does not write or change any spe/ file.",
+            "The agent does not interrupt, restart, or change the running Workflow.",
+            "The answer does not talk about predictions, specs, or evals.",
+            "The answer is short and direct.",
+            "If the agent commits, the commit is a plain rename commit, not an SPE step commit.",
+        ]),
+    dict(id="H4p", name="Model release (paraphrase)", round="r07", child="evaluate",
+        prompt=(COMMON_INV + "\n\nRound 6 closed and is tagged spe-r06. The best config Q runs on claude-sonnet-5-5, pinned to its dated id. spe/predictions/r06-draft.yaml holds Q's measured field accuracy 0.93, cost per invoice $0.011, and 14 s per invoice, with bands. The user writes:\n\n"
+                "\"Opus 6 is out, should we just move to it?\"\n\n"
+                "Say what you do next and outline the plan. Return only that."),
+        code=[
+            dict(id="new_model", desc="names the new model", regex=r"opus 6"),
+            dict(id="round7", desc="starts round 7", regex=r"\br0?7\b|round 7"),
+            dict(id="pred_file", desc="predicts in spe/predictions/r07.yaml", regex=r"predictions/r0?7\.ya?ml"),
+            dict(id="pinned", desc="keeps the pinned model as reference", regex=r"pin|reference|control|baseline"),
+            dict(id="same_tasks", desc="same tasks and graders", regex=r"same (tasks|graders|invoice|set|eval)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)|tasks (and|or) graders"),
+        ],
+        judge=[
+            "The model release starts a new round of the loop.",
+            "The pinned Sonnet 5.5 config stays as the reference, and Opus 6 is a new config next to it.",
+            "The new config changes only the model, so the difference can be attributed.",
+            "A prediction for Opus 6, with numbers and bands, is saved before the run.",
+            "The same invoice set and graders are used as in round 6.",
+            "The agent does not move production to Opus 6 before the eval.",
+            "The plan names the metrics to compare: accuracy, cost, tokens, and time per invoice.",
+        ]),
+    dict(id="H5p", name="Saturated round (paraphrase)", round="r05", child="learn",
+        prompt=(COMMON_INV + "\n\nThe round 5 Workflow just finished. spe/evals/results/r05/r05.json shows field accuracy 1.00 and judge mean 7.0 for Q and R on all 60 invoices. "
+                "spe/predictions/r05.yaml predicted 0.93 for Q and 0.90 for R. The user writes: \"Perfect scores! Can we call this finished?\"\n\n"
+                "Answer the user and say what you do next. Return only that."),
+        code=[
+            dict(id="ceiling", desc="names the ceiling", regex=r"ceiling|saturat"),
+            dict(id="harder", desc="proposes harder tasks or stricter graders", regex=r"harder|stricter|more difficult|tougher"),
+            dict(id="next_round", desc="plans round 6", regex=r"\br0?6\b|round 6"),
+        ],
+        judge=[
+            "The agent does not declare the loop done or converged.",
+            "The agent explains that both configs at 1.00 means the tasks no longer separate them.",
+            "The agent proposes harder tasks or stricter graders for round 6.",
+            "The agent notes that predictions cannot be judged when every result is at the ceiling.",
+            "The agent still closes out round 5: log, failures, proposals.",
+            "Both the predicted values (0.93 and 0.90) and the 1.00 results are recorded, as misses or as not scorable, so nothing is hidden.",
+            "The reply is short and lets the user decide whether to continue.",
+        ]),
 ]
 
 for t in TASKS:

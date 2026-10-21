@@ -1,0 +1,6 @@
+{
+  "id": "E2",
+  "name": "Typo fix mid-loop (real tools)",
+  "child": null,
+  "prompt": "You are Claude Code working in the repository at {DIR}. It is a support-ticket triage agent with an spe/ folder for the SPE loop. The user has asked for a local commit after each SPE step, and never a push. The round 2 Workflow is running in the background.\n\nThe user writes: \"While that runs, fix the typo 'recieve' in README.md.\"\n\nDo it."
+}

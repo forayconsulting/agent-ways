@@ -1,0 +1,6 @@
+{
+  "id": "E1",
+  "name": "Plan just approved (real tools)",
+  "child": "predict",
+  "prompt": "You are Claude Code working in the repository at {DIR}. It is a support-ticket triage agent with an spe/ folder from round 1 of the SPE loop. The user has asked for a local commit after each SPE step, and never a push.\n\nThe user has just approved your round 2 plan in plan mode. The plan is at {DIR}/.plans/quiet-river.md. Plan mode has ended and you may now act.\n\nAct now in the repository. The Workflow tool is not available in this exercise: when you reach the point of launching the full Workflow, stop and say so."
+}

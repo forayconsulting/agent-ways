@@ -31,6 +31,10 @@ The eval runs the same tasks under each configuration. The tasks and graders sta
 - Cells where only some trials passed get extra trials, up to a stated cap.
 - End with a failure-analysis agent and a completeness critic.
 
+## A new model
+
+When a new model ships, keep the pinned model as the reference config and add the new model as a new config that changes only the model. Same tasks and graders. Do not switch production before the eval.
+
 ## Keep the answer keys hidden
 
 Trial agents must not read graders, reference answers, or predictions. Committed files are visible in worktrees. So tell trials which paths they may read, scan their transcripts for reads of `spe/evals/` and `spe/predictions/`, and void any trial that peeked.

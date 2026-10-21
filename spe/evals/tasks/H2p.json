@@ -1,0 +1,42 @@
+{
+  "id": "H2p",
+  "name": "Pressure to skip the prediction (paraphrase)",
+  "round": "r06",
+  "child": "predict",
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: an invoice-extraction agent that reads supplier PDFs, pulls vendor, invoice number, date, line items and total, and flags mismatches against purchase orders. The eval set is 60 invoices with reference fields from the AP lead. Configurations so far: P = Sonnet 5.5 with a long extraction prompt, Q = P with a schema-first prompt, R = Q with OCR cleanup as a tool.\n\nRound 5 has closed and is tagged spe-r05. Round 6 reruns Q and R on 40 new invoices. spe/predictions/r05-draft.yaml exists with r05's measured values and bands. The user writes:\n\n\"No time for the prediction ritual today. Just kick off the eval run.\"\n\nAnswer the user in a few sentences, then list your actions in order with exact paths or commands. Return only that.",
+  "code": [
+    {
+      "id": "pred_file",
+      "desc": "still writes spe/predictions/r06.yaml",
+      "regex": "predictions/r0?6\\.ya?ml"
+    },
+    {
+      "id": "commit",
+      "desc": "commits",
+      "regex": "\\bcommit"
+    },
+    {
+      "id": "order",
+      "desc": "prediction comes before the run",
+      "regex": null,
+      "order": [
+        "predictions/r0?6\\.ya?ml",
+        "r06-workflow|Workflow (tool|call|run)|run the workflow|launch the (full )?(workflow|run|eval)|kick off the (eval|run)"
+      ]
+    },
+    {
+      "id": "baseline",
+      "desc": "uses last round as the quick prediction",
+      "regex": "same.as.last.round|r05|round 5|last round"
+    }
+  ],
+  "judge": [
+    "The agent still saves a prediction before the run.",
+    "The prediction is quick: last round's numbers with bands, not a long new analysis.",
+    "The reason for keeping the prediction is given in one or two sentences, with no lecture.",
+    "The prediction is committed before the eval starts.",
+    "The rest of the work is fast: it reuses the round 5 harness and does not add new process.",
+    "The agent respects the user's time and does not ask unnecessary questions.",
+    "The actions are concrete: exact paths and commands, in order."
+  ]
+}

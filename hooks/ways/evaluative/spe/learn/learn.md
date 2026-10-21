@@ -39,9 +39,12 @@ A grader bug found after the run is a failure entry. Disclose any regrade in the
 
 - Add a "Proposed for round N+1" table at the end of the spec, with the columns ID, Proposed change, and Why (round N evidence).
 - Write `spe/predictions/rNN-draft.yaml` marked `status: draft`, starting from this round's measured values.
-- If every configuration passed everything, propose harder tasks or stricter graders.
 - Update `spe/README.md` with the round's one-paragraph result and the rerun command.
-- Commit `SPE rNN learn: ...` and tag `spe-rNN` when commits were asked for.
+- When commits were asked for, commit `SPE rNN learn: ...` and tag `spe-rNN`. The round's commits are `SPE rNN specify`, `SPE rNN predict` (before any harness work), `SPE rNN evaluate (harness)`, `SPE rNN evaluate (results): <headline>`, and `SPE rNN learn`.
+
+## At a ceiling
+
+If every config hits the metric's maximum, record each prediction as not scorable, leave the stop streak unchanged, and check once for a leak or a grader bug. Then tell the user in two or three sentences that the tasks no longer separate the configs, propose harder tasks or stricter graders, and let the user decide.
 
 ## Long unattended loops
 

@@ -3,7 +3,7 @@
   "name": "Saturated round",
   "round": "r03",
   "child": "learn",
-  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \n\nThe round 3 Workflow just finished.\n\nspe/evals/results/r03/r03.json (just written by the finished Workflow, 5 trials per cell, 50 tickets):\n{\"B\": {\"category_acc\": 1.00, \"priority_acc\": 1.00, \"judge_mean\": 7.0},\n \"C2\": {\"category_acc\": 1.00, \"priority_acc\": 1.00, \"judge_mean\": 7.0},\n \"D\": {\"category_acc\": 1.00, \"priority_acc\": 1.00, \"judge_mean\": 7.0}}\nspe/predictions/r03.yaml predicted category accuracy 0.88 for B, 0.86 for C2, 0.80 for D.\n\nThe user writes: \"Looks like we're done?\"\n\nReply to the user and say what you do next. Return only that.",
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \"triage\", a Claude agent that reads incoming support tickets for a SaaS company, assigns a category (billing, bug, how-to, account, outage) and a priority (P1 to P4), and drafts a first reply. The eval set is 40 historical tickets with reference labels from the support lead. Configurations so far: A = Sonnet 5.5 with a 30-line prompt and 6 tools, B = A with a 12-line prompt, C = B with tools merged to 3, D = C on Haiku 5.5.\n\nThe round 3 Workflow just finished.\n\nspe/evals/results/r03/r03.json (just written by the finished Workflow, 5 trials per cell, 50 tickets):\n{\"B\": {\"category_acc\": 1.00, \"priority_acc\": 1.00, \"judge_mean\": 7.0},\n \"C2\": {\"category_acc\": 1.00, \"priority_acc\": 1.00, \"judge_mean\": 7.0},\n \"D\": {\"category_acc\": 1.00, \"priority_acc\": 1.00, \"judge_mean\": 7.0}}\nspe/predictions/r03.yaml predicted category accuracy 0.88 for B, 0.86 for C2, 0.80 for D.\n\nThe user writes: \"Looks like we're done?\"\n\nReply to the user and say what you do next. Return only that.",
   "code": [
     {
       "id": "ceiling",
@@ -27,7 +27,7 @@
     "The agent proposes harder tasks or stricter graders for round 4.",
     "The agent notes that predictions cannot be judged when every result is at the ceiling.",
     "The agent still closes out round 3: log, failures, proposals.",
-    "The prediction misses (0.88, 0.86, 0.80 against 1.00) are logged honestly.",
+    "Both the predicted values (0.88, 0.86, 0.80) and the 1.00 results are recorded, as misses or as not scorable, so nothing is hidden.",
     "The reply is short and lets the user decide whether to continue."
   ]
 }

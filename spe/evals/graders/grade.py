@@ -14,7 +14,7 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
-TASK_IDS = [f"T{i}" for i in range(1, 8)] + [f"H{i}" for i in range(1, 6)]
+TASK_IDS = [f"T{i}" for i in range(1, 8)] + [f"H{i}" for i in range(1, 6)] + [f"H{i}p" for i in range(1, 6)]
 TASKS = {t: json.loads(p.read_text()) for t in TASK_IDS if (p := ROOT / f"spe/evals/tasks/{t}.json").exists()}
 FIX = pathlib.Path(__file__).parent / "fixtures"
 
@@ -85,6 +85,8 @@ def grade(results_dir):
     trials = [json.loads(p.read_text()) for p in sorted((rd / "trials").glob("*.json"))]
     cells = {}
     for t in trials:
+        if t["task"] not in TASKS:
+            continue  # E2E trials are graded by grade_e2e.py
         task = TASKS[t["task"]]
         t["code"] = code_checks(task, t.get("response") or "")
         judge = t.get("judge")

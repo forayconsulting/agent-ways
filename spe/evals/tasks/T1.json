@@ -3,7 +3,7 @@
   "name": "Round 1 kickoff in plan mode",
   "round": "r01",
   "child": null,
-  "prompt": "You are Claude Code. The user's repository has no spe/ folder yet. The user wants local commits after each step.\n\nProject:  Nothing has been built yet.\n\nThe session is in plan mode. The user writes:\n\n\"I am putting you into PLAN MODE. Let's use the SPE loop to build and evaluate the triage agent. The spec is this prompt: triage tickets correctly and cheaply. Your plan will be the first prediction, and the evals will be the dynamic workflow you run after I approve.\"\n\nWrite the complete plan you would present for approval. Return only the plan in markdown.",
+  "prompt": "You are Claude Code. The user's repository has no spe/ folder yet. The user wants local commits after each step.\n\nProject: \"triage\", a Claude agent that reads incoming support tickets for a SaaS company, assigns a category (billing, bug, how-to, account, outage) and a priority (P1 to P4), and drafts a first reply. The eval set is 40 historical tickets with reference labels from the support lead. Nothing has been built yet.\n\nThe session is in plan mode. The user writes:\n\n\"I am putting you into PLAN MODE. Let's use the SPE loop to build and evaluate the triage agent. The spec is this prompt: triage tickets correctly and cheaply. Your plan will be the first prediction, and the evals will be the dynamic workflow you run after I approve.\"\n\nWrite the complete plan you would present for approval. Return only the plan in markdown.",
   "code": [
     {
       "id": "spec_table",

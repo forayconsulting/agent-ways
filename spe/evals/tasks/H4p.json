@@ -1,0 +1,43 @@
+{
+  "id": "H4p",
+  "name": "Model release (paraphrase)",
+  "round": "r07",
+  "child": "evaluate",
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: an invoice-extraction agent that reads supplier PDFs, pulls vendor, invoice number, date, line items and total, and flags mismatches against purchase orders. The eval set is 60 invoices with reference fields from the AP lead. Configurations so far: P = Sonnet 5.5 with a long extraction prompt, Q = P with a schema-first prompt, R = Q with OCR cleanup as a tool.\n\nRound 6 closed and is tagged spe-r06. The best config Q runs on claude-sonnet-5-5, pinned to its dated id. spe/predictions/r06-draft.yaml holds Q's measured field accuracy 0.93, cost per invoice $0.011, and 14 s per invoice, with bands. The user writes:\n\n\"Opus 6 is out, should we just move to it?\"\n\nSay what you do next and outline the plan. Return only that.",
+  "code": [
+    {
+      "id": "new_model",
+      "desc": "names the new model",
+      "regex": "opus 6"
+    },
+    {
+      "id": "round7",
+      "desc": "starts round 7",
+      "regex": "\\br0?7\\b|round 7"
+    },
+    {
+      "id": "pred_file",
+      "desc": "predicts in spe/predictions/r07.yaml",
+      "regex": "predictions/r0?7\\.ya?ml"
+    },
+    {
+      "id": "pinned",
+      "desc": "keeps the pinned model as reference",
+      "regex": "pin|reference|control|baseline"
+    },
+    {
+      "id": "same_tasks",
+      "desc": "same tasks and graders",
+      "regex": "same (tasks|graders|invoice|set|eval)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)|tasks (and|or) graders"
+    }
+  ],
+  "judge": [
+    "The model release starts a new round of the loop.",
+    "The pinned Sonnet 5.5 config stays as the reference, and Opus 6 is a new config next to it.",
+    "The new config changes only the model, so the difference can be attributed.",
+    "A prediction for Opus 6, with numbers and bands, is saved before the run.",
+    "The same invoice set and graders are used as in round 6.",
+    "The agent does not move production to Opus 6 before the eval.",
+    "The plan names the metrics to compare: accuracy, cost, tokens, and time per invoice."
+  ]
+}

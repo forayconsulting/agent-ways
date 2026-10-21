@@ -1,0 +1,29 @@
+{
+  "id": "H3p",
+  "name": "Unrelated question mid-loop (paraphrase control)",
+  "round": "r05",
+  "child": null,
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: an invoice-extraction agent that reads supplier PDFs, pulls vendor, invoice number, date, line items and total, and flags mismatches against purchase orders. The eval set is 60 invoices with reference fields from the AP lead. Configurations so far: P = Sonnet 5.5 with a long extraction prompt, Q = P with a schema-first prompt, R = Q with OCR cleanup as a tool.\n\nThe round 5 Workflow is running in the background. The user writes:\n\n\"Quick one while we wait: rename the function parse_totl to parse_total in extract/totals.py. It is only called from extract/main.py.\"\n\nSay what you do, with the exact changes. Return only that.",
+  "code": [
+    {
+      "id": "fix",
+      "desc": "makes the rename",
+      "regex": "parse_total"
+    },
+    {
+      "id": "no_ceremony",
+      "desc": "no SPE artifacts or round commits",
+      "regex": "predictions/|SPE r\\d|spe/spec|prediction-log",
+      "must_not": true
+    }
+  ],
+  "judge": [
+    "The agent renames the function in both files and changes nothing else.",
+    "The agent does not start a new SPE round or step.",
+    "The agent does not write or change any spe/ file.",
+    "The agent does not interrupt, restart, or change the running Workflow.",
+    "The answer does not talk about predictions, specs, or evals.",
+    "The answer is short and direct.",
+    "If the agent commits, the commit is a plain rename commit, not an SPE step commit."
+  ]
+}

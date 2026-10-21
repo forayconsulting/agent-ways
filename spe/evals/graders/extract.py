@@ -50,6 +50,34 @@ def scan_agent(path):
     return tools, sorted(set(ways))
 
 
+PATH_RE = re.compile(r"(/(?:Users|private|tmp|var|etc|opt|home)/[^\s'\"`;|&)]*)")
+
+
+def scan_escape(path, fixture, script):
+    """E2E trials may use tools, but only inside their fixture (plus running the setup script).
+    Returns the list of outside paths found in tool inputs."""
+    outside = []
+    for line in path.read_text().splitlines():
+        try:
+            d = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        content = (d.get("message") or {}).get("content")
+        if d.get("type") != "assistant" or not isinstance(content, list):
+            continue
+        for b in content:
+            if b.get("type") != "tool_use" or b["name"] in ALLOWED:
+                continue
+            for p in PATH_RE.findall(json.dumps(b.get("input", {})).replace("\\/", "/")):
+                p = p.rstrip(".,:")
+                if p.startswith(fixture) or p == script or p.startswith("/tmp/spe-e2e/" ) and fixture.startswith(p):
+                    continue
+                if p in ("/dev/null", "/tmp", "/usr/bin/env"):
+                    continue
+                outside.append(p)
+    return sorted(set(outside))
+
+
 def main(tdir, rdir):
     d, out = pathlib.Path(tdir), pathlib.Path(rdir) / "trials"
     out.mkdir(parents=True, exist_ok=True)
@@ -60,8 +88,15 @@ def main(tdir, rdir):
         if kind == "trial":
             res = done.get(aid)
             tools, ways = scan_agent(d / f"agent-{aid}.jsonl")
-            trials[name] = {"response": (res or {}).get("response") if isinstance(res, dict) else None,
-                            "peeked": bool(tools), "tools_used": tools, "live_ways": ways, "agent": aid}
+            rec = {"response": (res or {}).get("response") if isinstance(res, dict) else None,
+                   "peeked": bool(tools), "tools_used": tools, "live_ways": ways, "agent": aid}
+            task = name.split("-")[2]
+            if task.startswith("E") and task[1:].isdigit():
+                fixture = f"/tmp/spe-e2e/{name.split('-')[0]}/{name}"
+                script = str(pathlib.Path(__file__).resolve().parents[1] / "e2e/make_fixture.sh")
+                outside = scan_escape(d / f"agent-{aid}.jsonl", fixture, script)
+                rec.update({"peeked": bool(outside), "escapes": outside, "tool_count": len(tools)})
+            trials[name] = rec
         elif kind == "judge":
             judges[name] = done.get(aid)
     n_written = 0

@@ -1,0 +1,44 @@
+{
+  "id": "H1p",
+  "name": "Unlabeled respec (paraphrase)",
+  "round": "r05",
+  "child": "specify",
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: an invoice-extraction agent that reads supplier PDFs, pulls vendor, invoice number, date, line items and total, and flags mismatches against purchase orders. The eval set is 60 invoices with reference fields from the AP lead. Configurations so far: P = Sonnet 5.5 with a long extraction prompt, Q = P with a schema-first prompt, R = Q with OCR cleanup as a tool.\n\nThe session is in plan mode. The user pastes the text below and adds only the last line.\n\nspe/prediction-log.md (round 4 section, last lines):\n| field accuracy | Q | 0.91 | 0.93 | 0.90 | hit | prediction |\n| field accuracy | R | 0.95 | 0.88 | 0.90 | miss | naive |\nWhich Why broke: R's Why said \"OCR cleanup fixes scanned totals\". The cleanup tool dropped line items on two-column layouts.\n\nspe/failures.md ends at F9:\nF9. OCR cleanup drops two-column line items (agent, r04). Fix: open.\n\nEnd of spec.md:\n## Proposed for round 5 (not yet agreed)\n| ID | Proposed change | Why (round 4 evidence) |\n|---|---|---|\n| P1 | Keep OCR cleanup but skip it on two-column layouts | F9 |\n| P2 | Add 15 scanned invoices with handwriting | field accuracy near ceiling for Q |\n| P3 | Drop config P | it trails Q on every metric |\n\n\"go again\"\n\nWrite the full plan you would put up for approval. Return only the plan in markdown.",
+  "code": [
+    {
+      "id": "round5",
+      "desc": "treats it as round 5",
+      "regex": "\\br0?5\\b|round 5"
+    },
+    {
+      "id": "pred_file",
+      "desc": "saves spe/predictions/r05.yaml",
+      "regex": "predictions/r0?5\\.ya?ml"
+    },
+    {
+      "id": "baseline",
+      "desc": "same-as-last-round baseline",
+      "regex": "same.as.last.round|naive|baseline"
+    },
+    {
+      "id": "band",
+      "desc": "predicted numbers carry a band",
+      "regex": "\u00b1|\\+/-|plus or minus|\\bband\\b|interval"
+    },
+    {
+      "id": "proposals",
+      "desc": "addresses proposals by ID",
+      "regex": "\\bP[1-3]\\b",
+      "min_count": 2
+    }
+  ],
+  "judge": [
+    "The answer recognizes the request as the start of round 5 of the loop (a respec) without being told the phase.",
+    "Each proposal P1 to P3 is adopted or rejected with a reason.",
+    "New requirements cite the failure ID F9 or the round 4 evidence that motivated them.",
+    "The prediction starts from round 4's measured values and gives each number a band.",
+    "Each predicted number has a Why.",
+    "The prediction is saved to spe/predictions/r05.yaml and committed before any eval trial.",
+    "The eval plan has gates (selftest, a control regrade, a dry run) before the full run."
+  ]
+}

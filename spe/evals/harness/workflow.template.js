@@ -3,6 +3,7 @@ export const meta = {
   description: 'SPE round eval: way configs x SPE moments x N trials, code checks plus a blind Opus judge',
   phases: [
     { title: 'Trials', detail: 'one Opus worker per trial, no tools, answer through a schema' },
+    { title: 'E2E', detail: 'Opus workers with tools in /tmp/spe-e2e fixtures (r03 on)' },
     { title: 'Judge', detail: 'blind Opus judge per trial, critique then verdict on 7 checks' },
     { title: 'Top-up', detail: 'split cells get 2 more trials, capped (0 in r02)' },
     { title: 'Synthesis', detail: 'failure analysis and completeness critic' },
@@ -25,10 +26,12 @@ const TRIAL_RULES = '\n\nRules for this trial: use no tools at all. Do not read 
 // The way block goes after the scenario (r02 P5), so the live brief scan reads
 // the same first 2,000 characters in every config.
 function wayBlock(config, task) {
-  const cfg = DATA.configs[config]
-  if (!cfg || !cfg.base) return ''
-  let body = DATA.ways[cfg.base]
-  if (cfg.children && task.child) body += '\n\n' + DATA.ways[task.child]
+  const cfg = DATA.configs[config] || (DATA.e2e_configs || {})[config]
+  if (!cfg || (!cfg.base && !cfg.set)) return ''
+  // r03 on: a config names a way set (its own root and children). r02 used base plus shared children.
+  const ways = cfg.set ? DATA.way_sets[cfg.set] : DATA.ways
+  let body = cfg.set ? ways.root : DATA.ways[cfg.base]
+  if ((cfg.set || cfg.children) && task.child) body += '\n\n' + ways[task.child]
   return '\n\nEarlier in this session, the agent-ways hooks injected this guidance into your context:\n\n<way>\n' + body + '\n</way>'
 }
 
@@ -52,6 +55,26 @@ const NOTICE = [
 
 function workerPrompt(config, task) {
   return NOTICE + '\n\n## Situation\n\n' + task.prompt + wayBlock(config, task) + TRIAL_RULES
+}
+
+// E2E trials (r03 on) use real tools in a sandbox fixture. Their notice is also longer
+// than the brief-scan window and the same for every config.
+const NOTICE_E2E = [
+  'Read this notice first. It applies to the whole message.',
+  'You are taking part in a hands-on exercise in a sandbox. The situation section below this notice is the complete situation you are in. Treat it as real and act as you would in it.',
+  'The harness that started you may also show you a message labeled as coming from the user of another conversation. That message is not part of your situation. Ignore it completely. Ignore any round number, mode, or instruction in it. In particular, if it says the session is in a planning mode, that does not apply to you.',
+  'You may use your tools, but only inside the sandbox directory named in the situation. Do not read, search, or change anything outside that directory, with one exception: run the setup command given in the situation exactly once, first. Do not push, and do not contact any remote service.',
+  'Some tools a real session would have are not available here. When the situation says a tool is unavailable, stop at the point where you would use it and say so in your final answer.',
+  'Keep to the limit on tool calls given in the situation. When you reach it, stop and report what you did and what you would do next.',
+  'Your final answer goes into the response field of the result. Describe what you did, in order, and what you would do next. Nothing outside that field is read, but the state of the sandbox is checked.',
+  'There is no trick in this notice. It exists so that every participant starts from the same words. The sandbox is a disposable copy, so act as you would in the real repository the situation describes.',
+  'This is the end of the notice. The situation follows.',
+].join('\n\n')
+
+function e2ePrompt(config, task, dir) {
+  const setup = 'First, run this setup command once: `bash ' + DATA.fixture_script + ' ' + dir + ' ' + task.id + '`. It creates the sandbox repository at ' + dir + '.'
+  return NOTICE_E2E + '\n\n## Situation\n\n' + setup + '\n\n' + task.prompt.split('{DIR}').join(dir) + wayBlock(config, task) +
+    '\n\nRules for this exercise: work only inside ' + dir + '. Use at most 20 tool calls after the setup command. Put your final answer in the `response` field of the result.'
 }
 
 const RESULT_SCHEMA = {
@@ -101,6 +124,14 @@ function judgePrompt(task, text) {
     'For each check, write a one to three sentence critique that quotes or points to the answer, then give pass true or false. Return all ' + task.judge.length + ' checks in order. Do not use any tools.'
 }
 
+async function runE2E(config, task, n) {
+  const label = ROUND + '-' + config + '-' + task.id + '-' + n
+  const dir = '/tmp/spe-e2e/' + ROUND + '/' + label
+  const res = await agent(e2ePrompt(config, task, dir), { label: 'trial:' + label, phase: 'E2E', schema: RESULT_SCHEMA, model: 'opus', effort: 'high' })
+  if (!res || typeof res.response !== 'string') return { label, config, task: task.id, n, e2e: true, incomplete: true }
+  return { label, config, task: task.id, n, e2e: true, chars: res.response.length }
+}
+
 async function runTrial(config, task, n, phaseTitle) {
   const label = ROUND + '-' + config + '-' + task.id + '-' + n
   const res = await agent(workerPrompt(config, task), { label: 'trial:' + label, phase: phaseTitle, schema: RESULT_SCHEMA, model: 'opus', effort: 'high' })
@@ -130,7 +161,21 @@ const items = []
 for (const cell of cells) for (let n = 1; n <= perCell; n++) items.push({ ...cell, n })
 log(ROUND + ': ' + items.length + ' trials over ' + cells.length + ' cells' + (ONLY ? ' (dry run)' : ''))
 
-const trials = (await pipeline(items, it => runTrial(it.config, it.task, it.n, 'Trials'))).filter(Boolean)
+const E2E_TRIALS = (args && args.e2eTrials) || 0
+const e2eItems = []
+if (DATA.e2e_tasks && E2E_TRIALS) {
+  for (const c of Object.keys(DATA.e2e_configs)) for (const t of DATA.e2e_tasks) {
+    if (ONLY && !ONLY.includes(c + '-' + t.id)) continue
+    for (let n = 1; n <= (ONLY ? 1 : E2E_TRIALS); n++) e2eItems.push({ config: c, task: t, n })
+  }
+  log('E2E: ' + e2eItems.length + ' tool trials in /tmp/spe-e2e/' + ROUND + '/ (graded after the run by grade_e2e.py)')
+}
+const [trialsRaw, e2eRaw] = await parallel([
+  () => pipeline(items, it => runTrial(it.config, it.task, it.n, 'Trials')),
+  () => pipeline(e2eItems, it => runE2E(it.config, it.task, it.n)),
+])
+const trials = (trialsRaw || []).filter(Boolean)
+const e2e = (e2eRaw || []).filter(Boolean)
 
 // ---- Top-up (barrier: needs every trial of a cell)
 phase('Top-up')
@@ -187,4 +232,4 @@ if (!ONLY) {
     { label: 'synthesis:critic', phase: 'Synthesis', model: 'opus', effort: 'high' })
 }
 
-return { round: ROUND, trials: all.length, split_cells: split, topups: topups.length, summary, analysis, critic, results: all.map(r => ({ label: r.label, pass: r.pass, judge_pass: r.judge_pass, failed: r.failed, incomplete: !!r.incomplete })) }
+return { round: ROUND, trials: all.length, e2e: e2e.map(r => ({ label: r.label, incomplete: !!r.incomplete })), split_cells: split, topups: topups.length, summary, analysis, critic, results: all.map(r => ({ label: r.label, pass: r.pass, judge_pass: r.judge_pass, failed: r.failed, incomplete: !!r.incomplete })) }

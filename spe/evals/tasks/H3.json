@@ -3,7 +3,7 @@
   "name": "Unrelated small request mid-loop (control)",
   "round": "r03",
   "child": null,
-  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \n\nThe round 3 Workflow is running in the background. The user writes:\n\n\"While that runs, fix the typo 'recieve' in README.md (it appears once, in the Setup section).\"\n\nSay what you do, with the exact change. Return only that.",
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \"triage\", a Claude agent that reads incoming support tickets for a SaaS company, assigns a category (billing, bug, how-to, account, outage) and a priority (P1 to P4), and drafts a first reply. The eval set is 40 historical tickets with reference labels from the support lead. Configurations so far: A = Sonnet 5.5 with a 30-line prompt and 6 tools, B = A with a 12-line prompt, C = B with tools merged to 3, D = C on Haiku 5.5.\n\nThe round 3 Workflow is running in the background. The user writes:\n\n\"While that runs, fix the typo 'recieve' in README.md (it appears once, in the Setup section).\"\n\nSay what you do, with the exact change. Return only that.",
   "code": [
     {
       "id": "fix",

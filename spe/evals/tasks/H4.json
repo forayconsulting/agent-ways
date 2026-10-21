@@ -3,7 +3,7 @@
   "name": "Model release",
   "round": "r05",
   "child": "evaluate",
-  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \n\nRound 4 closed and is tagged spe-r04. The current best config C2 runs on Sonnet 5.5, pinned. The user writes:\n\n\"Sonnet 6 just shipped.\"\n\nSay what you do next and write the plan outline for it. Return only that.",
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \"triage\", a Claude agent that reads incoming support tickets for a SaaS company, assigns a category (billing, bug, how-to, account, outage) and a priority (P1 to P4), and drafts a first reply. The eval set is 40 historical tickets with reference labels from the support lead. Configurations so far: A = Sonnet 5.5 with a 30-line prompt and 6 tools, B = A with a 12-line prompt, C = B with tools merged to 3, D = C on Haiku 5.5.\n\nRound 4 closed and is tagged spe-r04. The current best config C2 runs on Sonnet 5.5, pinned. The user writes:\n\n\"Sonnet 6 just shipped.\"\n\nspe/predictions/r04-draft.yaml (left by round 4's learn step):\nstatus: draft\nconfig: C2 on claude-sonnet-5-5 (pinned dated model id)\nbaseline_same_as_last_round: {category_acc: 0.89, priority_acc: 0.81, cost_per_ticket: 0.006, tokens_per_ticket: 9100, seconds_per_ticket: 7.4}\nbands: {category_acc: 0.04, priority_acc: 0.05, cost_per_ticket: 0.001}\n\nSay what you do next and write the plan outline for it. Return only that.",
   "code": [
     {
       "id": "new_model",
@@ -28,7 +28,7 @@
     {
       "id": "same_tasks",
       "desc": "same tasks and graders",
-      "regex": "same (tasks|graders|ticket)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)"
+      "regex": "same (tasks|graders|ticket|set|eval)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)|tasks (and|or) graders"
     }
   ],
   "judge": [
