@@ -1,0 +1,35 @@
+{"want":true,"prompt":"I am putting you into PLAN MODE to run round 2 of the SPE loop"}
+{"want":true,"prompt":"let's use the SPE loop to build the triage agent"}
+{"want":true,"prompt":"Great. I am putting you in PLAN MODE for Round 3 of SPE."}
+{"want":true,"prompt":"respec based on the last eval and start the next round"}
+{"want":true,"prompt":"time to re-spec, the results came in"}
+{"want":true,"prompt":"run this as specify, predict, evaluate"}
+{"want":true,"prompt":"Specify, Predict and Evaluate the new retrieval settings"}
+{"want":true,"prompt":"keep running SPE rounds overnight on your own"}
+{"want":true,"prompt":"what did the SPE round 2 prediction get wrong"}
+{"want":true,"prompt":"update the spe loop artifacts with round 4 results"}
+{"want":true,"prompt":"apply the SPE framework from my practitioners guide to this project"}
+{"want":true,"prompt":"PLAN MODE. SPE round 1: the spec is this prompt, your plan is the prediction"}
+{"want":true,"prompt":"we are respecing after the workflow eval finished"}
+{"want":true,"prompt":"do another SPE pass with harder tasks"}
+{"want":true,"prompt":"close out the SPE round and write the prediction log"}
+{"want":true,"prompt":"start SPE r05 autonomously"}
+{"want":true,"prompt":"is the SPE loop converging? compare the predictions"}
+{"want":true,"prompt":"use the spe loop in this repo to improve the skill"}
+{"want":true,"prompt":"draft the next SPE prediction from the proposals"}
+{"want":true,"prompt":"respec the agent and predict the pass rates"}
+{"want":false,"prompt":"I am putting you into PLAN MODE to add a login page"}
+{"want":false,"prompt":"use a dynamic workflow to audit the repo"}
+{"want":false,"prompt":"run the evals again and compare to baseline"}
+{"want":false,"prompt":"spec this feature out before we build it"}
+{"want":false,"prompt":"write a spec for the new API"}
+{"want":false,"prompt":"predict next quarter's churn from the CRM data"}
+{"want":false,"prompt":"evaluate these three vendors for the client"}
+{"want":false,"prompt":"what's the spending forecast for October"}
+{"want":false,"prompt":"special characters break the CSV export"}
+{"want":false,"prompt":"ultracode: research the competitor landscape"}
+{"want":false,"prompt":"create a respectful reply to the client email"}
+{"want":false,"prompt":"speed up the test suite"}
+{"want":false,"prompt":"plan the sprint and estimate the stories"}
+{"want":false,"prompt":"set up the spec-driven development template"}
+{"want":false,"prompt":"hill climb the prompt against the eval set"}

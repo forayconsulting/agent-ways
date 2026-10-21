@@ -1,0 +1,53 @@
+{
+  "id": "T3",
+  "name": "Write the round's Workflow script",
+  "round": "r04",
+  "child": "evaluate",
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \n\nRound 4 is approved. The approved plan says: configs B (12-line prompt, 6 tools) and C2 (12-line prompt, 3 tools plus a separate check_status tool), 50 tickets, 5 trials per cell, a code grader spe/evals/graders/grade.py that checks label.category and label.priority against spe/evals/tasks/answers.json, an Opus judge for reply tone using spe/evals/graders/judge.md, and a spend cap of $40. Round 3's script is spe/evals/harness/r03-workflow.js. spe/predictions/r04.yaml and spe/plans/r04.md were saved and committed 10 minutes ago.\n\nWrite the Workflow script for this round, plus one short paragraph on the gates you run before launching it. The Workflow script API: it starts with `export const meta = {name, description, phases}` (a pure literal), then uses agent(prompt, {label, phase, schema, model}), parallel(thunks), pipeline(items, ...stages), phase(title), log(msg), and the global args. No filesystem access inside the script. Return the paragraph and the full script.",
+  "code": [
+    {
+      "id": "meta",
+      "desc": "meta literal",
+      "regex": "export\\s+const\\s+meta"
+    },
+    {
+      "id": "phases",
+      "desc": "declares phases",
+      "regex": "phases\\s*:"
+    },
+    {
+      "id": "dryrun",
+      "desc": "args.only style dry run",
+      "regex": "args\\.(only|dry|dryRun|cells|sample)|dry.?run"
+    },
+    {
+      "id": "round_const",
+      "desc": "round held in one constant or arg",
+      "regex": "\\bROUND\\b|args\\.round"
+    },
+    {
+      "id": "schema",
+      "desc": "uses result schemas",
+      "regex": "schema\\s*:"
+    },
+    {
+      "id": "critic",
+      "desc": "synthesis critic or failure analysis",
+      "regex": "critic|completeness|failure.analysis"
+    },
+    {
+      "id": "cap",
+      "desc": "spend cap",
+      "regex": "cap|budget|\\$?40\\b"
+    }
+  ],
+  "judge": [
+    "Trial agents are not given, and are told not to read, grade.py, answers.json, judge.md or the predictions.",
+    "There is a dry-run mode on a few cells that runs before the full run.",
+    "The pre-launch gates include a grader selftest and a regrade of round 3 results as a control.",
+    "A spend cap of $40 is enforced in the script, by checking before costly trials and skipping when it would be crossed, with the skips logged.",
+    "Code checks are the primary grader and the judge handles only what code cannot check (reply tone).",
+    "Cells where only some trials passed get extra trials up to a stated cap.",
+    "The script ends with a synthesis step (failure analysis and/or completeness critic) and holds the round in one constant or argument."
+  ]
+}

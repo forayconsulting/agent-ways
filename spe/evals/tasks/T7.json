@@ -1,0 +1,42 @@
+{
+  "id": "T7",
+  "name": "Plan just approved",
+  "round": "r02",
+  "child": "predict",
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \n\nThe user has just approved your round 2 plan in plan mode (it was at ~/.claude/plans/quiet-river.md). The plan has a Predict table for configs A to D and an Evaluate section that builds graders, tasks and spe/evals/harness/r02-workflow.js, then runs the Workflow. Plan mode has ended and you may now act.\n\nList the first six actions you take, in order, each with the exact file path or command. Return only the list.",
+  "code": [
+    {
+      "id": "plan_copy",
+      "desc": "copies plan to spe/plans/r02.md",
+      "regex": "plans/r0?2\\.md"
+    },
+    {
+      "id": "pred_file",
+      "desc": "writes spe/predictions/r02.yaml",
+      "regex": "predictions/r0?2\\.ya?ml"
+    },
+    {
+      "id": "commit",
+      "desc": "commits",
+      "regex": "\\bcommit"
+    },
+    {
+      "id": "order",
+      "desc": "prediction file is named before the workflow script or run",
+      "regex": null,
+      "order": [
+        "predictions/r0?2\\.ya?ml",
+        "r02-workflow|Workflow (tool|call|run)|run the workflow|dry.?run"
+      ]
+    }
+  ],
+  "judge": [
+    "The first actions save the approved plan to a lasting file in spe/plans/ and write spe/predictions/r02.yaml.",
+    "The plan and prediction are committed before any grader, task or workflow script work starts.",
+    "The prediction file carries round, date, author, the numbers, a Why per number and a same-as-last-round baseline.",
+    "The prediction file is marked as not to be edited after the run.",
+    "A grader selftest gate comes before any trial.",
+    "A small dry run comes before the full Workflow run.",
+    "The actions are concrete: exact paths and commands, in a sensible order."
+  ]
+}

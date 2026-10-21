@@ -1,0 +1,5 @@
+config: B
+name: evaluative/spe tree
+change: the trial gets the root way plus the child that the triggers would fire for that moment
+injected: hooks/ways/evaluative/spe/spe.md plus the task's child (T1 none, T2 specify, T3 evaluate, T4 to T6 learn, T7 predict)
+prediction: spe/predictions/r01.yaml

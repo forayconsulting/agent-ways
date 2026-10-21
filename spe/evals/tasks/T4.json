@@ -1,0 +1,54 @@
+{
+  "id": "T4",
+  "name": "Close out round 2 after the Workflow finished",
+  "round": "r02",
+  "child": "learn",
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \n\nThe round 2 Workflow just finished. You have:\n\nspe/predictions/r02.yaml (saved before the run):\npass_rates: {A: 0.85, B: 0.88, C: 0.90, D: 0.75}\npriority_accuracy: {C: 0.80}\ncost_per_ticket: {D: \"$0.002\"}\nwhy: {B: shorter prompt keeps focus, C: merged tools cut wrong tool choice, D: same design on a smaller model loses about 0.15}\nsame_as_last_round: {A: 0.84, B: 0.84, C: 0.84, D: 0.70}\n\nspe/evals/results/r02/r02.json (just written by the finished Workflow, 5 trials per cell, 40 tickets):\n{\"A\": {\"category_acc\": 0.86, \"priority_acc\": 0.79, \"cost\": 0.011, \"tool_calls\": 4.1},\n \"B\": {\"category_acc\": 0.86, \"priority_acc\": 0.78, \"cost\": 0.009, \"tool_calls\": 4.0},\n \"C\": {\"category_acc\": 0.80, \"priority_acc\": 0.71, \"cost\": 0.007, \"tool_calls\": 2.6},\n \"D\": {\"category_acc\": 0.74, \"priority_acc\": 0.66, \"cost\": 0.004, \"tool_calls\": 3.9},\n \"notes\": [\"C never called check_status on 9 outage tickets (trials r02-C-T17-1..3)\", \"D retried on tickets over 2,000 words, doubling tokens\"]}\n\nDo the close-out for round 2. Write the content of every file you would create or change, each in a fenced block headed by its path, and list the commit you would make. Return only that.",
+  "code": [
+    {
+      "id": "log_cols",
+      "desc": "log table with Predicted and Measured",
+      "regex": "\\|[^\\n]*Predicted[^\\n]*\\|[^\\n]*Measured[^\\n]*\\|"
+    },
+    {
+      "id": "naive",
+      "desc": "naive or same-as-last-round column",
+      "regex": "same.as.last.round|naive"
+    },
+    {
+      "id": "whybroke",
+      "desc": "which Why broke section",
+      "regex": "which[^\\n]{0,4}why[^\\n]{0,4}broke"
+    },
+    {
+      "id": "fentry",
+      "desc": "F-numbered failure entries",
+      "regex": "\\bF\\d+\\b",
+      "min_count": 2
+    },
+    {
+      "id": "draft",
+      "desc": "draft next prediction",
+      "regex": "r0?3-draft|status:\\s*draft"
+    },
+    {
+      "id": "proposed",
+      "desc": "proposals for round 3",
+      "regex": "proposed for round 3|round 3 proposals|propos"
+    },
+    {
+      "id": "tag",
+      "desc": "tags spe-r02",
+      "regex": "spe-r0?2"
+    }
+  ],
+  "judge": [
+    "Every predicted metric is compared with its measured value and marked hit or miss.",
+    "Each comparison also shows the same-as-last-round guess and says which was closer.",
+    "For each miss, the close-out quotes the original Why and says which assumption was wrong (for example, C's merged tools hid check_status).",
+    "New failure types are logged with what happened, how to spot it, where it was seen, and a fix or open status.",
+    "It proposes changes for round 3 tied to round 2 evidence and writes a draft prediction marked as draft.",
+    "It states plainly whether the predictions beat the naive guess overall.",
+    "It does not edit spe/predictions/r02.yaml, and it updates the README and tags the round."
+  ]
+}

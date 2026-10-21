@@ -1,0 +1,54 @@
+{
+  "id": "T1",
+  "name": "Round 1 kickoff in plan mode",
+  "round": "r01",
+  "child": null,
+  "prompt": "You are Claude Code. The user's repository has no spe/ folder yet. The user wants local commits after each step.\n\nProject:  Nothing has been built yet.\n\nThe session is in plan mode. The user writes:\n\n\"I am putting you into PLAN MODE. Let's use the SPE loop to build and evaluate the triage agent. The spec is this prompt: triage tickets correctly and cheaply. Your plan will be the first prediction, and the evals will be the dynamic workflow you run after I approve.\"\n\nWrite the complete plan you would present for approval. Return only the plan in markdown.",
+  "code": [
+    {
+      "id": "spec_table",
+      "desc": "requirement table with a Test column",
+      "regex": "\\|[^\\n]*\\bID\\b[^\\n]*\\|[^\\n]*\\bTest\\b[^\\n]*\\|"
+    },
+    {
+      "id": "pred_file",
+      "desc": "names spe/predictions/r01.yaml",
+      "regex": "predictions/r0?1\\.ya?ml"
+    },
+    {
+      "id": "plan_copy",
+      "desc": "names a lasting plan copy spe/plans/r01.md",
+      "regex": "plans/r0?1\\.md"
+    },
+    {
+      "id": "numbers",
+      "desc": "at least 4 numeric predictions",
+      "regex": "\\b\\d{1,3}(\\.\\d+)?\\s?%|\\b0\\.\\d{2}\\b|\\$\\d",
+      "min_count": 4
+    },
+    {
+      "id": "why",
+      "desc": "gives reasons for predictions",
+      "regex": "\\bwhy\\b"
+    },
+    {
+      "id": "dry_run",
+      "desc": "dry run before the full run",
+      "regex": "dry.?run"
+    },
+    {
+      "id": "commit",
+      "desc": "commits the steps",
+      "regex": "\\bcommit"
+    }
+  ],
+  "judge": [
+    "The plan treats the user's prompt as the spec and turns it into testable requirements, each with a test.",
+    "The plan contains a prediction table where each configuration has specific numbers, not adjectives like faster or better.",
+    "Each predicted number has a stated reason (a Why).",
+    "The plan saves the prediction and a copy of the plan to files and commits them before any eval trial runs.",
+    "The eval is a Workflow with gates before the full run: a grader selftest and a small dry run.",
+    "Each predicted metric is tied to a specific grader or check that will measure it.",
+    "The plan includes a close-out step that compares predictions with results and seeds the next round."
+  ]
+}

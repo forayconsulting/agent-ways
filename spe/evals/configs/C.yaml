@@ -1,0 +1,4 @@
+config: C
+name: slim single file
+change: the trial gets spe/evals/configs/C-slim.md, the tree folded into one file
+prediction: spe/predictions/r01.yaml

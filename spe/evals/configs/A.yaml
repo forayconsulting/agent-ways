@@ -1,0 +1,4 @@
+config: A
+name: baseline, live ways only
+change: none, the trial gets the scenario with no SPE guidance
+prediction: spe/predictions/r01.yaml
