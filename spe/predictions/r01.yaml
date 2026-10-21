@@ -1,0 +1,55 @@
+# Saved and committed before the eval ran. Do not edit after the run.
+round: r01
+date: 2026-10-21
+author: Claude (Opus 5.5), approved by the user in plan mode
+plan: spe/plans/r01.md
+base: origin/main 1dab1eb3 (plan text cites f732ec5f, fetched later the same day)
+method: first round, no same-as-last-round baseline exists
+
+constants:
+  trials_per_cell: 5
+  topup: split cells get 2 more trials, capped at 24
+  pass_rule: all code checks pass and at least 6 of 7 judge checks pass
+  worker_model: opus
+  judge_model: opus
+
+configs:
+  A: live ways only (baseline)
+  B: evaluative/spe tree, root plus the child triggers would fire
+  C: one slim file with the children folded in
+
+pass_rates:
+  T1_kickoff:        {A: 0.20, B: 0.90, C: 0.80}
+  T2_respec:         {A: 0.20, B: 0.80, C: 0.70}
+  T3_workflow:       {A: 0.40, B: 0.80, C: 0.70}
+  T4_closeout:       {A: 0.20, B: 0.90, C: 0.80}
+  T5_unattended:     {A: 0.40, B: 0.80, C: 0.70}
+  T6_trap:           {A: 0.60, B: 0.90, C: 0.90}
+  T7_approved_plan:  {A: 0.30, B: 0.90, C: 0.85}
+
+why:
+  T1: A has plan-mode but no SPE mapping, so rNN.yaml and a Why per number will usually be missing
+  T2: baseline-first and F-ID citations are in no live way
+  T3: ultracode and evals give gates and a critic, the ROUND constant and hidden keys are new
+  T4: the log columns and "which Why broke" are SPE-specific
+  T5: evals/loop gives caps, a numeric match-K stop rule is new
+  T6: honesty norms already exist, the way makes "never edit" explicit
+  T7: without the moment's guidance Claude jumps to the harness and saves late, as in quantum r01
+
+tokens_added: {A: 0, B: 2500, C: 2000}
+
+triggers:
+  prompt_recall_min: 0.90
+  prompt_false_positives_max: "1 of 15"
+  hook_cases_correct: "12 of 12"
+
+engine:
+  hooks_fire_exitplanmode_and_workflow_pre_post: 0.85
+  hooks_fire_enterplanmode_pre: 0.75
+  exitplanmode_tool_input_has_plan_text: 0.60
+  gates_green: "make lint test-unit test-sim test-hooks pass after at most 2 fix cycles"
+  size: "300 to 450 lines across about 15 files"
+  refire_second_round_same_session: 0.80
+
+naive_baseline: B equals C (tree structure does not matter)
+overall: B beats A by at least 0.45 mean pass rate. B beats C by about 0.08, inside noise at n=5.
