@@ -76,3 +76,15 @@ Source: the user's round 1 prompt, [transcripts/2026-10-21-r01.md](transcripts/2
 | Q5 | Widen same_tasks. Give H2 and H4 judges the draft file. Review H5 judge checks 5 and 7 | F14, critic rubric tensions |
 | Q6 | Carry over P7 (real tool trials) and P8 (live tools: lane) | Still deferred |
 | Q7 | Paraphrase variants and a cross-family or human judge check on 20 samples | r01 and r02 critics |
+
+## Proposed for round 4 (not yet agreed)
+
+| ID | Proposed change | Why (round 3 evidence) |
+|---|---|---|
+| S1 | Shorten the root so it fits the hook budget beside other ways. Move detail into the children | F18 |
+| S2 | Make order_list the default for order checks, and widen same_tasks | F17, F19 |
+| S3 | Ceiling rule: log the saturation as a task-design failure type | F20 |
+| S4 | Pinning rule names the metrics: accuracy, cost, tokens, and time per task | F19 |
+| S5 | Keep E2E as a standing regression suite, and add an E2E for the ceiling moment | r03 E2E caught D's ceremony that text could not separate from action |
+| S6 | Verify the tools: lane live once the engine reaches the live install (P8) | Still deferred |
+| S7 | Rerun the trigger cases against an isolated corpus that includes the tree under test | The project-copy trigger test cannot clear the semantic floor |

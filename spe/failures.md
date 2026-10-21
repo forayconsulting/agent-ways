@@ -97,3 +97,43 @@ One entry per new failure type, numbered across rounds.
 - **How to spot it:** `code:same_tasks` fails and judge check 5 passes.
 - **Seen in:** r02-C2-H4-2, r02-C2-H4-3, D-H4 (2 trials).
 - **Fix:** a disclosed variant in `grade.py --variant same_tasks`. Round 3 should widen the check.
+
+## F15. Task prompts left out the project text (harness, r01 to r02)
+
+- **What:** make_tasks.py read line 2 of fixtures.md, a one-line file. So every T and H prompt in rounds 1 and 2 said "Project:" with nothing after it.
+- **How to spot it:** a scenario that names configs or tickets without defining them, or prompts shorter than expected.
+- **Seen in:** every r01 and r02 trial. Found in r03 when the paraphrase builder exploded the prompt size to 100 KB.
+- **Fix:** read the text after the label's colon, and assert it is not empty. Fixed in r03.
+
+## F16. The semantic lane was off on this machine (environment, r01 to r03)
+
+- **What:** `ways corpus` dropped all 134 calibration probes, because the 12 shipped ways they target had user shadow stubs from 2026-10-01. Without calibration, only `pattern:`, `files:`, and `commands:` fired.
+- **How to spot it:** `ways status` shows "Calibration: MISSING", and `ways corpus --verbose` shows "134/134 probes reference a way not in the corpus".
+- **Seen in:** the whole session until 22:04Z.
+- **Fix:** the 12 stubs moved to ways-backup-2026-10-21/probe-stubs. The domains stay disabled. Calibration EN AUC 0.932. Rounds 1 and 2 ran on the keyword-only lane. Round 3 ran on the semantic lane.
+
+## F17. Order checks read summary sentences (grader, r03)
+
+- **What:** the T7, H2, and H2p order checks search the whole reply. A summary sentence ("then launch the eval") before the numbered steps fails them.
+- **How to spot it:** `code:order` fails while judge checks 1 and 4 pass.
+- **Seen in:** r03-E-H2-2, -3, -6, -8, and a few D trials.
+- **Fix:** a disclosed variant in `grade.py --variant order_list`. Round 4 should make that the default.
+
+## F18. The hook context cap holds back the SPE root (environment, r03)
+
+- **What:** with the semantic lane on, more ways fire per prompt. The SPE root (5.4 KB for D, 6.1 KB for E) sometimes does not fit in the 10,000-character hook budget.
+- **How to spot it:** `way_suppressed` with `reason: context_cap` for evaluative/spe in the events log.
+- **Seen in:** the live trigger check, 2 of 20 SPE prompts.
+- **Fix:** open. Shorten the root, or move detail into the children.
+
+## F19. Model-release checks miss equivalent wording (grader and task design, r03)
+
+- **What:** `same_tasks` misses "the same 60 invoices", and H4 and H4p judge check 7 requires tokens to be named.
+- **Seen in:** D-H4p 8 of 8 and E-H4p 5 of 8 failed `same_tasks`. Judge check 7 failed 14 times on H4p.
+- **Fix:** open. Widen the check, and add tokens and time to the pinning rule's metric list.
+
+## F20. A saturated round with no bug gets no failures entry (guidance, r03)
+
+- **What:** under E's ceiling rule, trials closed the round but often wrote no failures.md entry, since nothing broke.
+- **Seen in:** E-H5p 3 of 8 failed judge check 5.
+- **Fix:** open. The ceiling rule should log the saturation itself as a task-design failure type.

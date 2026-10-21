@@ -1,0 +1,12 @@
+status: draft
+round: r04
+date: 2026-10-21
+author: Claude (Opus 5.5), draft for the user's next plan mode round
+baseline_same_as_last_round:   # r03 E measured, pre-registered checks
+  text_mean: 0.86
+  E: {T1: 1.00, T2: 1.00, T3: 1.00, T4: 1.00, T5: 1.00, T6: 1.00, T7: 1.00, H1: 1.00, H2: 0.38, H3: 1.00, H4: 0.75, H5: 0.75, H1p: 1.00, H2p: 0.75, H3p: 1.00, H4p: 0.38, H5p: 0.62}
+  e2e: {E1: 1.00, E2: 1.00}
+lesson_from_r03: 27 of 40 hits, and the predictions beat the naive guess for the first time (3 to 2). Misses came from checks reading summary sentences and from underestimating how well a direct rule works (H3 1.00 against 0.70).
+open_choices:
+  - Whether a shorter root (S1) is a new config F against E as the anchor
+  - Whether to retire D now that E leads on every target task

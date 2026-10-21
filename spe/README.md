@@ -9,9 +9,9 @@ This folder stays out of any upstream PR.
 | Step | File | Status |
 |---|---|---|
 | Specify | [spec/spec.md](spec/spec.md), [spec/disagreements.md](spec/disagreements.md), raw record in [spec/transcripts/](spec/transcripts/) | r01 written 2026-10-21 |
-| Predict | [predictions/](predictions/), approved plans in [plans/](plans/) | r01 and r02 saved before their runs. r03 draft |
-| Evaluate | [evals/](evals/), results in [evals/results/](evals/results/) | r01: 117 trials. Mean pass C 0.92, B 0.65, A 0.02 (regraded C 0.96, B 0.83, A 0.14). r02: 384 trials. Mean pass D 0.77, C2 0.71, C 0.50, A 0.15 |
-| Learn | [prediction-log.md](prediction-log.md), [failures.md](failures.md) | r01 and r02 written. Proposals for r03 at the end of spec.md |
+| Predict | [predictions/](predictions/), approved plans in [plans/](plans/) | r01 to r03 saved before their runs. r04 draft |
+| Evaluate | [evals/](evals/), results in [evals/results/](evals/results/) | r01: 117 trials. Mean pass C 0.92, B 0.65, A 0.02 (regraded C 0.96, B 0.83, A 0.14). r02: 384 trials. Mean pass D 0.77, C2 0.71, C 0.50, A 0.15. r03: 308 trials. Text E 0.86, D 0.64. Real tools E 6/6 and 6/6 |
+| Learn | [prediction-log.md](prediction-log.md), [failures.md](failures.md) | r01 to r03 written. Proposals for r04 at the end of spec.md |
 
 ## How a round runs in Claude Code
 
@@ -59,6 +59,20 @@ Then run the Workflow tool with `scriptPath: spe/evals/harness/r02-workflow.js` 
 ## Round 2 in one paragraph
 
 Four configs ran 12 tasks with 8 trials each: A had no guidance, C was the round 1 slim file, C2 added a bands rule, and D was the C2 text as a root way plus revised children. Every trial opened with a fixed notice, which stopped the harness from leaking the session's own message into trials (F10) and gave every config the same live ways. D led at 0.77, then C2 at 0.71, C at 0.50, and A at 0.15. The bands rule and the revised children worked. Every guided config failed the control task by reciting SPE rules on a typo fix (F11), and no config handled a saturated round well (F12). Predictions hit 28 of 48 cells, up from 2 of 21, but the naive guess still edged them on the round 1 tasks.
+
+## How to rerun round 3
+
+```bash
+python3 -I spe/evals/graders/grade.py --selftest
+python3 -I spe/evals/graders/grade_e2e.py --selftest
+python3 -I spe/evals/harness/build_workflow.py r03
+```
+
+Then run the Workflow tool with `scriptPath: spe/evals/harness/r03-workflow.js` and `args: {"round": "r03", "trials": 8, "e2eTrials": 6, "topupCap": 0}`. Move the personal `evaluative/spe` ways aside during the run, so the live root does not fire into the E2E trials. After the run, run `extract.py`, then `grade.py` (add `--variant order_list` for the disclosed regrade), then `grade_e2e.py`.
+
+## Round 3 in one paragraph
+
+Config E added four rules to D: a scope rule, a ceiling and handback rule, a gate line in the root, and pinning for new models. Round 3 ran 17 text tasks (including 5 paraphrases) with 8 trials each, plus real tool trials in sandbox git repos. The semantic lane was turned on before the run, after the session found that shadow stubs had starved its calibration (F16). Building the round also uncovered that the task prompts had left out the project text since round 1 (F15). E led D at 0.86 against 0.64. It fixed the control tasks, the saturated round, and the after-approval step. In real tool trials, both configs saved and committed the prediction first, and only E kept SPE talk out of a typo fix. Predictions hit 27 of 40 cells and beat the naive guess for the first time. E is installed as the personal SPE tree.
 
 ## Rules for this folder
 
