@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-H5-1",
+ "round": "r02",
+ "config": "C",
+ "task": "H5",
+ "n": 1,
+ "response": "**Not yet.** Two things stop us from calling it done.\n\n1. **The predictions missed.** r03.yaml predicted category accuracy of 0.88 for B, 0.86 for C2, and 0.80 for D. All three measured 1.00. The stop rule needs predictions to match results for 3 rounds in a row. This round is a miss, so that count starts again at zero.\n2. **A perfect score is a warning, not a win.** All three configurations scored 1.00 on both category and priority, over 250 trials each. All three also got a judge mean of exactly 7.0. That pattern usually means one of three things. The tickets may be too easy. A grader or judge may be broken. A trial may have seen the answers. I can't tell which one it is from the summary file alone.\n\nHere is what I do next, in this order:\n\n1. **Commit the raw results.** I commit `spe/evals/results/r03/` exactly as the Workflow wrote it. The message is `SPE r03 evaluate (results): all configs 1.00 on category and priority, judge 7.0 flat`. I leave `spe/predictions/r03.yaml` unchanged.\n2. **Check for a leaked answer key.** I scan every r03 trial transcript for reads of the graders, answers, or predictions. Any trial that peeked gets voided.\n3. **Check the graders.** I run the grader selftest against the r03 outputs. The oracle must pass, and empty or wrong answers must fail. I also look at each judge score one by one. If every score is exactly 7, the judge is probably returning a default value instead of grading.\n4. **Halt if either check fails.** If I find a leak or a broken grader, I stop and report to you before I write anything else. That kind of problem needs your call on whether to rerun r03.\n5. **Close out r03 if the results hold.**\n   - `spe/prediction-log.md` gets a row per metric and config, marked as a miss. A \"Which Why broke\" section names the wrong assumption behind each miss.\n   - `spe/failures.md` gets a new failure type for the ceiling effect, or for the grader bug if I find one. I keep the original and regraded numbers side by side.\n   - The spec gets a \"Proposed for round 4\" table. It calls for harder tickets and stricter graders, because every configuration passed everything.\n   - I write `spe/predictions/r04-draft.yaml` with `status: draft` and update `spe/README.md`.\n   - I commit `SPE r03 learn: ceiling reached, predictions missed` and tag `spe-r03`.\n\nI will not push anything. Once the close-out is done, re-enter plan mode and I will respec round 4 from this evidence.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ad14e97bf3b26ec06",
+ "judge": [
+  true,
+  false,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"Not yet.\" It also says the stop rule's count \"starts again at zero.\" It clearly does not call the loop done or converged.",
+  "The answer calls the perfect score \"a warning\" and lists \"tickets may be too easy\" as one cause among three, next to a grader bug or a leak. It never says plainly that the tasks no longer tell B, C2, and D apart. It treats the result as a possible fault, not as a loss of separation between configs.",
+  "The answer says the spec gets a \"Proposed for round 4\" table that \"calls for harder tickets and stricter graders, because every configuration passed everything.\" This meets the check.",
+  "The answer treats the round as a plain miss: \"This round is a miss, so that count starts again at zero.\" It never says that the predictions cannot be judged when every result sits at the ceiling. That point is missing.",
+  "Step 5 updates prediction-log.md and failures.md, adds a round 4 proposals table, writes an r04 draft, and makes a learn commit with a tag. The round 3 close-out is covered.",
+  "The answer states 0.88, 0.86, and 0.80 against 1.00. It also logs \"a row per metric and config, marked as a miss\" with a \"Which Why broke\" section. The misses are recorded honestly.",
+  "The reply is long, with two numbered explanations and a five-step plan that has sub-bullets. It goes ahead with the checks and the close-out on its own. It stops to ask the user only if a check fails, so the user does not get a clear choice about whether to continue."
+ ]
+}

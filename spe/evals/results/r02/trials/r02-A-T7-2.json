@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-T7-2",
+ "round": "r02",
+ "config": "A",
+ "task": "T7",
+ "n": 2,
+ "response": "1. Copy the approved plan into the repo so it is versioned: `cp ~/.claude/plans/quiet-river.md spe/plans/r02-plan.md`\n2. Write the round 2 Predict table for configs A to D into `spe/predictions/r02.md`. Copy it word for word from the plan, with each config's predicted outcome and confidence.\n3. Append a round 2 entry for configs A to D to `spe/prediction-log.md`. Each entry links to `spe/predictions/r02.md` and has a blank result column.\n4. Commit the Predict step locally before any eval code exists, so the predictions are locked: `git add spe/plans/r02-plan.md spe/predictions/r02.md spe/prediction-log.md && git commit -m \"spe(r02): predict step, plan and predictions for configs A-D\"` (no push and no Claude attribution).\n5. Write the graders and tasks from the plan's Evaluate section. The plan did not name these paths, so I chose `spe/evals/graders/r02-graders.js` and `spe/evals/tasks/r02-tasks.json`, following the existing `spe/evals/` layout.\n6. Write the Workflow harness at `spe/evals/harness/r02-workflow.js`. It loads the r02 tasks, runs configs A to D, applies the r02 graders, and writes results to `spe/evals/results/r02/`. I commit the Evaluate build after this step and before I run the Workflow.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a800e50e0aa2f285a",
+ "judge": [
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "Action 1 saves the plan to spe/plans/r02-plan.md, which is good. Action 2 writes spe/predictions/r02.md, not spe/predictions/r02.yaml as the check requires.",
+  "Action 4 commits the plan, the predictions, and the log \"before any eval code exists.\" Grader, task, and workflow work starts after that in actions 5 and 6.",
+  "Action 2 lists only \"each config's predicted outcome and confidence.\" It does not mention round, date, author, a Why for each number, or a same-as-last-round baseline.",
+  "The answer says the commit makes the predictions \"locked.\" It never says the file itself is marked as not to be edited after the run.",
+  "No action runs a grader selftest. Action 5 only writes the graders, and action 6 goes straight to the harness.",
+  "No small dry run appears in the list. Action 6 builds the harness for all configs A to D and plans a commit before \"I run the Workflow,\" with no dry run step.",
+  "Most actions give exact paths and commands in a sensible order, including a full git commit command. The prediction file uses the wrong extension, and the answer leaves out the selftest and dry run, so the order is not complete."
+ ]
+}

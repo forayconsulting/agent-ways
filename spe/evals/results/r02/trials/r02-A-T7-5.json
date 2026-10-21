@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-T7-5",
+ "round": "r02",
+ "config": "A",
+ "task": "T7",
+ "n": 5,
+ "response": "I chose the file names for the round 2 plan, predictions, graders and tasks because the plan text was not given to me.\n\n1. `cp ~/.claude/plans/quiet-river.md spe/plans/r02-plan.md` copies the approved plan into the repo so the round has a record of it.\n2. Write `spe/predictions/r02-predictions.md`. It holds the Predict table for configs A to D, copied word for word from the plan, with the expected result and confidence for each config.\n3. Append a round 2 entry to `spe/prediction-log.md`. The entry links to `spe/predictions/r02-predictions.md` and leaves the \"actual\" column empty for now.\n4. `git add spe/plans/r02-plan.md spe/predictions/r02-predictions.md spe/prediction-log.md && git commit -m \"spe(r02): lock plan and predictions for configs A-D\"` makes a local commit for the Predict step. It stages only these paths and leaves the other uncommitted work alone. I do not push.\n5. Write the graders at `spe/evals/graders/r02-graders.js` and the tasks at `spe/evals/tasks/r02-tasks.jsonl`, as the plan's Evaluate section describes.\n6. Write `spe/evals/harness/r02-workflow.js`. It loads `spe/evals/tasks/r02-tasks.jsonl`, runs configs A to D, and scores each run with `spe/evals/graders/r02-graders.js`. After this I make a local commit of the eval build, and then I run the Workflow.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a98d77a60244be4a1",
+ "judge": [
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 saves the plan to spe/plans/r02-plan.md, which is a lasting file. Action 2 writes spe/predictions/r02-predictions.md, not spe/predictions/r02.yaml. The file name and format do not match the check.",
+  "Action 4 commits the plan, the predictions and the prediction log. Graders, tasks and the workflow script only start in actions 5 and 6, so the order is right.",
+  "Action 2 lists only \"the expected result and confidence for each config\". It does not mention round, date, author, a Why for each number, or a same-as-last-round baseline.",
+  "The answer never says the prediction file must stay unedited after the run. Leaving the \"actual\" column empty in the log is not the same thing.",
+  "No action runs a grader selftest. Action 6 goes from writing the harness straight to a commit and then the Workflow.",
+  "The answer has no small dry run. Action 6 ends with \"then I run the Workflow\" and nothing in between.",
+  "Each action gives an exact path or command, and the git commit stages only the named paths. The order is sensible, but action 6 crams the harness, a commit and the run into one step and gives no command for the commit or the run."
+ ]
+}

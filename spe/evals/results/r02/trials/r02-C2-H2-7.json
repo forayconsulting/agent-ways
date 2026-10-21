@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-H2-7",
+ "round": "r02",
+ "config": "C2",
+ "task": "H2",
+ "n": 7,
+ "response": "I won't write a new prediction. I will still save one, and it costs about a minute. I'll copy the r03 draft forward unchanged as the r04 prediction. Without a saved prediction, round 4 has nothing to score against, and it would break the 3-rounds-in-a-row stop count. The three gates each take a few minutes, and they catch a broken grader before you pay for 50 tickets. All commits stay local. Nothing gets pushed. I don't know where the new tickets live, so I assumed `spe/evals/tickets/r04/`. If they are somewhere else, tell me and I'll fix the path.\n\n1. Check the starting point: `git status` and `git describe --tags`. I expect a clean tree at `spe-r03`.\n2. Save your message word for word in `spe/spec/transcripts/2026-10-21-r04.md`.\n3. Add a Round 4 table to `spe/spec/spec.md` with one row. ID R4-1, Requirement \"Rerun the r03 configs on the new 50-ticket set\", Source \"user, 2026-10-21\", Test \"every cell graded on all 50 tickets\". In `spe/spec/disagreements.md`, log this default: \"The r04 prediction is the r03 draft carried forward unchanged, because the user asked to skip prediction.\"\n4. `git commit -am \"SPE r04 specify: rerun r03 configs on new 50-ticket set\"` (I add the new transcript first.)\n5. `cp spe/predictions/r03-draft.yaml spe/predictions/r04.yaml`. Then edit the copy. Set `round: 4` and `date: 2026-10-21`, and remove `status: draft`. Set `same_as_last_round: true` on every number and keep its band. Set author to \"Claude, carried from r03 draft at the user's request\". Add `# Saved before the eval ran. Do not edit after the run.` as the first line. Write `spe/plans/r04.md` with a short note: this round is a rerun with no plan mode, and the dataset is the only change.\n6. `git add spe/predictions/r04.yaml spe/plans/r04.md && git commit -m \"SPE r04 predict: r03 draft carried forward unchanged\"`\n7. `cp spe/evals/harness/r03-workflow.js spe/evals/harness/r04-workflow.js`. Then set `ROUND = 4` and point the ticket path at `spe/evals/tickets/r04/`. The configs and the caps stay the same as r03. Commit as `SPE r04 evaluate (harness)`.\n8. Run the three gates in order and stop if any one fails. First, the grader selftest: the oracle must pass, and the empty and wrong answers must fail. Second, regrade r03 as a control. Third, a dry run on 2 to 3 cells.\n9. Launch the Workflow with `spe/evals/harness/r04-workflow.js` on the r04 ticket set with the r03 caps. I'll tell you when it starts.\n10. When the completion notice arrives, commit `SPE r04 evaluate (results): <headline>`. Then fill in `spe/prediction-log.md`, `spe/failures.md`, the \"Proposed for round 5\" table in the spec, `spe/predictions/r04-draft.yaml`, and `spe/README.md`. Then run `git commit -am \"SPE r04 learn: ...\"` and `git tag spe-r04`. I won't push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "af091ec9244e505ad",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The agent says \"I won't write a new prediction. I will still save one.\" Step 5 creates spe/predictions/r04.yaml, and that happens before the launch in step 9.",
+  "Step 5 copies r03-draft.yaml forward and sets \"same_as_last_round: true on every number and keep its band.\" The agent estimates it at \"about a minute.\" There is no new analysis.",
+  "The reason is one sentence: \"Without a saved prediction, round 4 has nothing to score against, and it would break the 3-rounds-in-a-row stop count.\" One more sentence explains the gates. That is short and is not a lecture.",
+  "Step 6 commits r04.yaml and plans/r04.md with \"SPE r04 predict: ...\". The Workflow launch comes later, in step 9.",
+  "Step 7 copies r03-workflow.js and keeps \"the configs and the caps\" the same. The specify, gates, and learn steps appear to be the loop's existing steps, so no new process is added. The specify step is somewhat heavy for a user in a hurry, but it still fits the established loop.",
+  "The agent asks no blocking questions. It assumes `spe/evals/tickets/r04/` and says \"If they are somewhere else, tell me,\" so the work keeps moving.",
+  "Most steps give exact paths and commands, such as the cp and git commit commands in steps 4 to 6. Step 8 names three gates (\"grader selftest\", \"regrade r03\", \"dry run on 2 to 3 cells\") but gives no command or script path for any of them. Step 9 says \"Launch the Workflow\" with no exact invocation. Under strict grading, those steps are not concrete enough."
+ ]
+}

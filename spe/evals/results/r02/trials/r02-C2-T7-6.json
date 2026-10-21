@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-T7-6",
+ "round": "r02",
+ "config": "C2",
+ "task": "T7",
+ "n": 6,
+ "response": "1. Write `spe/spec/transcripts/2026-10-21-r02.md`. It holds the user's round 2 plan mode prompt and planning answers, copied verbatim. Plan mode blocked this write earlier, so the specify step goes first and gets its own commit before the predict commit.\n\n2. Edit `spe/spec/spec.md` and `spe/spec/disagreements.md`. In spec.md, append the round 2 requirement table with the columns ID, Requirement, Source, and Test. Each Source is the user's words, a decision, or a failure ID such as \"r01 F3\". Each round 1 proposal is adopted or rejected with a reason. In disagreements.md, log open decisions with an owner, and log defaults.\n\n3. Commit the specify step:\n`git add spe/spec/transcripts/2026-10-21-r02.md spe/spec/spec.md spe/spec/disagreements.md && git commit -m \"SPE r02 specify: round 2 requirements from r01 failures and proposals\"`\n\n4. Copy the approved plan:\n`cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n\n5. Write `spe/predictions/r02.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` The file sets `round: 2`, `date: 2026-10-21`, and `author: \"Claude, approved by the user in plan mode\"`. It lists configs A, B, C, and D. Each metric and config pair gets a number with a band (for example 0.85 \u00b1 0.05), a one-line Why, the name of its grader check, and `same_as_last_round`. All values are copied from the plan's Predict table.\n\n6. Commit the predict step before any grader, task, or harness work:\n`git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D with bands, saved before eval\"`",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a02b0805f3ea9917e",
+ "judge": [
+  false,
+  true,
+  true,
+  true,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "The answer does not start with the plan or the prediction. Actions 1 to 3 are a specify step (a transcript, spec.md and disagreements.md, then a commit). The plan copy (`cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`) comes at action 4, and `spe/predictions/r02.yaml` comes at action 5. They are not the first actions.",
+  "Action 6 commits `spe/plans/r02.md` and `spe/predictions/r02.yaml` \"before any grader, task, or harness work\". No grader, task or workflow work appears before that commit.",
+  "Action 5 sets `round: 2`, `date: 2026-10-21` and an `author` line. Each pair gets a number with a band, \"a one-line Why\" and `same_as_last_round`. All required fields are present.",
+  "Action 5 makes the first line of the file `# Saved before the eval ran. Do not edit after the run.` That line clearly marks the file as not to be edited.",
+  "None of the six actions mentions a grader selftest. The list ends at the predict commit, so it never sets up a selftest gate before trials.",
+  "None of the six actions mentions a small dry run before the full Workflow run. The list stops before any eval execution.",
+  "Each action gives an exact path or a full git or cp command. The order (specify, commit, plan, predict, commit) is sensible."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H1-6",
+ "round": "r02",
+ "config": "A",
+ "task": "H1",
+ "n": 6,
+ "response": "# Plan: SPE round 3, step 1 (agree the round 3 spec)\n\n\"Next one\" means the next SPE step. Round 2 is measured, logged, and has its failures written down. The next step is to turn the proposed round 3 changes into an agreed spec. I assume the spec file is `spe/spec/spec.md`. This step touches the spec and the round 2 records only. Predictions come in the step after this one.\n\n## What round 2 tells us\n\n- The naive guess (\"same as last round\") was closer than our prediction in 4 of 5 rows. Only A's category row was a hit, and it tied with naive.\n- C got worse on both metrics. Category went from 0.84 to 0.80. Priority went from 0.78 to 0.71. F4 explains the priority drop. C hid the outage status check inside the merged tool, so outage tickets got P3.\n- One comparison in the log is not fair. F5 fixed the grader, and round 2 was regraded. The priority baseline of 0.78 came from round 1, and round 1 was graded with the old grader that read priority from the draft reply. So the round 2 priority row compares new grading against old grading.\n\n## Decisions I need from you\n\n| ID | My recommendation | Reason |\n|---|---|---|\n| P1 | Accept. | It is the direct fix for F4. Round 3 checks it on T17 and on every outage ticket. |\n| P2 | Accept, with two changes. | 0.86 is not a ceiling, so I will reword the Why. The real gap is that the set has no mixed billing and outage tickets. I will also score the 10 new tickets apart from the old set. If I mix them, the round 2 numbers stop being a valid baseline. |\n| P3 | Accept. Drop D. | D's cost rose from $0.003 to $0.004, and F6 has no fix. I will mark F6 as \"closed, config dropped, not fixed\" so nobody reads it as solved. If D's cost target still matters to you, say so and I will keep D and leave F6 open. |\n| P4 | Accept. | B's miss was 0.02, and that is inside noise at n=3. Five trials per cell costs about 5/3 of round 2's runs. Dropping D takes back some of that cost. |\n\nIf you reply \"ok\" with no edits, I will apply these four recommendations as written.\n\n## Changes in this step\n\n1. **`spe/spec/spec.md`**\n   - Rename \"Proposed for round 3 (not yet agreed)\" to \"Agreed for round 3\".\n   - Record the decision for each of P1 to P4 in a new Decision column.\n   - Rewrite P2's Why as \"no mixed billing and outage tickets in the set\".\n   - Add a scoring rule: report each metric twice, once on the old set and once on the 10 new tickets. Compare only the old-set score against the naive baseline.\n   - Add C's broken Why to the record. Round 2 C said \"merged tools cut wrong tool choice\". It failed because the merge hid the outage lookup.\n\n2. **Regrade round 1 priority with the fixed `grade.py`.** This only works if the round 1 raw outputs are still in `spe/evals/`.\n   - If they are there, I will update the 0.78 in the round 2 priority row of `spe/prediction-log.md`. I will also recheck that row's Verdict and Closer columns.\n   - If they are gone, I will add one line under the round 2 table. It will say the priority baseline came from the old grader and that the comparison is not fair.\n\n3. **`spe/failures.md`**\n   - F6: set Fix to \"closed, config D dropped in r03, not fixed\".\n   - F4: set Fix to \"r03 P1 (split status check out of merged tool)\".\n\n4. **Local commit.** The message is `spe: agree round 3 spec (P1-P4), regrade r01 priority`. It has no co-author line. I will not push.\n\n## Out of scope for this step\n\n- `spe/predictions/r03-draft.yaml` stays as it is. Its baseline needs fixes. D's 0.74 must go. Priority and cost baselines are missing. All baselines must be old-set only. Those fixes belong to the predictions step.\n- I will not run any evals.\n\n## Checks before I commit\n\n- `spec.md` contains \"Agreed for round 3\" and no longer contains \"not yet agreed\".\n- The round 2 priority row in `spe/prediction-log.md` has either a regraded baseline or the note about the old grader.\n- `git status` shows only `spe/spec/spec.md`, `spe/prediction-log.md`, and `spe/failures.md` as changed.\n- After the commit, `git log -1` shows the new commit, and `git status` is clean for `spe/`.\n\n## Next step after this one\n\nWrite the round 3 predictions in `spe/predictions/r03-draft.yaml`. That means fixing the baselines, removing D, and giving C a new Why for the split tool. Each prediction will also say how far it moves from the naive number and why, because naive won 4 of 5 rows in round 2. That step gets its own commit.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a897608fde8d09a68",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "The answer reads \"ok, next one\" as the next SPE step and titles itself \"SPE round 3, step 1 (agree the round 3 spec)\". Nobody told it the phase.",
+  "The \"Decisions I need from you\" table gives each of P1 to P4 a recommendation with a reason. P1 fixes F4. P2 is accepted with a reworded Why and separate scoring. P3 drops D because cost rose and F6 has no fix. P4 is accepted because B's 0.02 miss is inside noise at n=3.",
+  "P1 cites F4. P3 cites F6, and F6 gets the fix text \"closed, config D dropped in r03, not fixed\". F5 motivates the round 1 priority regrade and the note about the old grader. Each change ties back to its failure ID.",
+  "The plan holds back the prediction on purpose: \"Predictions come in the step after this one.\" It gives no predicted numbers and no bands starting from round 2's measured values.",
+  "No predicted numbers appear, so no number has a Why. The plan only promises that the next step will give C a new Why and explain each move away from naive.",
+  "The plan leaves the prediction file out of scope. It refers to r03-draft.yaml, not r03.yaml. It never saves or commits a round 3 prediction in this plan.",
+  "The plan says \"I will not run any evals\". It has no eval plan with a selftest, a control regrade, or a dry run before the full run. Its regrade of round 1 priority fixes a baseline and is not a pre-run gate."
+ ]
+}

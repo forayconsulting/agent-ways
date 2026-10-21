@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-T7-8",
+ "round": "r02",
+ "config": "C2",
+ "task": "T7",
+ "n": 8,
+ "response": "I assumed the graders and tasks live in `spe/evals/graders/` and `spe/evals/tasks/r02/`, because the situation does not name those paths.\n\n1. Copy the approved plan into the repo: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` The file then holds `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, and configs A to D. Each number from the Predict table gets its band (for example `0.85 \u00b1 0.05`), its one-line Why, its grader check, and `same_as_last_round`.\n3. Commit the prediction before any harness work: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D with bands, saved before eval\"`\n4. Record the spec and commit it. Write the user's prompt and planning answers verbatim to `spe/spec/transcripts/2026-10-21-r02.md`. Add the round 2 requirement table to `spe/spec/spec.md`, with a reason for adopting or rejecting each r01 proposal. Log any defaults in `spe/spec/disagreements.md`. Then run `git add spe/spec && git commit -m \"SPE r02 specify: round 2 requirements from r01 evidence\"`\n5. Build the graders and tasks from the plan's Evaluate section in `spe/evals/graders/` and `spe/evals/tasks/r02/`. Code checks come first, and judges cover only what code cannot check.\n6. Run the first gate, the grader selftest: `node spe/evals/graders/selftest.js`. The oracle must pass, and the empty and wrong answers must fail. If the selftest fails, I stop and fix the grader before I write `spe/evals/harness/r02-workflow.js`.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a16cc2b62a7e25dda",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "critiques": [
+  "Action 1 runs `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml`. Both come first, as the check asks.",
+  "Action 3 commits `spe/plans/r02.md` and `spe/predictions/r02.yaml`. Grader and task work starts in action 5, and the workflow script comes after action 6.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21`, an author, and a band for each config. Each number also gets 'its one-line Why' and `same_as_last_round`.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.` This marks the file as not to be edited after the run.",
+  "Action 6 runs `node spe/evals/graders/selftest.js`. It checks that the oracle passes and that the empty and wrong answers fail. It also says the agent stops on failure. No trial runs before this step.",
+  "None of the six actions mentions a small dry run before the full Workflow run. The list ends at the selftest, and it does not plan a dry run as the next gate.",
+  "Most steps name exact commands. Action 5 is vague. It says only 'Build the graders and tasks' in two directories that the agent guessed, and it names no files. Action 4 records the spec after the prediction is committed, which reverses the normal Specify-then-Predict order."
+ ]
+}

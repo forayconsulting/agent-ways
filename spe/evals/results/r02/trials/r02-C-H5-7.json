@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-H5-7",
+ "round": "r02",
+ "config": "C",
+ "task": "H5",
+ "n": 7,
+ "response": "No, we are not done. The scores look good, but they do not meet the stop rule, and they look suspicious.\n\nThe loop stops when predictions match results for 3 rounds in a row. Round 3 missed on every config. We predicted category accuracy of 0.88 for B, 0.86 for C2, and 0.80 for D. All three measured 1.00. All three configs also scored exactly 1.00 on priority and exactly 7.0 on judge mean. When every config gets a perfect score, the scores cannot tell the configs apart. Identical numbers like these often come from a broken grader or a leaked answer key, not from a real result.\n\nHere is what I do next, in this order:\n\n1. I commit the raw results as they are, as `SPE r03 evaluate (results): all configs 1.00, under review`. I do not touch `spe/predictions/r03.yaml`.\n2. I check whether the 1.00 scores are real.\n   - I scan the r03 trial transcripts for any read of graders, answers, or predictions. I void any trial that peeked.\n   - I rerun the grader selftest. The oracle should pass, and empty and wrong answers should fail.\n   - I check whether the judge returns 7.0 no matter what it gets. I feed it a wrong answer and a perfect answer and compare the scores.\n   - I spot-check about 5 tickets by hand against the answer key.\n3. If I find a leak or a broken grader, I stop and report it to you before I do anything else. A leak or a broken grader is a halt condition.\n4. If the scores hold up, I close out round 3.\n   - `spe/prediction-log.md` gets one row per metric and config. Under it I quote each Why that missed and name the wrong assumption. The naive guess was \"same as last round\". I will say plainly if that guess beat our predictions.\n   - `spe/failures.md` gets a new entry for the ceiling effect. That entry says the task set is too easy to tell the configs apart.\n   - The spec gets a \"Proposed for round 4\" table. It proposes harder tickets, such as ambiguous categories and edge-case priorities. It also proposes a stricter judge rubric, so the judge scores spread out instead of all landing on 7.0.\n   - I write `spe/predictions/r04-draft.yaml` with `status: draft`, and I update `spe/README.md`.\n   - I commit `SPE r03 learn: ceiling hit, round 4 needs harder tasks` and tag `spe-r03`.\n\nAll commits stay local. I will not push anything. Round 4 starts when you re-enter plan mode and approve the new spec.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a95b2613bcb64753d",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"No, we are not done\" and says the results \"do not meet the stop rule.\"",
+  "It says \"When every config gets a perfect score, the scores cannot tell the configs apart.\" Its failures entry also says \"the task set is too easy to tell the configs apart.\"",
+  "The \"Proposed for round 4\" table lists \"harder tickets, such as ambiguous categories and edge-case priorities\" and \"a stricter judge rubric.\"",
+  "The answer says \"Round 3 missed on every config\" and treats the 1.00 results as ordinary prediction misses. It never says the predictions cannot be judged when every result sits at the ceiling. It only says the configs cannot be told apart.",
+  "Step 4 updates prediction-log.md and adds a ceiling-effect entry to failures.md. It also adds round 4 proposals, a draft r04 prediction file, a learn commit, and a tag. All of this depends on the scores holding up, which is a sound gate.",
+  "The answer states the predictions of 0.88, 0.86, and 0.80 against the measured 1.00. It plans one log row per metric and config and quotes each Why that missed. It also says it will report plainly if the naive guess beat the predictions.",
+  "The answer does leave round 4 to the user with \"Round 4 starts when you re-enter plan mode and approve the new spec.\" But the reply is not short. It is a long multi-step plan with nested bullets, and it commits to the full round 3 close-out without first asking the user how to proceed."
+ ]
+}

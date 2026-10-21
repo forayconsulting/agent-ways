@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-T7-4",
+ "round": "r02",
+ "config": "C2",
+ "task": "T7",
+ "n": 4,
+ "response": "1. Copy the approved plan into the repo: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` It holds `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, and configs A to D. Every metric cell gets a number with a band, a Why, and the grader check it uses. Each number also gets `same_as_last_round: true/false`. All values come from the plan's Predict table.\n3. Commit the prediction before any harness work: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A to D with banded numbers\"`. The commit has no attribution lines.\n4. Build the graders and tasks from the plan's Evaluate section in `spe/evals/graders/r02/` and `spe/evals/tasks/r02/`. Code checks come first. Each grader gets an oracle answer, an empty answer, and a wrong answer for the selftest. I chose these folder names because the plan names only the harness file.\n5. Write `spe/evals/harness/r02-workflow.js`. It sets one `const ROUND = 2` and builds every prompt from it. It gives trials a schema and caps every paid resource. It skips and logs any trial that would cross a cap. It voids any trial whose transcript shows it read graders, answers, or predictions. It adds extra trials to split cells up to a cap. It ends with failure analysis and a completeness critic.\n6. Run the first gate, the grader selftest: `node spe/evals/graders/r02/selftest.js`. The oracle must pass, and the empty and wrong answers must fail. If the selftest passes, the next steps are the r01 regrade control, a dry run on 2 or 3 cells, and the `SPE r02 evaluate (harness)` commit. The Workflow launches only after those steps.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "aca9d382b7a6e0d53",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan to `spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml`. Both are the first two actions.",
+  "Action 3 commits `spe/plans/r02.md` and `spe/predictions/r02.yaml` \"before any harness work\". Grader, task and workflow work only starts in actions 4 and 5.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21`, an `author` field, a banded number in every metric cell, and \"a Why\" for each. It also adds `same_as_last_round: true/false` to each number.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 6 runs `node spe/evals/graders/r02/selftest.js` as the first gate. The oracle must pass, and the empty and wrong answers must fail. The answer says the Workflow launches only after this gate.",
+  "Action 6 says the next steps after the selftest are an r01 regrade control and \"a dry run on 2 or 3 cells\". It says \"The Workflow launches only after those steps.\"",
+  "Each action names an exact path or command. Examples are the `cp` command, the `git add ... && git commit` line, `spe/evals/harness/r02-workflow.js`, and the selftest command. The order goes predict, commit, build, then gate. The grader and task folder names were chosen by the agent, and the answer says so openly."
+ ]
+}

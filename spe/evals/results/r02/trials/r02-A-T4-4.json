@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-T4-4",
+ "round": "r02",
+ "config": "A",
+ "task": "T4",
+ "n": 4,
+ "response": "Defaults I chose: pass rate is scored against `category_acc`, and both markdown files get new sections added at the end in the same heading style as F1 to F3.\n\n```spe/prediction-log.md (append)\n## r02 (closed 2026-10-21)\n\nPrediction file: spe/predictions/r02.yaml (saved before the run, left unchanged).\nResults: spe/evals/results/r02/r02.json. 40 tickets, 5 trials per cell.\nPass rate is scored against category_acc.\n\n### Scores\n\n| Metric | Cell | Predicted | Baseline (same as last round) | Actual | Prediction error | Baseline error | Closer |\n|---|---|---|---|---|---|---|---|\n| pass rate | A | 0.85 | 0.84 | 0.86 | 0.01 | 0.02 | prediction |\n| pass rate | B | 0.88 | 0.84 | 0.86 | 0.02 | 0.02 | tie |\n| pass rate | C | 0.90 | 0.84 | 0.80 | 0.10 | 0.04 | baseline |\n| pass rate | D | 0.75 | 0.70 | 0.74 | 0.01 | 0.04 | prediction |\n| priority acc | C | 0.80 | none | 0.71 | 0.09 | none | none |\n| cost per ticket | D | $0.002 | none | $0.004 | 2.0x | none | none |\n\nThe mean absolute error on pass rate was 0.035 for my predictions and 0.030 for the baseline.\nThe baseline won this round.\nThe C miss caused the gap. Without C, my predictions scored 0.013 and the baseline scored 0.027.\n\n### Ranking calls\n\n- I predicted B above A. They tied at 0.86.\n- I predicted C first. C came third.\n- I predicted D last. D came last. This call was correct.\n\n### Why claims\n\n- B, \"shorter prompt keeps focus\": The data does not support this. B matched A on category (0.86 vs 0.86) and on priority (0.78 vs 0.79). The shorter prompt did lower cost from $0.011 to $0.009.\n- C, \"merged tools cut wrong tool choice\": The data refutes this. Merging cut tool calls from 4.1 to 2.6, but it also dropped a call that C needed. C never called check_status on 9 outage tickets (trials r02-C-T17-1..3). See F4.\n- D, \"smaller model loses about 0.15\": The data roughly supports this. D trailed A by 0.12 on category and by 0.13 on priority. The cost miss came from retries on tickets over 2,000 words. See F5.\n\n### Noise\n\nTrials on the same ticket are correlated, so the 40 tickets set the noise, not the 200 trials.\nAt 0.86 with n=40, the standard error is about 0.055.\nThe A vs B gap of 0.00 is noise.\nThe C vs A gap of 0.06 is about one standard error. The count alone does not prove it.\nThe 9 outage tickets give a concrete cause, so I treat the C drop as real.\n\n### Lesson\n\nMy C claim named a mechanism without checking which calls the merge removed.\nBefore I predict any change to the tool set, I will list the tool calls each ticket type needs.\n\n### Open for r03\n\n- Does C recover when check_status is called on every outage ticket?\n- What does D cost when it does not retry on long tickets?\n```\n\n```spe/failures.md (append)\n## F4: Merged tools in C skip check_status on outage tickets\n\n- Round and cell: r02, C.\n- Seen: C never called check_status on 9 outage tickets. Trials r02-C-T17-1..3.\n- Effect: C category_acc was 0.80 and A was 0.86. C priority_acc was 0.71 and A was 0.79. C made 2.6 tool calls per ticket and A made 4.1.\n- Suspected cause (not verified): The merge removed check_status as its own tool choice, and the model then skipped the status step.\n- Prediction impact: r02 predicted C at 0.90 pass rate and 0.80 priority accuracy.\n- Next check: Count check_status calls per outage ticket for A, B, and C. Add an eval assertion that every outage ticket calls check_status.\n- Status: open.\n\n## F5: D retries on long tickets and doubles its tokens\n\n- Round and cell: r02, D.\n- Seen: D retried on tickets over 2,000 words. The retries doubled token use on those tickets.\n- Effect: D cost $0.004 per ticket. The prediction was $0.002.\n- Cause: unknown. The trace does not show why D retried.\n- Next check: Log the retry reason on every trial. Count how many of the 40 tickets are over 2,000 words.\n- Status: open.\n```\n\nCommit (local only, no push):\n\n```\ngit add spe/evals/results/r02/r02.json spe/prediction-log.md spe/failures.md\ngit commit -m \"spe(r02): close out round 2\" -m \"Score r02 predictions against results and the same-as-last-round baseline. The baseline won on pass rate (MAE 0.030 vs 0.035) because of the C miss. Log F4 (C skips check_status on outage tickets) and F5 (D retries on long tickets and doubles cost).\"\n```",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a1dac0eabf216e0d8",
+ "judge": [
+  false,
+  true,
+  true,
+  true,
+  false,
+  true,
+  false
+ ],
+ "critiques": [
+  "The Scores table lists every predicted metric next to its actual value and prediction error. It never marks any row as hit or miss. The \"Closer\" column compares against the baseline, which is a different thing.",
+  "Each pass-rate row shows the same-as-last-round value, its error, and a \"Closer\" verdict (prediction, tie, or baseline). The priority and cost rows say \"none\" because r02.yaml gave no baseline for them, which is accurate.",
+  "The Why claims section quotes each original Why in quotes. For C it names the wrong assumption: the merge \"also dropped a call that C needed,\" check_status. It also explains the B miss and the D cost miss.",
+  "F4 and F5 each record what was seen, the round and cell, the trial IDs, a next check that works as a detection method (count check_status calls, add an assertion, log retry reasons), and \"Status: open.\"",
+  "\"Open for r03\" lists two questions tied to r02 evidence. No draft r03 prediction file is written, and nothing is marked as draft.",
+  "It says \"The baseline won this round\" and gives MAE 0.035 vs 0.030.",
+  "r02.yaml is \"left unchanged,\" which is correct. The answer does not update spe/README.md and does not create a git tag for the round."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-T7-3",
+ "round": "r02",
+ "config": "C",
+ "task": "T7",
+ "n": 3,
+ "response": "1. `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. This makes a lasting copy of the approved round 2 plan.\n2. Write `spe/predictions/r02.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` The file then holds `round: 2`, `date: 2026-10-21` and `author: \"Claude, approved by the user in plan mode\"`. It also holds configs A to D and every number from the plan's Predict table. Each number gets its Why, its grader check, and a `same_as_last_round` value.\n3. `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D locked before harness work\"`. The commit is local only. It has no push and no Co-Authored-By line.\n4. Write `spe/spec/transcripts/2026-10-21-r02.md`. It holds the user's round 2 plan mode prompt and planning answers word for word, with no edits.\n5. Edit `spe/spec/spec.md` and add the round 2 requirement table with ID, Requirement, Source and Test. Each r01 \"Proposed for round 2\" row is adopted or rejected with a reason. Then edit `spe/spec/disagreements.md` to log the open decisions with an owner and to log the defaults I chose.\n6. `git add spe/spec/ && git commit -m \"SPE r02 specify: round 2 requirements, transcript, disagreements\"`. Harness work starts after this commit, in `spe/evals/harness/r02-workflow.js` and the round 2 graders and tasks.\n\nI saved the prediction before the specify files because the guidance says to save the plan and prediction before anything else. This way the numbers are locked before any other work begins.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "abef79f76d7a25031",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml`. These are the first two actions.",
+  "Action 3 commits `spe/plans/r02.md spe/predictions/r02.yaml`. Action 6 says harness work on the graders, tasks and `r02-workflow.js` starts only after the later specify commit. So the plan and prediction are committed before any grader, task or workflow work.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21` and `author`. It also says the file holds every number from the Predict table, and that each number gets its Why, its grader check and a `same_as_last_round` value.",
+  "The first line of the prediction file is `# Saved before the eval ran. Do not edit after the run.` This marks the file as locked after the run.",
+  "None of the six actions mentions a grader selftest. The answer ends with harness work about to start, and it puts no selftest gate before trials.",
+  "The answer never mentions a small dry run before the full Workflow run. Action 6 only says that harness work starts.",
+  "Every action names an exact path or a git command with a commit message, for example `spe/spec/transcripts/2026-10-21-r02.md` and `git add spe/spec/ && git commit ...`. The order is plan, then prediction, then commit, then specify, then commit. That order is sensible and the answer explains it."
+ ]
+}

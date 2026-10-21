@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H4-1",
+ "round": "r02",
+ "config": "A",
+ "task": "H4",
+ "n": 1,
+ "response": "I will not change the pin yet. C2 on Sonnet 5.5 stays the baseline until Sonnet 6 wins a controlled round. I will open round 5 as a model-swap round. Only the model changes in that round. I will write the prediction before any run, and I will make a local commit after each step. I will not push.\n\nI assumed that the round 4 eval suite, grader, and trial count in spe/evals/ can be reused unchanged.\n\n**spe/plans/r05-plan.md (outline)**\n\n1. **Question**\n   - Does C2 score better on Sonnet 6 than on Sonnet 5.5 on the spe-r04 eval suite?\n   - Does it do so without adding new failures?\n\n2. **Pre-checks**\n   - Confirm the exact Sonnet 6 model ID, pricing, and context limits in the Anthropic docs. Record them in spe/spec/.\n   - Pin Sonnet 6 by its full model ID. Do not use an alias.\n\n3. **Controlled variable**\n   - The model is the only change.\n   - The prompt, tools, temperature, eval cases, and trial count stay frozen at spe-r04.\n   - The grader stays on its current pin. I will not upgrade the grader in this round.\n\n4. **Spec step** (commit: `spe(r05): spec model-swap round`)\n   - Add a round 5 entry to spe/spec/ that names the model as the variable under test.\n\n5. **Predict step** (commit: `spe(r05): prediction`)\n   - Write spe/predictions/r05.md before any run.\n   - State the expected direction and size of the score change.\n   - Name the failures.md cases I expect to flip, and in which direction.\n   - Give the expected change in cost and latency.\n   - Append the prediction to prediction-log.md.\n\n6. **Eval step** (commit: `spe(r05): eval results`)\n   - Arm A is C2 on Sonnet 5.5, rerun today to get a fresh baseline.\n   - Arm B is C2 on Sonnet 6.\n   - Both arms run the same cases with the same number of trials.\n   - Record the primary score, pass or fail for each case, cost per run, latency, and tokens.\n   - Save the results under spe/evals/r05/.\n\n7. **Decision rule** (fixed now, before results exist)\n   - Adopt Sonnet 6 if three things hold:\n     - B beats A on the primary score by more than the trial noise band from round 4.\n     - No case marked fixed in failures.md regresses.\n     - Cost per run stays within the current budget.\n   - Otherwise keep Sonnet 5.5 pinned. Log the reason in failures.md.\n\n8. **Close** (commit: `spe(r05): decision and prediction score`)\n   - Score the prediction in prediction-log.md.\n   - Update the current-best entry in README.md.\n   - Tag spe-r05 locally.\n\n9. **Out of scope**\n   - Retuning C2 for Sonnet 6. If B wins or loses by a small margin, that becomes the round 6 candidate.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "acc2421afe03bdc57",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer says \"I will open round 5 as a model-swap round\" and writes spe/plans/r05-plan.md. The release clearly starts a new loop round.",
+  "The answer says \"I will not change the pin yet. C2 on Sonnet 5.5 stays the baseline.\" It sets Arm A as C2 on Sonnet 5.5 and Arm B as C2 on Sonnet 6, so the two configs run side by side.",
+  "Section 3 says \"The model is the only change.\" It freezes the prompt, tools, temperature, cases, trial count, and grader pin. That makes any difference attributable to the model.",
+  "The predict step writes spe/predictions/r05.md \"before any run\" and states \"the expected direction and size of the score change\" plus cost and latency changes. It gives no actual numbers and never asks for bands or ranges, so it misses the \"numbers and bands\" requirement.",
+  "The plan keeps \"eval cases, and trial count ... frozen at spe-r04\" and says \"The grader stays on its current pin.\" Both arms \"run the same cases with the same number of trials.\"",
+  "The answer says \"I will not change the pin yet\" and adopts Sonnet 6 only after the decision rule is met. Production does not switch before the eval.",
+  "The eval step records \"the primary score, pass or fail for each case, cost per run, latency, and tokens.\" That covers accuracy, cost, tokens, and time. The units are per run, not per ticket, but all four metrics are named."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H4-5",
+ "round": "r02",
+ "config": "A",
+ "task": "H4",
+ "n": 5,
+ "response": "**Next step.** I open round 5 as a model-swap trial. C2 stays pinned to Sonnet 5.5 until the evals show that Sonnet 6 is better. First I check the Anthropic docs for the exact dated Sonnet 6 model ID, its price, and its limits. Then I write the plan and the predictions before I run anything. I commit locally after each step and I do not push. The earlier rounds' file names are not given here, so I chose `spe/plans/r05-plan.md` and `spe/predictions/r05.md`.\n\n**Plan outline: `spe/plans/r05-plan.md`**\n\n# Round 5: C2 on Sonnet 6\n\n## Question\nDoes C2 do better on Sonnet 6 than on Sonnet 5.5 when nothing else changes?\n\n## Held fixed (from tag spe-r04)\n- The spec in `spe/spec/` stays as it is, with no edits.\n- The eval set stays the same, with the same cases, seeds, and runs per case.\n- The grader model stays pinned to its round 4 version. Changing the grader at the same time would make the result unreadable.\n- The C2 prompt and settings stay exactly as tagged.\n\n## Arms\n- **A (baseline):** C2 on the pinned Sonnet 5.5 ID. I rerun it now and do not reuse the r04 numbers. The rerun catches drift in the harness or the API.\n- **B:** C2 on the pinned, dated Sonnet 6 ID.\n- Tuning prompts for Sonnet 6 is out of scope. It becomes round 6 only if B shows failures that C2 does not handle.\n\n## Predictions (written before any run)\n- The predictions go in `spe/predictions/r05.md`, with one entry in `spe/prediction-log.md`.\n- For each metric, I state the expected direction, the size, and my confidence.\n- I name the `failures.md` entries I expect Sonnet 6 to fix and the ones I expect to get worse.\n- I fix the decision rule now. B wins only if it beats A by more than the round 4 noise band on the main metric. B must also not get worse by more than that band on any guard metric.\n\n## Steps, with one local commit each\n1. Write this plan. Commit message: `spe r05: plan`.\n2. Write the predictions. Commit message: `spe r05: predictions`.\n3. Run A and B and save the raw results to `spe/evals/r05/`. Commit message: `spe r05: eval results`.\n4. Score the results against the predictions. Mark each prediction as a hit or a miss in `prediction-log.md`. Add any new failure modes to `failures.md`. Commit message: `spe r05: scoring`.\n5. Decide. Either repin C2 to Sonnet 6, or keep Sonnet 5.5 and write down why. Update `spe/README.md`. Commit message: `spe r05: decision`. Tag the commit `spe-r05` the same way earlier rounds were tagged.\n\n## Also measured\n- Cost per case and latency per case.\n- Output length, refusal rate, and format breaks.\n\n## Stop conditions\n- If the Sonnet 6 ID is not available on our account, I stop and report.\n- If the A rerun differs from the r04 numbers by more than the noise band, I stop. In that case I fix the harness before I compare models.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a518183a93bca2b30",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I open round 5 as a model-swap trial\" and lays out a full round with plan, predictions, evals, scoring, and a spe-r05 tag.",
+  "The answer says \"C2 stays pinned to Sonnet 5.5 until the evals show that Sonnet 6 is better\". Arm A is the Sonnet 5.5 baseline, and Arm B runs on Sonnet 6 next to it.",
+  "The \"Held fixed\" section keeps the spec, the eval set, the grader, and the C2 prompt and settings unchanged. The answer also puts prompt tuning out of scope, so the model is the only thing that changes.",
+  "The plan promises to write predictions before any run and to state \"the expected direction, the size, and my confidence\". It also ties the decision rule to \"the round 4 noise band\". The answer itself gives no numbers or bands for Sonnet 6, so the prediction stays a promise and is not stated.",
+  "The answer keeps \"the same cases, seeds, and runs per case\" and says \"The grader model stays pinned to its round 4 version.\"",
+  "C2 stays pinned to Sonnet 5.5 until the evals finish. The repin to Sonnet 6 happens only at step 5, after scoring and only if Sonnet 6 wins.",
+  "The plan names cost per case and latency per case. It never names accuracy and only says \"the main metric\". It lists \"Output length\" but does not list tokens. Not all four required metrics are named."
+ ]
+}

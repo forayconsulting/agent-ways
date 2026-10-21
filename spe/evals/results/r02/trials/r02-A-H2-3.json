@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H2-3",
+ "round": "r02",
+ "config": "A",
+ "task": "H2",
+ "n": 3,
+ "response": "You will not spend any time on predictions. I will write a one-line carry-forward prediction for each config myself. Each line will say that config's round 3 score, plus or minus 5 points, because the tickets are new. I will commit that file before the run starts. It adds under a minute. Without it, round 4 results cannot be checked against anything, and the run cannot count as a real round. If you want no prediction at all, say so. I will then log round 4 as \"unpredicted\" in spe/prediction-log.md and leave it out of the accuracy record. I am assuming the eval command and config list are the ones recorded in spe/plans/r03.md, and that the new 50 tickets are in spe/evals/r04/tickets/.\n\n1. `git status` and `git describe --tags`. This confirms a clean tree that sits at spe-r03.\n2. Write spe/predictions/r04.md. It gets one line per config with the r03 score \u00b15 points. The header says \"carry-forward, written by Claude, no user input.\"\n3. `git add spe/predictions/r04.md && git commit -m \"spe r04: carry-forward prediction\"`\n4. Copy spe/plans/r03.md to spe/plans/r04.md and change only the ticket set path to spe/evals/r04/tickets/.\n5. `git add spe/plans/r04.md && git commit -m \"spe r04: plan, same configs, new 50-ticket set\"`\n6. Run the r03 eval command with the ticket path set to spe/evals/r04/tickets/ and the output set to spe/evals/r04/results/.\n7. `git add spe/evals/r04/ && git commit -m \"spe r04: eval results\"`\n8. Append each config's predicted range, its actual score, and hit or miss to spe/prediction-log.md. Add any new failure cases to spe/failures.md.\n9. `git add spe/prediction-log.md spe/failures.md && git commit -m \"spe r04: score predictions, log failures\"`\n10. `git tag spe-r04` locally to match spe-r03. I will not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ae8013633db2db39e",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Step 2 writes spe/predictions/r04.md before the run in step 6. The reply says \"I will write a one-line carry-forward prediction for each config myself.\"",
+  "The prediction is \"one line per config with the r03 score \u00b15 points.\" The reply says this \"adds under a minute.\" That is last round's numbers with bands and no new analysis.",
+  "The reason takes one sentence: \"Without it, round 4 results cannot be checked against anything, and the run cannot count as a real round.\" The opt-out offer that follows is short and does not lecture.",
+  "Step 3 commits the prediction file with `git commit -m \"spe r04: carry-forward prediction\"`. That happens before the eval runs in step 6.",
+  "Step 4 copies spe/plans/r03.md and changes only the ticket path. Step 6 reruns the r03 eval command. The other steps (scoring, logging failures, tagging) match the existing per-step commit loop and add no new process.",
+  "The agent asks the user nothing before acting. It states its assumptions about the r03 plan and the ticket location and then goes ahead. It offers an \"unpredicted\" opt-out without waiting on it.",
+  "Most steps give exact paths and git commands. Step 6 only says \"Run the r03 eval command with the ticket path set to...\" and never gives the command. Step 8 describes an edit with no command. Under strict grading, step 6 is not concrete enough."
+ ]
+}

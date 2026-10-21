@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-T4-5",
+ "round": "r02",
+ "config": "A",
+ "task": "T4",
+ "n": 5,
+ "response": "I made three choices because the prompt does not settle them. I scored \"pass rate\" against category_acc. I show only the new text added to the end of each existing file, because the prompt does not include their current contents. I left spec/, plans/ and README.md unchanged, so the round 3 items below go to the r03 plan step.\n\n```spe/prediction-log.md (append at end)\n## Round 2 (scored 2026-10-21)\n\nPredictions: spe/predictions/r02.yaml (saved before the run)\nResults: spe/evals/results/r02/r02.json (40 tickets, 5 trials per cell)\nPass rate is scored against category_acc.\n\n### Pass rate\n\n| Cell | Predicted | Baseline (same as last round) | Actual | My error | Baseline error |\n|------|-----------|-------------------------------|--------|----------|----------------|\n| A    | 0.85      | 0.84                          | 0.86   | 0.01     | 0.02           |\n| B    | 0.88      | 0.84                          | 0.86   | 0.02     | 0.02           |\n| C    | 0.90      | 0.84                          | 0.80   | 0.10     | 0.04           |\n| D    | 0.75      | 0.70                          | 0.74   | 0.01     | 0.04           |\n| Mean |           |                               |        | 0.035    | 0.030          |\n\nThe baseline beat my predictions on mean absolute error (0.030 vs 0.035).\nThe C miss accounts for the gap. Without C, my mean error is 0.013 and the baseline's is 0.027.\n\nRanking. I predicted C > B > A > D. The actual order was A = B > C > D. I placed only D correctly.\n\n### Other predicted metrics\n\n| Metric               | Predicted | Actual | Miss              |\n|----------------------|-----------|--------|-------------------|\n| C priority_acc       | 0.80      | 0.71   | 0.09 too high     |\n| D cost per ticket    | $0.002    | $0.004 | 2x too low        |\n\n### Why claims\n\n- B, \"shorter prompt keeps focus\": not supported. B tied A on category_acc (0.86 vs 0.86) and scored 0.01 lower on priority_acc (0.78 vs 0.79). B was cheaper ($0.009 vs $0.011). B's measured gain is cost. It did not gain accuracy.\n- C, \"merged tools cut wrong tool choice\": refuted. Tool calls fell from 4.1 (A) to 2.6. Accuracy fell 0.06 on category and 0.08 on priority vs A. C never called check_status on 9 outage tickets. See F4.\n- D, \"same design on a smaller model loses about 0.15\": not tested cleanly. D's 0.74 is 0.01 from my point estimate. D's tool calls (3.9) are close to A's (4.1) and far from C's (2.6). The actual drop is 0.12 against A and 0.06 against C. The cost miss came from retries on long tickets. See F5.\n\n### Noise\n\nEvery trial reruns the same 40 tickets, so 40 is the real sample size. I treat gaps of 0.01 to 0.02 as noise. That means A and B are tied. I treat the C drop as real because F4 names a concrete cause for it.\n\n### Calibration lessons\n\n1. Shrink predicted gains from design changes toward last round's score. My change-based guesses for B and C were too optimistic.\n2. Cost predictions must account for retries and long inputs.\n\n### Carry to the r03 plan\n\n- C: make check_status required on outage tickets, or split it back out of the merged tool. Then rerun C against A.\n- D: cap retries or truncate tickets over 2,000 words. Then re-measure cost.\n- B vs A: compare them on cost from now on. On accuracy they are tied.\n```\n\n```spe/failures.md (append at end)\n## F4. C skips check_status on outage tickets\n\n- Round: r02\n- Cell: C (merged tools)\n- Evidence: C never called check_status on 9 outage tickets. Trials r02-C-T17-1 to r02-C-T17-3.\n- Effect: C category_acc 0.80 vs A 0.86. C priority_acc 0.71 vs A 0.79.\n- Likely cause (unverified): the merged tool no longer offers the status check as its own step. C averaged 2.6 tool calls and finished without checking status.\n- Status: open. Test the fix in r03.\n\n## F5. D retries long tickets and doubles token use\n\n- Round: r02\n- Cell: D (smaller model)\n- Evidence: D retried on tickets over 2,000 words. Each retry doubled the tokens for that ticket.\n- Effect: cost was $0.004 per ticket. The prediction was $0.002.\n- Likely cause (unverified): the smaller model fails or stops early on long inputs, so the harness retries.\n- Status: open. Test a retry cap or input truncation in r03.\n```\n\nCommit (local only, no push):\n\n```\ngit add spe/prediction-log.md spe/failures.md\ngit commit -m \"spe: close out round 2 with scored predictions and F4-F5\"\n```",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a665ecaea6413970c",
+ "judge": [
+  false,
+  false,
+  true,
+  false,
+  false,
+  true,
+  false
+ ],
+ "critiques": [
+  "The pass rate table shows predicted, actual, and error for A to D, but it never labels any of those rows as a hit or a miss. Only the 'Other predicted metrics' table has a 'Miss' column. The A, B, and D pass rates get no hit or miss verdict.",
+  "The pass rate table includes the baseline value and the baseline error, so a reader can work out which guess was closer. The answer never says which was closer row by row. It only gives the overall mean result and the result without C. The priority_acc and cost rows have no baseline comparison at all.",
+  "The 'Why claims' section quotes each original Why ('merged tools cut wrong tool choice', 'shorter prompt keeps focus', and the D claim). It names the failed assumption for C: C 'never called check_status on 9 outage tickets', and F4 says the merged tool 'no longer offers the status check as its own step'. For the D cost miss, it names retries on long tickets as the cause.",
+  "F4 and F5 each record what happened, where it was seen (round, cell, trial IDs), the likely cause, and an open status with a fix to test. Neither entry has a 'how to spot it' field that tells a reader how to detect the failure in future runs.",
+  "'Carry to the r03 plan' lists changes that tie to round 2 evidence: making check_status required for C, and capping retries or truncating long tickets for D. The answer writes no draft r03 prediction, and it says it left plans/ to a later step.",
+  "It says plainly: 'The baseline beat my predictions on mean absolute error (0.030 vs 0.035).'",
+  "The answer leaves spe/predictions/r02.yaml unchanged. It also says 'I left spec/, plans/ and README.md unchanged', and the commit adds no git tag for the round."
+ ]
+}

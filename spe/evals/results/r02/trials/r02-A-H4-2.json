@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H4-2",
+ "round": "r02",
+ "config": "A",
+ "task": "H4",
+ "n": 2,
+ "response": "I will not switch the pin yet. I will open Round 5 as a model-swap round. C2 stays on Sonnet 5.5 until Sonnet 6 beats it on the frozen Round 4 evals. First I will check the current Anthropic docs for the exact Sonnet 6 model ID. I will pin that dated ID, not an alias.\n\n**Plan outline: `spe/plans/r05-sonnet-6.md`**\n\n1. **Goal**\n   - Decide whether C2 should move from Sonnet 5.5 to Sonnet 6.\n   - The model is the only thing that changes this round.\n\n2. **Facts to check first**\n   - Check the current docs for the Sonnet 6 model ID, price, context window, and any change to parameters.\n   - Check whether Anthropic has set a retirement date for Sonnet 5.5. That date sets how urgent this round is.\n   - Write these facts into the plan with the date I checked them.\n\n3. **What stays fixed**\n   - The C2 prompt, tools, and settings stay the same.\n   - The eval set, grader, and pass criteria stay exactly as they were at `spe-r04`.\n   - If the grader uses a model, the grader stays pinned to its Round 4 model.\n\n4. **Predictions (written before any run)**\n   - Write `spe/predictions/r05.md` and add an entry to `prediction-log.md`.\n   - Predict the overall score change, the score change per eval group, the cost per run, and the latency.\n   - For each open failure class in `failures.md`, predict whether Sonnet 6 fixes it, leaves it alone, or makes it worse.\n   - Commit locally.\n\n5. **Arms**\n   - Arm A is C2 on Sonnet 5.5, run again as the control. This catches drift since Round 4.\n   - Arm B is C2 on Sonnet 6.\n   - Each arm runs 3 times on the full suite so I can measure run-to-run variance. I chose 3 because the situation does not give a run count.\n\n6. **Run and record**\n   - Save the results to `spe/evals/r05/`, with one folder for each arm.\n   - Commit locally.\n\n7. **Compare**\n   - Compare every case, not only the totals.\n   - List each case that passed in Round 4 and fails on Sonnet 6. A regression on a passing case counts even if the total goes up.\n   - Add any new failure modes to `failures.md`.\n   - Commit locally.\n\n8. **Decision rule**\n   - Adopt Sonnet 6 only if three things hold. Its mean score must be at least Arm A's. It must add no new failure class. Its cost per run must be no more than 20% above Arm A's.\n   - I chose the 20% cost limit as a default because the situation does not give one.\n   - If Sonnet 6 fails the rule, C2 stays on Sonnet 5.5. I will not change the prompt this round. Tuning C2 for Sonnet 6 would be Round 6, with its own spec.\n\n9. **Close the round**\n   - Score each prediction as right or wrong in `prediction-log.md`.\n   - Update `README.md` with the best config and its pinned model ID.\n   - Make the final local commit and tag it `spe-r05`.\n   - I will not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a1198de62de3d2b4c",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I will open Round 5 as a model-swap round\" and closes it with the tag `spe-r05`.",
+  "The answer says \"C2 stays on Sonnet 5.5 until Sonnet 6 beats it.\" It runs Arm A, which is C2 on Sonnet 5.5, as the control. Arm B, which is C2 on Sonnet 6, runs next to it.",
+  "The answer says \"The model is the only thing that changes this round.\" It also says the C2 prompt, tools, and settings stay the same. Prompt tuning is pushed to Round 6.",
+  "The answer does write predictions to `spe/predictions/r05.md` before any run. It only lists what it will predict, such as \"overall score change\" and \"cost per run.\" It gives no numbers and no bands or ranges.",
+  "The answer says \"The eval set, grader, and pass criteria stay exactly as they were at `spe-r04`.\" It also keeps any model grader pinned to its Round 4 model.",
+  "The answer opens with \"I will not switch the pin yet.\" It adopts Sonnet 6 only if Sonnet 6 passes the decision rule after the eval.",
+  "The answer names score, cost per run, and latency. It does not name tokens. It measures cost per run, not per ticket."
+ ]
+}

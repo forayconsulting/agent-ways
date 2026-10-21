@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H4-8",
+ "round": "r02",
+ "config": "A",
+ "task": "H4",
+ "n": 8,
+ "response": "**What I do next**\n\nC2 stays pinned to Sonnet 5.5. A new model release does not change the best config. Only an eval result can do that. I open round 5 as a model-swap round, and the model is the only thing that changes. I write the plan and the predictions before I run anything. I make a local commit after each SPE step and I do not push.\n\nI am keeping the r04 eval suite and trial count the same, so round 4 and round 5 compare directly.\n\n**Plan outline: `spe/plans/r05-sonnet-6.md`**\n\n1. **Question.** Does C2 score higher on Sonnet 6 than on Sonnet 5.5, using the r04 eval suite?\n2. **Pin the candidate.** Look up the exact Sonnet 6 model ID, context window, and pricing in the current Anthropic docs. Write the dated model ID into the plan. Do not use a floating alias.\n3. **Spec check.** Read `spe/spec/` for any requirement that depends on how Sonnet 5.5 behaves. Log each one as a risk in the plan. The spec stays frozen this round.\n4. **Arms.**\n   - **A:** C2 on Sonnet 5.5. I rerun it in the same time window as B. This rerun catches any drift since `spe-r04`.\n   - **B:** C2 on Sonnet 6, with the same prompts, tools, settings, and eval set as A.\n   - Nobody retunes prompts this round. If B wins or ties, Sonnet 6 retuning becomes round 6.\n5. **Predictions.** I write `spe/predictions/r05.md` and commit it before any run. It gives the expected direction and size of change for each eval. It gives an overall score prediction with a range. It names the `failures.md` items I expect Sonnet 6 to fix and the ones it might break. It also predicts cost and latency per run. I add one summary line to `prediction-log.md`.\n6. **Decision rule, fixed before the runs.** B becomes C3 only if it meets all three conditions. First, it beats A's overall score by more than the r04 run-to-run noise. Second, no must-pass eval regresses. Third, cost per run stays within 25 percent of A. I picked 25 percent as a default, and I flag it to you if B goes over. If B ties, C2 stays on Sonnet 5.5. If B loses, I record the result and stop.\n7. **Run.** Use the same trial count as r04. Save the raw outputs to `spe/evals/r05/A/` and `spe/evals/r05/B/`.\n8. **Score.** Build a per-eval table for A and B. Put each prediction next to its actual result in `prediction-log.md`. Add new failure modes to `failures.md` and tag each one with its model.\n9. **Close.** Update `spe/README.md` with the result and the current best config. Tag `spe-r05` locally.\n\n**Local commits, one per step**\n\n- `spe r05: plan Sonnet 6 model swap` (after step 4)\n- `spe r05: predictions` (after step 5)\n- `spe r05: eval runs A and B` (after step 7)\n- `spe r05: score, prediction log, failures` (after step 8)\n- `spe r05: close round, update README` (after step 9, then tag `spe-r05`)",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a3886c67ae619b436",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I open round 5 as a model-swap round\" and writes the plan at spe/plans/r05-sonnet-6.md. The release clearly starts a new loop round.",
+  "The answer says \"C2 stays pinned to Sonnet 5.5\". Arm A reruns C2 on Sonnet 5.5 as the reference, and Arm B runs C2 on Sonnet 6 beside it. B becomes C3 only if it wins.",
+  "The answer says \"the model is the only thing that changes\". Arm B uses \"the same prompts, tools, settings, and eval set as A\", and \"Nobody retunes prompts this round.\"",
+  "Step 5 commits spe/predictions/r05.md before any run. It includes the \"expected direction and size of change for each eval\", \"an overall score prediction with a range\", and cost and latency predictions. This meets the requirement for numbers and bands saved before the run.",
+  "The answer keeps \"the r04 eval suite and trial count the same, so round 4 and round 5 compare directly.\" Step 7 says \"Use the same trial count as r04.\" Graders are not named separately, but the eval suite carries them.",
+  "The answer says \"A new model release does not change the best config. Only an eval result can do that.\" C2 stays on Sonnet 5.5 unless B meets the fixed decision rule.",
+  "The plan names overall score, cost per run, and latency per run. It never names token counts, and it measures per run instead of per ticket. The required metric set is incomplete."
+ ]
+}

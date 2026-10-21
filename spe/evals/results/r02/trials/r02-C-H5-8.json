@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-H5-8",
+ "round": "r02",
+ "config": "C",
+ "task": "H5",
+ "n": 8,
+ "response": "Not yet. Round 3 hit a ceiling, and the loop is not finished.\n\n- **The stop rule is not met.** The rule needs predictions to match results for 3 rounds in a row. Round 3 missed every category prediction. We predicted 0.88 for B, 0.86 for C2, and 0.80 for D. All three measured 1.00.\n- **The scores look suspicious.** B, C2, and D each hit 1.00 on both category and priority. All three also got exactly the same judge mean of 7.0. Each config differs by one change, so an exact three-way tie is unlikely to be real. A leaked answer key or a broken grader could produce this pattern. Easy tickets could produce it too.\n\nWhat I do next:\n\n1. **I check the result before I trust it.**\n   - I scan the trial transcripts for any read of the graders, the answers, or the predictions.\n   - I rerun the grader selftest. The oracle must pass, and the empty and wrong answers must fail.\n   - I compare the r02 control regrade against the r02 numbers.\n   - I check whether the judge gave 7.0 to every trial.\n2. **If I find a leak or a broken grader, I halt.** I report to you and write nothing else until you decide.\n3. **If the result is clean, I commit it and close out round 3.**\n   - I commit locally as `SPE r03 evaluate (results): all configs at ceiling, 1.00 category and priority`.\n   - I update `spe/prediction-log.md`. Under \"Which Why broke\", I quote each missed Why. The wrong assumption was that these 50 tickets had room to separate the configs. I also say plainly whether \"same as last round\" beat our predictions.\n   - I add the ceiling to `spe/failures.md` as a new failure type. It means the eval is too easy to tell the configs apart.\n   - In the spec, I add a \"Proposed for round 4\" table with harder tickets and stricter graders. The method calls for this when every config passes everything.\n   - I write `spe/predictions/r04-draft.yaml` with `status: draft`, and I update `spe/README.md`.\n   - I commit locally as `SPE r03 learn: ceiling reached, harder tasks proposed` and tag `spe-r03`. I do not push.\n\nAfter that, you can enter plan mode for round 4.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a0a6cc61a0bc0d3a8",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"Not yet. Round 3 hit a ceiling, and the loop is not finished.\" It also says the stop rule is not met, so it does not declare the loop done.",
+  "The answer says \"The wrong assumption was that these 50 tickets had room to separate the configs.\" It also describes the ceiling as meaning \"the eval is too easy to tell the configs apart.\" That explains that the tasks no longer separate the configs.",
+  "The answer plans a \"Proposed for round 4\" table \"with harder tickets and stricter graders\" and a draft r04 predictions file.",
+  "The answer treats the results as plain misses: \"Round 3 missed every category prediction\" and so the stop rule is not met. It never says that a ceiling result makes the predictions impossible to judge, and it uses the misses as real evidence.",
+  "The answer plans to update prediction-log.md, add the ceiling to failures.md, add round 4 proposals to the spec, write the r04 draft, update the README, and commit and tag spe-r03.",
+  "The answer states the numbers directly: \"We predicted 0.88 for B, 0.86 for C2, and 0.80 for D. All three measured 1.00.\" It also plans to quote each missed Why in the log under \"Which Why broke\".",
+  "The answer leaves round 4 to the user (\"you can enter plan mode for round 4\") and halts on a leak. But it is long, with nested bullets, five verification steps, and full commit messages. It is not short."
+ ]
+}

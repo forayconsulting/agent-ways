@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-T7-7",
+ "round": "r02",
+ "config": "A",
+ "task": "T7",
+ "n": 7,
+ "response": "1. Copy the approved plan into the repo so the Plan step has a record there: `cp ~/.claude/plans/quiet-river.md spe/plans/r02-plan.md`. I chose the `r02-` prefix to match round 2. If round 1 used a different naming scheme, I would follow that scheme instead.\n2. Commit the Plan step locally: `git add spe/plans/r02-plan.md && git commit -m \"spe(r02): plan round 2\"`. The message has no Claude attribution and I do not push.\n3. Write the Predict table for configs A to D, copied word for word from the plan, to `spe/predictions/r02-predictions.md`. Each row gives the expected outcome and a confidence level.\n4. Add a round 2 entry to `spe/prediction-log.md`. The entry has the date (2026-10-21), a link to `spe/predictions/r02-predictions.md`, and a one-line summary of each prediction for A to D.\n5. Commit the Predict step before any eval code exists, so the predictions are locked in first: `git add spe/predictions/r02-predictions.md spe/prediction-log.md && git commit -m \"spe(r02): record predictions for configs A-D\"`.\n6. Start the Evaluate step by writing the first grader that the plan's Evaluate section names, at `spe/evals/graders/r02-<grader-name>.js`. The tasks under `spe/evals/tasks/r02-*` come next, then `spe/evals/harness/r02-workflow.js`. I load the workflow-authoring skill before I write the harness.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "af57528203c84efd1",
+ "judge": [
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "Action 1 saves the plan to spe/plans/r02-plan.md, which meets the first half. The prediction goes to spe/predictions/r02-predictions.md and not to spe/predictions/r02.yaml.",
+  "Action 2 commits the plan and action 5 commits the predictions. Grader work starts only in action 6. The answer says so: \"Commit the Predict step before any eval code exists.\"",
+  "Action 3 lists only \"the expected outcome and a confidence level\" for each row. It does not name round, author, a Why for each number, or a same-as-last-round baseline. The date goes into the log entry and not into the prediction file.",
+  "The answer says the commit \"locks in\" the predictions. It never marks the prediction file itself as not to be edited after the run.",
+  "No grader selftest step appears in the six actions. Action 6 only starts writing the first grader.",
+  "No dry run appears. The list ends before any Workflow run, and it never mentions a small run before the full one.",
+  "Most steps give exact paths and commands in a sensible order. Action 6 leaves a placeholder path, `spe/evals/graders/r02-<grader-name>.js`, and action 4 writes a log entry without a concrete edit. Under strict grading this fails."
+ ]
+}

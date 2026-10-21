@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-T7-4",
+ "round": "r02",
+ "config": "A",
+ "task": "T7",
+ "n": 4,
+ "response": "1. Run `git status --short && git branch --show-current` in the repo root. This confirms the tree is clean and that round 1 is committed before round 2 starts.\n2. Run `cp ~/.claude/plans/quiet-river.md spe/plans/r02-plan.md`. The approved plan lives outside the repo, so this copy puts it under version control.\n3. Write `spe/predictions/r02-predictions.md` with the Predict table for configs A to D, copied word for word from the plan. Each row gets its predicted result and its reason. This file must exist before any grader, task, or harness file does.\n4. Edit `spe/prediction-log.md` to add a round 2 entry. The entry lists each config from A to D with its prediction and a link to `spe/predictions/r02-predictions.md`. The result column stays empty for now.\n5. Run `git add spe/plans/r02-plan.md spe/predictions/r02-predictions.md spe/prediction-log.md && git commit -m \"spe(r02): plan and predictions for configs A to D\"`. This is a local commit only. There is no push and no Co-Authored-By line. I assumed `spe/spec/` needs no round 2 change because the plan has no Spec section.\n6. Write the graders in `spe/evals/graders/r02-graders.js`, as the Evaluate section of the plan describes. Next come the tasks in `spe/evals/tasks/r02-tasks.json` and the harness in `spe/evals/harness/r02-workflow.js`. Those three files get their own commit before the Workflow runs.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a23cd8994fc86ca67",
+ "judge": [
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 2 copies the plan to spe/plans/r02-plan.md, so the plan does get saved. Action 3 writes spe/predictions/r02-predictions.md, which is a markdown file. The check asks for spe/predictions/r02.yaml, so this half fails.",
+  "Action 5 commits the plan, the predictions, and the prediction log. Action 6 is the first step that touches graders, tasks, or the harness, so the order is right.",
+  "Action 3 says each row gets \"its predicted result and its reason\". That covers the numbers and a Why for each one. The answer never mentions a round, date, or author field, and it never mentions a same-as-last-round baseline.",
+  "The answer never marks the prediction file as frozen or not to be edited after the run. Action 4 only says the result column in prediction-log.md \"stays empty for now\".",
+  "Action 6 writes the graders and commits them before the Workflow runs. No grader selftest step appears anywhere in the six actions.",
+  "The answer never mentions a small dry run before the full Workflow run. Action 6 goes straight from writing the files to committing them \"before the Workflow runs\".",
+  "Every action names an exact path or command, such as the cp command and the git add and commit line. The order is sensible: check the tree, save the plan, write the predictions, commit, then build the eval files."
+ ]
+}

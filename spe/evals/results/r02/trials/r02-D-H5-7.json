@@ -1,0 +1,32 @@
+{
+ "label": "r02-D-H5-7",
+ "round": "r02",
+ "config": "D",
+ "task": "H5",
+ "n": 7,
+ "response": "Not yet. The scores look perfect, but that is not the stop rule. The loop stops when predictions match the results for 3 rounds in a row. This round the predictions missed: r03.yaml said 0.88 for B, 0.86 for C2, and 0.80 for D, and all three measured 1.00.\n\nA perfect score also makes me suspicious. B, C2, and D all scored 1.00 on category, 1.00 on priority, and exactly 7.0 on the judge, across 50 tickets and 5 trials each. That pattern often means one of three things went wrong. The trials may have seen the answers. The code grader may pass everything. The judge may be giving the same score to every trial.\n\nHere is what I do next, in order:\n\n1. Audit the run before I trust it.\n   - I scan the r03 trial transcripts for any read of the graders, the answer key, or spe/predictions/. I void any trial that peeked.\n   - I rerun the grader selftest. The oracle must pass, and empty or wrong answers must fail.\n   - I look at the judge scores trial by trial. If every trial got a 7, the judge is broken.\n   - If I find a leak or a broken grader, I stop and report to you. I will not regrade quietly.\n2. Commit the raw results as \"SPE r03 evaluate (results): all cells 1.00, audit pending\", or with the audit outcome in the headline if the audit is done by then.\n3. Run the learn step.\n   - In spe/prediction-log.md, I log each cell as a miss and compare it to the naive \"same as last round\" guess. Under \"Which Why broke\", I quote each Why line and name the wrong assumption.\n   - In spe/failures.md, I add new F entries. Every config passing everything counts as a task design failure. Any grader or leak problem gets its own entry, with the original and regraded numbers side by side.\n   - I add a \"Proposed for round 4\" table to the spec with harder tickets and stricter grading. Examples are ambiguous categories, conflicting priority signals, and a judge rubric with anchored levels so scores spread out. I write spe/predictions/r04-draft.yaml marked status: draft.\n   - I update spe/README.md.\n4. Commit \"SPE r03 learn: ...\" and tag spe-r03. Both stay local. I will not push.\n\nThen round 4 starts in plan mode with harder tasks.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a8acc5c669f8ca99f",
+ "judge": [
+  true,
+  false,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"Not yet.\" It also says perfect scores are \"not the stop rule\", so it does not declare the loop done or converged.",
+  "The answer treats the 1.00 scores mainly as a possible leak or a broken grader. It says \"Every config passing everything counts as a task design failure\" but never explains that the tasks no longer tell B, C2, and D apart.",
+  "It proposes a \"Proposed for round 4\" table with \"harder tickets and stricter grading\". The examples are ambiguous categories, conflicting priority signals, and an anchored judge rubric.",
+  "The answer treats the round as a normal prediction miss (\"the predictions missed\") and logs each cell as a miss. It never says that results at the ceiling make the predictions impossible to judge.",
+  "Step 3 covers the prediction-log entries, the failures.md F entries, the round 4 proposals, the r04 draft, and the README update. The step 4 commit and tag close out round 3.",
+  "It quotes the numbers \"0.88 for B, 0.86 for C2, and 0.80 for D, and all three measured 1.00\". It also logs each cell as a miss with a naive-baseline comparison and the Why line that broke.",
+  "The reply is long, with a four-step plan full of sub-bullets. It ends with \"Then round 4 starts in plan mode\" and never asks the user whether to continue."
+ ]
+}

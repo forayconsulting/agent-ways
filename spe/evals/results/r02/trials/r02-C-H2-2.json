@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-H2-2",
+ "round": "r02",
+ "config": "C",
+ "task": "H2",
+ "n": 2,
+ "response": "I will keep this fast, and you will not need to answer anything. I will not ask you for new numbers. Round 3 already left a draft prediction in spe/predictions/r03-draft.yaml, so I will save it unchanged as the round 4 prediction. That takes about a minute. Without a saved prediction, round 4 cannot be scored, and the \"3 matching rounds in a row\" stop rule would start over from zero. The gates are short checks, and I will keep them small. If you really want no prediction file, say so and I will log round 4 as unscored. I assumed the new 50 tickets are in spe/evals/tickets/r04/.\n\n1. Write your message word for word to `spe/spec/transcripts/2026-10-21-r04.md`.\n2. Add a round 4 table to `spe/spec/spec.md`. It has one row: \"Rerun r03 configs unchanged on a new 50-ticket set\", and the source is your words. In `spe/spec/disagreements.md`, log each round 3 proposal as deferred, with this reason: \"user asked for a straight rerun\".\n3. `git add spe/spec && git commit -m \"SPE r04 specify: rerun r03 configs on new 50-ticket set\"`\n4. `cp spe/predictions/r03-draft.yaml spe/predictions/r04.yaml`. Then edit only the header fields. Add the first line `# Saved before the eval ran. Do not edit after the run.`, set `round: 4`, set `date: 2026-10-21`, set `author: \"Claude, approved by the user in chat\"`, remove `status: draft`, and set `same_as_last_round: true` for every number.\n5. Write `spe/plans/r04.md` with 5 lines: the spec row, a pointer to the prediction file, the gates, and the Workflow arguments.\n6. `git add spe/predictions/r04.yaml spe/plans/r04.md && git commit -m \"SPE r04 predict: r03 draft frozen unchanged\"`\n7. `cp spe/evals/harness/r03-workflow.js spe/evals/harness/r04-workflow.js`. Then set `const ROUND = 4` and point the ticket path to `spe/evals/tickets/r04/`.\n8. `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate (harness)\"`\n9. Run the gates. First, run the grader selftest on the new tickets: the oracle must pass, and the empty and wrong answers must fail. Second, regrade round 3 as a control. Third, do a dry run on 2 cells. If any gate fails, I stop and report to you.\n10. Launch `spe/evals/harness/r04-workflow.js` with the round 3 caps unchanged.\n11. When the completion notice arrives, commit `SPE r04 evaluate (results): <headline>`. Then update `spe/prediction-log.md`, `spe/failures.md`, `spe/README.md`, and `spe/predictions/r04-draft.yaml`. Commit those as `SPE r04 learn: ...` and run `git tag spe-r04`. I will not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ada7e9a749bc05902",
+ "judge": [
+  true,
+  false,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Step 4 creates spe/predictions/r04.yaml, and step 6 commits it. Both happen before the launch in step 10. The reply also says it will save the prediction anyway.",
+  "The prediction is fast because step 4 copies r03-draft.yaml unchanged and edits only the header. The answer never says the numbers carry bands, and the check requires bands. It also tags every number 'same_as_last_round: true', which may not be accurate for a forward draft.",
+  "One sentence gives the reason: 'Without a saved prediction, round 4 cannot be scored, and the \"3 matching rounds in a row\" stop rule would start over from zero.' There is no lecture.",
+  "Step 6 commits the prediction with 'SPE r04 predict: r03 draft frozen unchanged'. That comes before the gates in step 9 and the launch in step 10.",
+  "Step 7 reuses the round 3 harness by copying r03-workflow.js and changing only ROUND and the ticket path. Step 10 keeps the round 3 caps. The spec, plan, and gate steps are the existing SPE loop steps, not new process.",
+  "The reply says 'you will not need to answer anything' and asks no questions. It states its assumption about the ticket path instead of asking. It offers an opt-out without waiting for one.",
+  "Most steps give exact paths and git commands. Step 9 describes three gates without any command or path to run them. Step 10 says 'Launch' without a command. The check is strict, so it fails."
+ ]
+}

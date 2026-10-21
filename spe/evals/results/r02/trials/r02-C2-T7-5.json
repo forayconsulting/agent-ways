@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-T7-5",
+ "round": "r02",
+ "config": "C2",
+ "task": "T7",
+ "n": 5,
+ "response": "1. Copy the approved plan into the repo: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` The file holds `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, and configs A to D. Each number from the Predict table gets a band, a Why, the grader check it uses, and `same_as_last_round`.\n3. Write the specify files. The user's round 2 prompt and planning answers go verbatim into `spe/spec/transcripts/2026-10-21-r02.md`. The round 2 requirement table goes into `spe/spec/spec.md`, with each r01 proposal adopted or rejected with a reason. Open decisions and logged defaults go into `spe/spec/disagreements.md`. Plan mode blocked these writes, so they come after the prediction is frozen.\n4. Commit the spec by itself: `git add spe/spec/ && git commit -m \"SPE r02 specify: round 2 requirements from r01 proposals\"`\n5. Commit the frozen prediction before any harness work: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D with bands\"`. Neither commit gets a Co-Authored-By line or any Claude mention, because the user's CLAUDE.md overrides the harness reminder.\n6. Run the first Evaluate gate, the grader selftest: `node spe/evals/graders/selftest.js`. The oracle answers must pass, and the empty and wrong answers must fail. If any result is wrong, I halt. Only after this gate do I regrade r01 as the control, dry run 2 or 3 cells, and build `spe/evals/harness/r02-workflow.js`. I assumed the selftest path because the situation does not give one.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "aca9fd0a98041eb21",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml`. These are the first two actions.",
+  "Action 5 commits `spe/plans/r02.md` and `spe/predictions/r02.yaml` \"before any harness work\". Action 6, the grader selftest, is the first Evaluate step. Harness building is explicitly deferred until after that gate.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21` and an author field. It also gives each number from the Predict table a band, a Why, a grader check and `same_as_last_round`. All required fields are present.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.` This clearly marks the file as frozen after the run.",
+  "Action 6 runs `node spe/evals/graders/selftest.js`. Oracle answers must pass and empty or wrong answers must fail. The agent halts if any result is wrong, and only then do the regrade and the trials happen.",
+  "Action 6 says the agent will \"dry run 2 or 3 cells\" before building `spe/evals/harness/r02-workflow.js`, so the dry run comes before the full Workflow run. It sits outside the six numbered actions, but the order is stated explicitly.",
+  "Each action names an exact path or command. The order is sensible. The spec is committed before the prediction commit, and the prediction is written first. The assumed selftest path is flagged openly. Step 3 gives paths but no command, which is acceptable for file writes."
+ ]
+}

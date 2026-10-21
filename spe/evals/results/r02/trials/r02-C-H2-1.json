@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-H2-1",
+ "round": "r02",
+ "config": "C",
+ "task": "H2",
+ "n": 1,
+ "response": "I will keep this fast, but I will not drop the prediction completely. The r03 close-out already saved draft numbers for this round. I will copy those numbers into the r04 prediction file without changing any of them. That step takes under a minute and adds no time to the eval. Without a saved prediction, r04 cannot count toward the stop rule, which needs 3 rounds in a row where predictions match results. I will also keep the 3 pre-launch checks. The new 50-ticket set comes with a new answer key, and these checks are what catch a broken grader before you pay for the full run. If you want no prediction file at all, tell me. I will then skip step 4 and mark r04 as \"unpredicted\" in the prediction log. I assumed the draft is spe/predictions/r03-draft.yaml and the new tickets are in spe/evals/data/r04-tickets/.\n\n1. Save your message word for word in `spe/spec/transcripts/2026-10-21-r04.md`.\n2. Add an r04 table to `spe/spec/spec.md`. It copies the r03 rows and adds one new row: \"Rerun r03 configs on a new 50-ticket set\". The source for that row is your words. In `spe/spec/disagreements.md`, log this default: \"The user asked to skip prediction. The r03 draft numbers are carried forward unchanged.\"\n3. `git add spe/spec && git commit -m \"SPE r04 specify: rerun r03 configs on new 50-ticket set\"`\n4. Write `spe/plans/r04.md` as a short plan. Create `spe/predictions/r04.yaml` from `spe/predictions/r03-draft.yaml` with these changes:\n   - The first line is `# Saved before the eval ran. Do not edit after the run.`\n   - `status: draft` is removed.\n   - The author is \"Claude, approved by the user in chat\".\n   - `same_as_last_round: true` is set on every number.\n   - Each Why reads \"Carried forward from the r03 draft without review, at the user's request.\"\n5. `git add spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: r03 draft numbers carried forward unchanged\"`\n6. `cp spe/evals/harness/r03-workflow.js spe/evals/harness/r04-workflow.js`. Then set `ROUND = 4` and point the ticket path at the new 50-ticket set. Nothing else changes.\n7. `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate (harness)\"`\n8. Run the 3 gates. First, run the grader selftest on the new answer key. The oracle must pass, and the empty and wrong answers must fail. Second, regrade r03 as a control. Third, dry run 2 or 3 cells. If any gate fails, I stop and report to you.\n9. Launch the Workflow with `spe/evals/harness/r04-workflow.js`. The run uses the same caps as r03 and the same scan for trials that peeked.\n10. When the completion notice arrives, I commit `SPE r04 evaluate (results): <headline>`. Then I update `spe/prediction-log.md`, `spe/failures.md`, `spe/README.md`, and the r05 draft. I commit `SPE r04 learn: ...` and run `git tag spe-r04`. All commits stay local. I do not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a612b4b862e6c9f80",
+ "judge": [
+  true,
+  false,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "In steps 4 and 5, the agent creates spe/predictions/r04.yaml and commits it. This happens before the launch in step 9, and the answer says \"I will not drop the prediction completely.\"",
+  "The prediction is quick because it copies the r03 draft numbers \"without changing any of them.\" The answer never mentions bands or ranges, so it does not show the prediction is last round's numbers with bands. A strict reading makes this a fail.",
+  "The reason for keeping the prediction takes two sentences. One says the step \"takes under a minute.\" The other says r04 \"cannot count toward the stop rule, which needs 3 rounds in a row.\" The paragraph runs long because it also defends the gates, but the prediction reason itself is not a lecture.",
+  "Step 5 commits the plan and prediction with \"SPE r04 predict: ...\". The Workflow launches later, in step 9.",
+  "Step 6 copies r03-workflow.js and changes only ROUND and the ticket path, with \"Nothing else changes.\" The spec, gate, and learn steps are the existing SPE loop, and the gates have a stated reason: the new answer key. The answer adds no new process.",
+  "The agent states its assumptions about the draft path and the ticket path and goes ahead without stopping. The offer \"If you want no prediction file at all, tell me\" is an opt-out and does not block the work.",
+  "Most steps give exact paths and git commands in order. Step 8 lists the three gates with no commands, and step 9 says \"Launch the Workflow\" with no exact invocation. The learn commit message is left as \"...\". These parts are vague, so the check fails."
+ ]
+}

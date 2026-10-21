@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-H4-1",
+ "round": "r02",
+ "config": "C2",
+ "task": "H4",
+ "n": 1,
+ "response": "I will open round 5. Its question is whether C2 does better on Sonnet 6 than on Sonnet 5.5. The model is the only thing that changes. First I enter plan mode. I save your message word for word to `spe/spec/transcripts/2026-10-21-r05.md`. I look up the exact Sonnet 6 model ID in the current Claude API docs before I write any spec row. I am assuming you want a measured comparison and not a switch to Sonnet 6 without testing. I will log that assumption as a default in `spe/spec/disagreements.md`.\n\n## Plan outline: SPE round 5 (Sonnet 6 vs Sonnet 5.5 on C2)\n\n### 1. Specify\n- New rows in `spe/spec/spec.md` under \"Round 5\":\n  - R5-1: Run C2 unchanged on Sonnet 6, pinned to its exact dated model ID. Source: the user's words, \"Sonnet 6 just shipped.\" Test: the transcripts and API logs show only that model ID.\n  - R5-2: Run C2 on Sonnet 5.5 in the same run as the control. Source: decision. This separates model change from drift in tasks, graders, or the API. Test: the regraded C2 numbers from r04 fall inside the r04 bands.\n  - R5-3: Keep the same prompt, tools, thinking budget, max tokens, and task set as r04. Source: decision, change one thing per configuration. Test: a diff of the two config files shows only the model field.\n- \"Proposed for round 5\" table from r04: I adopt or reject each proposal and give a reason. Grader fixes apply to both arms equally, so I adopt them. I defer proposals that change C2 itself to round 6, so the model stays the only variable.\n- If Sonnet 6 removes or renames a parameter that C2 uses, that becomes a second change. I halt and log it as a decision for you in `disagreements.md`.\n- Commit: `SPE r05 specify: Sonnet 6 model swap on C2`.\n\n### 2. Predict\n- Configurations: C2-S5.5 (control) and C2-S6 (only the model changes).\n- Metrics: the same set as `spe/predictions/r04-draft.yaml`. Each metric names the same grader check it used in r04.\n- C2-S5.5 column: I copy the r04 measured values and r04 bands, and mark `same_as_last_round: true`.\n- C2-S6 column: it starts equal to C2-S5.5. A number moves only when I can give a reason for it in the Why line, for example a known r04 failure ID that a stronger model should fix. The bands widen to \u00b1 0.10 because we have no Sonnet 6 evidence yet. A hit means the measured value falls inside the band.\n- Cost and latency rows: these use Sonnet 6 list pricing from the docs. They are labeled as estimates.\n- After approval:\n  - Copy the plan to `spe/plans/r05.md`.\n  - Write `spe/predictions/r05.yaml` with the \"Saved before the eval ran\" header.\n  - Commit `SPE r05 predict: C2 on Sonnet 6 vs 5.5`. This commit comes before any harness work.\n\n### 3. Evaluate\n- Harness: copy the r04 script to `spe/evals/harness/r05-workflow.js`. Set `ROUND = 5` once. Add the model as a config field and do not hard-code it in prompt text.\n- Gates before launch:\n  - Grader selftest: the oracle passes, and the empty and wrong answers fail.\n  - Regrade r04 as a control.\n  - Dry run on 2 or 3 cells per arm. The dry run confirms that the logged model ID matches the pinned Sonnet 6 ID.\n- Run rules:\n  - Use the same trial count per cell as r04. Cells that split get extra trials up to the r04 cap.\n  - Code checks run first. Judges run only for what code cannot check. The judge model stays the same as in r04, so the judge is not a second variable.\n  - Scan transcripts for any peek at graders, answers, or predictions. Void any trial that peeked.\n  - A budget cap is set from the cost estimate plus a margin. Trials that would cross it are skipped and logged.\n- End of run: failure analysis per arm and a completeness critic.\n- Commits: `SPE r05 evaluate (harness)`, then `SPE r05 evaluate (results): <headline>`.\n\n### 4. Learn\n- I close out when the Workflow completion notice arrives.\n- `spe/prediction-log.md`: one row per metric and config, and a \"Which Why broke\" section for each miss.\n- `spe/failures.md`: new F-numbers for any failure seen only on Sonnet 6.\n- Next-round proposals: either repin C2 to Sonnet 6, or keep Sonnet 5.5. The choice follows the measured results.\n- Write `spe/predictions/r05-draft.yaml` with `status: draft`, and update `spe/README.md`.\n- Commit `SPE r05 learn: <headline>` and tag `spe-r05`.\n\n### Halt conditions\n- A budget cap is hit.\n- An answer key leaks.\n- A grader breaks.\n- Sonnet 6 needs a config change beyond the model ID.\n\nEach commit stays local. Nothing is pushed.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a78a882e427fcb1f0",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"I will open round 5\" and lays out Specify, Predict, Evaluate, and Learn steps that end with tag spe-r05.",
+  "The plan keeps \"C2-S5.5 (control)\" next to \"C2-S6 (only the model changes)\". R5-2 runs Sonnet 5.5 in the same run as the control.",
+  "R5-3 says a config diff \"shows only the model field\". The plan also defers C2 changes to round 6 and halts if Sonnet 6 needs any change beyond the model ID.",
+  "The C2-S6 column has values copied from r04 with \"\u00b1 0.10\" bands and a Why line for any number that moves. `spe/predictions/r05.yaml` is committed \"before any harness work\".",
+  "R5-3 keeps \"the same ... task set as r04\". The judge model stays the same. The plan adopts grader fixes, but they apply to both arms equally, and the plan regrades r04 as a control. The arms stay comparable.",
+  "The agent states \"I am assuming you want a measured comparison and not a switch to Sonnet 6 without testing\". The repin decision waits until Learn and \"follows the measured results\".",
+  "The plan says metrics are \"the same set as `spe/predictions/r04-draft.yaml`\" and adds cost and latency rows. It never names accuracy or tokens. It never names time per ticket as a metric. That is too vague for this check."
+ ]
+}

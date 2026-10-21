@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-T7-1",
+ "round": "r02",
+ "config": "C2",
+ "task": "T7",
+ "n": 1,
+ "response": "1. `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. This saves a lasting copy of the approved plan, exactly as approved.\n\n2. Write `spe/predictions/r02.yaml` with these contents:\n   - The first line is `# Saved before the eval ran. Do not edit after the run.`\n   - `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`.\n   - Configs A to D.\n   - Each metric gets a number per config, a band such as `0.85 \u00b1 0.05`, a Why, its grader check, and `same_as_last_round`.\n   - Every value is copied from the plan's Predict table.\n\n3. Write `spe/spec/transcripts/2026-10-21-r02.md`. It holds the user's round 2 plan mode prompt and planning answers, verbatim.\n\n4. Add the round 2 requirement table to `spe/spec/spec.md`. The columns are ID, Requirement, Source, and Test. Each round 1 proposal becomes a row marked adopted or rejected, with a reason. Then update `spe/spec/disagreements.md` with open decisions and their owners, plus any logged defaults.\n\n5. `git add spe/spec/transcripts/2026-10-21-r02.md spe/spec/spec.md spe/spec/disagreements.md && git commit -m \"SPE r02 specify: round 2 requirements, adopted and rejected r01 proposals\"`\n\n6. `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D with bands, saved before eval\"`. This commit lands before any grader, task, or `spe/evals/harness/r02-workflow.js` work starts. Neither commit message carries a Claude attribution line.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a6e3af5650c3ce343",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the approved plan to spe/plans/r02.md with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes spe/predictions/r02.yaml. These are the first two actions.",
+  "Action 6 commits spe/plans/r02.md and spe/predictions/r02.yaml. The answer says this commit \"lands before any grader, task, or spe/evals/harness/r02-workflow.js work starts\". None of the six actions touches graders or the workflow script.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21` and `author`. It also gives each metric a number per config, a band, a Why, a grader check and `same_as_last_round`.",
+  "The first line of the prediction file is `# Saved before the eval ran. Do not edit after the run.` That line marks the file as not to be edited after the run.",
+  "None of the six actions mentions a grader selftest. The answer gives no gate that must pass before trials run.",
+  "The answer has no small dry run before the full Workflow run. The list ends at the predict commit.",
+  "Each action names an exact path or a full git command. The order is save, write, commit specify, then commit predict, which is sensible. Action 4 is less exact about the table rows, but it names the target files and the columns."
+ ]
+}

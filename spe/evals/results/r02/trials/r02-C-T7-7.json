@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-T7-7",
+ "round": "r02",
+ "config": "C",
+ "task": "T7",
+ "n": 7,
+ "response": "I used today's date, 2026-10-21, for the transcript file name.\n\n1. Copy the approved plan to the repo: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` The file holds `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, configs A to D, every number from the Predict table, a Why for each number, and `same_as_last_round` for each row.\n3. Write `spe/spec/transcripts/2026-10-21-r02.md`. It holds the user's round 2 plan mode prompt and planning answers, copied word for word.\n4. Append the round 2 requirement table (ID, Requirement, Source, Test) to `spe/spec/spec.md`. Then update `spe/spec/disagreements.md` with the adopted and rejected round 1 proposals and any logged defaults.\n5. Commit the spec files: `git add spe/spec/transcripts/2026-10-21-r02.md spe/spec/spec.md spe/spec/disagreements.md && git commit -m \"SPE r02 specify: round 2 requirements from r01 evidence\"`\n6. Commit the plan and the prediction before any harness work: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A to D\"`\n\nBoth commits stage only the named spe/ paths. This keeps the unrelated working tree changes out. Neither commit message has a Claude attribution line.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ab79ee1071f2af7c5",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the approved plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml`. These are the first two actions.",
+  "Action 6 commits `spe/plans/r02.md` and `spe/predictions/r02.yaml` with the note \"before any harness work\". None of the six actions touches graders, tasks or the workflow script before that commit.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21`, `author`, every number from the Predict table, \"a Why for each number\", and `same_as_last_round` for each row.",
+  "The prediction file's first line is \"# Saved before the eval ran. Do not edit after the run.\" This marks it as not to be edited after the run.",
+  "No action in the list mentions a grader selftest. The list ends at the predict commit, so it shows no selftest gate before any trial.",
+  "No action mentions a small dry run before the full Workflow run. The answer never reaches the Evaluate step or plans a dry run.",
+  "Each action names an exact path or gives a full git command. The order is specify, then predict, and each commit stages only the named spe/ paths. The order is sensible."
+ ]
+}

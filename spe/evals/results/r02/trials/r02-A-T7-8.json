@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-T7-8",
+ "round": "r02",
+ "config": "A",
+ "task": "T7",
+ "n": 8,
+ "response": "I assumed the round 1 files use an `r01-` prefix, so I use `r02-` for round 2.\n\n1. Check the branch and working tree before writing anything: `git branch --show-current && git status --short spe/`\n2. Copy the approved plan into the repo: `cp ~/.claude/plans/quiet-river.md spe/plans/r02-plan.md`\n3. Commit the plan step locally: `git add spe/plans/r02-plan.md && git commit -m \"spe(r02): add approved round 2 plan\"`. I do not push.\n4. Write the Predict table for configs A to D into `spe/predictions/r02-predictions.md`. I copy it word for word from the plan. Then I add a round 2 entry with the date and the four predicted outcomes to `spe/prediction-log.md`.\n5. Commit the predict step before any eval runs, so the history shows the predictions came before the results: `git add spe/predictions/r02-predictions.md spe/prediction-log.md && git commit -m \"spe(r02): lock predictions for configs A to D\"`\n6. Start the Evaluate step by writing the graders that the plan names. They go under `spe/evals/graders/` as `r02-*.js`, one file per grader. The tasks under `spe/evals/tasks/r02/` and the harness at `spe/evals/harness/r02-workflow.js` come after that.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a664457e9a8ec9cee",
+ "judge": [
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "Step 2 saves the plan to spe/plans/r02-plan.md, so the plan part is met. Step 4 writes spe/predictions/r02-predictions.md, which is a markdown file and not spe/predictions/r02.yaml.",
+  "Step 3 commits the plan and step 5 commits the predictions. Both happen before step 6, where the graders, tasks and harness work begins.",
+  "Step 4 says only that the Predict table is copied \"word for word\" and that a date goes in the log entry. The answer does not name round, author, a Why per number, or a same-as-last-round baseline as fields of the prediction file.",
+  "Step 5 says \"lock predictions\" in the commit message. The answer never marks the file itself as not to be edited after the run.",
+  "No grader selftest step appears anywhere. The list stops at writing graders in step 6.",
+  "No dry run appears in the list. The answer never reaches the Workflow run at all.",
+  "Steps 1 to 5 give exact commands and paths in a sensible order. Step 6 uses a wildcard \"r02-*.js\" instead of exact file names, and the yaml file name is wrong, but the list is still mostly concrete and well ordered."
+ ]
+}

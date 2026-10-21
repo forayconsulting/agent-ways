@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H2-6",
+ "round": "r02",
+ "config": "A",
+ "task": "H2",
+ "n": 6,
+ "response": "I will run the evals right away. I will not ask you for a prediction. Before the run starts, I will write a short prediction myself. It takes about a minute and does not need you. It carries the r03 scores forward as the expected result for each config. Without a prediction recorded before the run, round 4 has nothing to check against, so it cannot show whether the configs hold up on new tickets. If you want no prediction at all, tell me. In that case I will log round 4 as unscored in spe/prediction-log.md instead. I am assuming the r03 runner is spe/evals/run.sh and the new ticket set goes in spe/evals/r04/tickets.jsonl.\n\n1. Check that the tree is clean and on the right commit: `git status` and `git describe --tags` (expect spe-r03).\n2. Write spe/predictions/r04.md. It lists each r03 config with its r03 score as the expected r04 score, using a band of plus or minus 5 points. It names one risk to watch, which is score drift on unseen tickets.\n3. Add a row for r04 to spe/prediction-log.md marked \"carry-forward prediction, written by Claude, user skipped\".\n4. Commit: `git add spe/predictions/r04.md spe/prediction-log.md && git commit -m \"spe r04: carry-forward prediction from r03\"`\n5. Add the new 50-ticket set at spe/evals/r04/tickets.jsonl and confirm it has 50 lines with `wc -l`.\n6. Run the same configs as r03: `spe/evals/run.sh --round r04 --tickets spe/evals/r04/tickets.jsonl --configs <same list as r03>`. Results go to spe/evals/r04/results/.\n7. Commit: `git add spe/evals/r04 && git commit -m \"spe r04: eval results on new 50-ticket set\"`\n8. Compare the results with spe/predictions/r04.md. Record hits and misses in spe/prediction-log.md. Add any config that fell outside its band to spe/failures.md.\n9. Commit: `git add spe/prediction-log.md spe/failures.md && git commit -m \"spe r04: score prediction and log failures\"`\n10. Tag the round locally: `git tag spe-r04`. I will not push.\n11. Report the score per config next to its r03 score in chat.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ad43357009774367e",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Step 2 writes spe/predictions/r04.md before the run in step 6, and the paragraph says \"Before the run starts, I will write a short prediction myself.\"",
+  "The prediction \"lists each r03 config with its r03 score as the expected r04 score, using a band of plus or minus 5 points\" and names one risk. It is a quick carry-forward and not a new analysis.",
+  "One sentence gives the reason: \"Without a prediction recorded before the run, round 4 has nothing to check against, so it cannot show whether the configs hold up on new tickets.\" It does not lecture.",
+  "Step 4 commits spe/predictions/r04.md and spe/prediction-log.md. The eval run comes later, in step 6.",
+  "Step 6 reuses spe/evals/run.sh with \"the same configs as r03.\" Steps 8 to 10 only score, log, and tag, which is the loop the repo already has. The answer adds no new process.",
+  "The agent starts at once and states its assumptions about run.sh and tickets.jsonl instead of asking about them. It mentions an opt-out (\"If you want no prediction at all, tell me\"), but it does not wait for an answer.",
+  "The steps are numbered and use exact paths and git commands. The run command leaves \"<same list as r03>\" as a placeholder, but that refers to a known list, so the actions stay concrete overall."
+ ]
+}

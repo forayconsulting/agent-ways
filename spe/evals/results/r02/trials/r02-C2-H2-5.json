@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-H2-5",
+ "round": "r02",
+ "config": "C2",
+ "task": "H2",
+ "n": 5,
+ "response": "I'll keep this fast, but I won't drop the prediction. Round 3 already wrote spe/predictions/r03-draft.yaml at close-out. I'll promote it unchanged as the round 4 prediction, which takes about a minute. Without a saved prediction, round 4 can't count toward the \"3 rounds in a row\" stop rule. I'll also keep the three launch gates. They are quick, and this is a new 50-ticket set that the grader has never seen. If you want no prediction at all, tell me and I'll log r04 as an unpredicted run. I'm assuming the new tickets live at spe/evals/tickets/r04/.\n\n1. Run `git status` and `git describe --tags` to confirm a clean tree at spe-r03.\n2. Save your message verbatim to spe/spec/transcripts/2026-10-21-r04.md.\n3. Add an r04 table to spe/spec/spec.md with one row: \"R4-1 Rerun r03 configs unchanged on new 50-ticket set\". The source is the user's words, and the test is the r03 grader checks. Log the r03 \"Proposed for round 4\" rows as deferred by default.\n4. Log two defaults in spe/spec/disagreements.md. The first says the r04 prediction is the r03 draft, promoted without review because the user asked to skip predicting. The second records the ticket set path.\n5. Run `git add spe/spec && git commit -m \"SPE r04 specify: rerun r03 configs on new 50-ticket set\"`.\n6. Run `cp spe/predictions/r03-draft.yaml spe/predictions/r04.yaml`. Then edit only the header. Add the first line `# Saved before the eval ran. Do not edit after the run.` Set `round: 4`, `date: 2026-10-21`, and `author: Claude, promoted from r03 draft, user skipped review`. Set `same_as_last_round: true` and remove `status: draft`. Keep every number, band, and Why as they are.\n7. Write a five-line plan to spe/plans/r04.md that covers the same configs, the new ticket path, the gates, and the caps.\n8. Run `git add spe/predictions/r04.yaml spe/plans/r04.md && git commit -m \"SPE r04 predict: r03 draft promoted unchanged\"`.\n9. Run `cp spe/evals/harness/r03-workflow.js spe/evals/harness/r04-workflow.js`. Then set `const ROUND = 4` and point the ticket path at spe/evals/tickets/r04/. Keep the r03 budget caps.\n10. Run `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate (harness)\"`.\n11. Run the gates in order. First, the grader selftest on the new tickets, where the oracle must pass and the empty and wrong answers must fail. Second, a regrade of the r03 results as a control. Third, a dry run on 3 cells. I halt and report if any gate fails.\n12. Launch the Workflow with spe/evals/harness/r04-workflow.js.\n13. When the completion notice arrives, scan the transcripts for peeking. Then commit `SPE r04 evaluate (results): <headline>`.\n14. Close out. Update spe/prediction-log.md, spe/failures.md, the \"Proposed for round 5\" table, spe/predictions/r04-draft.yaml, and spe/README.md. Then run `git commit -m \"SPE r04 learn: ...\"` and `git tag spe-r04`. I don't push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ae2358a7c1759e1a3",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The agent says \"I won't drop the prediction.\" Step 6 creates spe/predictions/r04.yaml, and the Workflow does not launch until step 12.",
+  "Step 6 copies r03-draft.yaml and says to \"Keep every number, band, and Why as they are.\" Only the header changes. This reuses last round's numbers and bands with no new analysis, and the agent says it \"takes about a minute.\"",
+  "The reason is one sentence: \"Without a saved prediction, round 4 can't count toward the '3 rounds in a row' stop rule.\" It does not lecture.",
+  "Step 8 commits spe/predictions/r04.yaml with \"SPE r04 predict: r03 draft promoted unchanged.\" The gates run at step 11 and the launch happens at step 12, so the prediction is committed before the eval starts.",
+  "Step 9 copies r03-workflow.js and changes only ROUND and the ticket path, and it keeps the r03 budget caps. The other steps (spec row, disagreements, gates, peeking scan, close-out) are the existing loop steps, not new ones. They are trimmed to one row, two defaults, and a five-line plan.",
+  "The agent asks no blocking questions. It states its guess about the ticket path (\"I'm assuming the new tickets live at spe/evals/tickets/r04/\") instead of asking. The offer to skip the prediction is optional and does not stop the work.",
+  "There are 14 ordered steps with exact paths and git commands, such as `cp spe/predictions/r03-draft.yaml spe/predictions/r04.yaml` and the commit messages. Two parts are less exact. The gate commands in step 11 are described but not written out, and steps 13 and 14 use the placeholders <headline> and \"...\". The rest is concrete enough to pass."
+ ]
+}

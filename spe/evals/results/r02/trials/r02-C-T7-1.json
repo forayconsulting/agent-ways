@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-T7-1",
+ "round": "r02",
+ "config": "C",
+ "task": "T7",
+ "n": 1,
+ "response": "1. Copy the approved plan to a lasting file: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n\n2. Write `spe/predictions/r02.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` The file includes:\n   - `round: 2` and `date: 2026-10-21`\n   - `author: \"Claude, approved by the user in plan mode\"`\n   - configs A, B, C and D, copied from the plan's Predict table\n   - every number from that table, each with its Why and the grader check that measures it\n   - `same_as_last_round` for each number\n\n3. Commit the prediction locally. I will not push.\n   `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D locked before harness work\"`\n\n4. Write the Specify files. Plan mode blocked file writes, so these do not exist yet.\n   - Save the user's round 2 prompt and planning answers, word for word, to `spe/spec/transcripts/2026-10-21-r02.md`.\n   - Add the Round 2 requirement table from the plan to `spe/spec/spec.md`. Each row has an ID, the requirement, its source (user words, a decision, or an r01 F-number) and its test. The table also records whether each r01 proposal was adopted or rejected, and why.\n   - Add any new open decisions or defaults to `spe/spec/disagreements.md`.\n\n5. Commit the spec locally.\n   `git add spe/spec/ && git commit -m \"SPE r02 specify: round 2 requirements and transcript\"`\n\n6. Start the harness by writing the graders. The plan does not name a grader path, so I chose `spe/evals/graders/r02-graders.js`. The graders have code checks first and judges only for what code cannot check. The next step after this is the grader selftest gate. The oracle must pass, and the empty and wrong answers must fail.\n\nNotes:\n- The prediction comes before the spec commit because the way says to save the plan and prediction \"before anything else.\" The spec rows already sit inside the approved plan, so writing them afterward does not change any number.\n- The commit messages have no Co-Authored-By line and do not mention Claude. Your CLAUDE.md requires that.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "aa0a920df20c9929f",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml`.",
+  "Action 3 commits `spe/plans/r02.md spe/predictions/r02.yaml`. Grader work does not start until action 6.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21`, an `author` line, every number from the Predict table, a Why for each number, and `same_as_last_round` for each number.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 6 says the next step is the grader selftest gate. In that gate the oracle must pass and the empty and wrong answers must fail. No trial is run before this gate.",
+  "The answer never mentions a small dry run before the full Workflow run. The list ends at writing the graders, and it gives no plan for a dry run.",
+  "Each action gives an exact path or git command, such as `spe/spec/transcripts/2026-10-21-r02.md` and `spe/evals/graders/r02-graders.js`. The order is sensible, and the answer explains why the prediction commit comes before the spec commit."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H1-4",
+ "round": "r02",
+ "config": "A",
+ "task": "H1",
+ "n": 4,
+ "response": "# Plan: SPE round 3, spec step\n\nThe next SPE step is to agree the round 3 spec. The four proposals at the end of spec.md are marked \"not yet agreed.\" My recommendation for each one is below. If you approve this plan as written, I will treat each recommendation as your answer. To change any of them, name the ID and your call.\n\n## 1. Fix a bad baseline before agreeing anything\n\nThe C priority row compares a fixed number with a broken one. F5 says the old grader read priority from the draft reply instead of the label field. Only round 2 was regraded. The \"same as last round\" value of 0.78 comes from round 1, so the old grader produced it.\n\n- I will run the fixed `grade.py` (which reads `label.priority`) on the stored round 1 outputs. I assume they are in `spe/evals/r01/`.\n- I will replace 0.78 in the round 2 priority row of `spe/prediction-log.md` with the regraded value. Then I will recheck that row's Verdict and Closer.\n- If the round 1 outputs are missing, I will mark the baseline \"not comparable (F5)\" instead of guessing.\n- I will add \"r01 regraded\" to F5 in `spe/failures.md`.\n- Commit 1 (local only): `spe: regrade r01 priority with fixed grader (F5)`\n\n## 2. Decisions on P1 to P4\n\n| ID | Recommendation | Reason |\n|---|---|---|\n| P1 Split outage check out of C | Agree | This change is the direct fix for F4, and it changes only config C. F4 stays open until round 3 shows C calling the status check on T17. |\n| P2 Add 10 harder tickets | Agree, with split reporting | Harder tickets will lower accuracy in every config even if nothing else changes. That would break the \"same as last round\" baseline. Round 3 will report each metric twice. One number covers the round 2 ticket set and the other covers the 10 new tickets. Verdicts use the round 2 set only. The new set gets its first baseline this round. |\n| P3 Drop config D | Agree | D scored 0.74 on category accuracy. A and B both scored 0.86. D's cost also rose from $0.003 to $0.004. I will close F6 as \"config dropped\" and will not fix it. If you still want a cheap config, say so. In that case I will keep D and add a retry cap as the F6 fix. |\n| P4 Raise trials from 3 to 5 | Agree | Each cell will cost 5/3 as much. B's 0.02 gap may still be inside noise at n=5. The spec will require reporting the min and max across trials for each cell, so a verdict can say \"inside noise\" when the range covers the prediction. |\n\nP2 and P4 both make the eval cost more. A round 3 run will cost about 5/3 times the round 2 run, plus the cost of the 10 new tickets.\n\n## 3. Edits for the spec step\n\n- `spe/spec/spec.md`\n  - Rename \"Proposed for round 3 (not yet agreed)\" to \"Round 3 changes (agreed 2026-10-21)\".\n  - Keep the Why column and record the decision on each row.\n  - Add two reporting rules. First, scores for the old and new ticket sets are reported separately (P2). Second, each cell reports its trial range (P4).\n- `spe/failures.md`\n  - F4: change \"Fix: open\" to \"Fix: planned r03 (P1)\".\n  - F6: change \"Fix: open\" to \"Closed r03, config D dropped (P3)\".\n- `spe/README.md`: if it has a current-round line, set it to \"Round 3: spec agreed, predictions next.\"\n- Commit 2 (local only): `spe: agree round 3 spec (P1 to P4)`\n\n## 4. Left for the predict step\n\n`spe/predictions/r03-draft.yaml` stays at `status: draft` in this step. The predict step will make these changes to it:\n\n- Remove D from `baseline_same_as_last_round`.\n- Add separate baselines for the old ticket set and the new ticket set.\n- Use the regraded round 1 priority value where it applies.\n- Anchor each prediction near the naive baseline unless its Why gives a specific mechanism. In round 2 the naive baseline was closer than our prediction in 4 of 5 rows. Only A tied.\n\nThe tool split for P1 is not part of this step. Code changes and eval runs are not part of it either.\n\n## 5. Checks before each commit\n\n- `grade.py` at the F5 fix commit reads `label.priority`.\n- No \"not yet agreed\" text remains in spec.md.\n- `git status` is clean after each commit.\n- Nothing is pushed. Commit messages carry no co-author or tool attribution lines.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a60b0cd42a3e5abf8",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"The next SPE step is to agree the round 3 spec\" and treats the \"not yet agreed\" proposals as the work for this step. The user gave no phase, so the agent worked out the respec on its own.",
+  "The decision table marks P1, P2, P3 and P4 each as \"Agree\" and gives a reason for each. For example, P1 is \"the direct fix for F4\" and P3 rests on D's 0.74 score and its cost rising from $0.003 to $0.004.",
+  "P1 cites F4. The P3 decision closes F6. The baseline regrade is tied to F5 in Section 1 and in the commit message \"(F5)\". The failures.md edits name F4 and F6 directly.",
+  "The answer gives no predicted numbers and no bands. Section 4 says r03-draft.yaml \"stays at status: draft\" and pushes the prediction work to a later predict step. It only says predictions will be anchored \"near the naive baseline.\"",
+  "The answer contains no predicted numbers, so no number has a Why. Section 4 only says each prediction should have \"a specific mechanism\" in a later step.",
+  "The answer never saves to spe/predictions/r03.yaml. It says the draft \"stays at status: draft in this step.\" The two planned commits cover the regrade and the spec, not a prediction.",
+  "The answer has no eval plan. It does not mention a selftest gate or a dry run. Section 4 says \"eval runs are not part of it.\" The round 1 regrade fixes a baseline. It is not a control gate before a full run."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H1-1",
+ "round": "r02",
+ "config": "A",
+ "task": "H1",
+ "n": 1,
+ "response": "# Plan: SPE round 3, steps 1 and 2 (agree the spec, lock the predictions)\n\n\"Next one\" means the step after the round 2 evaluation. That step is agreeing the round 3 spec and then locking the round 3 predictions. I will not run any evals in this plan. Each step gets its own local commit. Nothing gets pushed.\n\n## Decisions I need you to approve\n\nApproving this plan approves these four choices.\n\n| ID | My call | Reason |\n|---|---|---|\n| P1 | Accept | F4 is the broken Why from round 2. Splitting the outage status check back out is the direct test of that Why. |\n| P2 | Accept, with a condition | Score the 10 new tickets as a separate \"hard\" slice. Keep reporting the original ticket set on its own. If we mix them, the naive baseline (A 0.86, B 0.86, C 0.80) is no longer comparable, and every round 3 verdict loses its meaning. |\n| P3 | Accept | F6 stays unfixed. I will mark it \"closed: config dropped, not fixed\" so it does not read as solved. |\n| P4 | Accept | B missed by 0.02 at n=3. With D dropped, trials per ticket go from 12 (4 configs x 3) to 15 (3 configs x 5). That is about 25% more runs. |\n\n## Gaps to settle before locking\n\n1. **D's 0.74 in r03-draft.yaml.** The round 2 log you pasted has no category accuracy row for D. I will check that number against `spe/evals/` before I remove it. If P3 passes, D leaves the baseline either way.\n2. **F5 and the round 1 priority number.** F5 regraded round 2. The \"same as last round\" priority value of 0.78 comes from round 1. If round 1 used the same grader, that 0.78 was read from the draft reply. I will check whether r01 was regraded. If it was not, I will regrade it or add a note to the log.\n3. **Calibration.** In round 2 the naive baseline was closer on 4 of 5 rows. Every miss overshot the improvement. In round 3 I will predict \"no change\" unless the Why points to specific round 2 evidence.\n\n## Step 1: agree the round 3 spec (commit 1)\n\n- `spe/spec.md`: rename \"Proposed for round 3 (not yet agreed)\" to \"Round 3 changes (agreed 2026-10-21)\". Record each decision and the P2 slice condition.\n- `spe/failures.md`: set F4 to \"Fix: P1, tested in r03\". Set F6 to \"closed: config D dropped in r03, not fixed\".\n- `spe/plans/r03.md`: write the run matrix. It covers configs A, B, and C. It lists the original set plus the 10 hard tickets, 5 trials per cell, and grade.py reading `label.priority`.\n- Commit: `spe(r03): agree round 3 spec changes`\n\n## Step 2: lock the round 3 predictions (commit 2)\n\n- Rename `spe/predictions/r03-draft.yaml` to `spe/predictions/r03.yaml` and set `status: locked`.\n- Baselines (original ticket set): category A 0.86, B 0.86, C 0.80. Priority C 0.71. D removed.\n- Proposed predictions. These are my estimates.\n\n| Metric | Config | Baseline | Predicted | Why |\n|---|---|---|---|---|\n| category accuracy | A | 0.86 | 0.86 | Nothing changed for A. |\n| category accuracy | B | 0.86 | 0.86 | Nothing changed for B. n=5 tests whether round 2 was noise. |\n| category accuracy | C | 0.80 | 0.83 | P1 brings back the outage lookup that F4 found missing. |\n| priority accuracy | C | 0.71 | 0.76 | Outage tickets stop falling to P3 once the status check can be called (F4, r02-C-T17). |\n| category accuracy, hard slice | A, B, C | none | 0.70, 0.72, 0.68 | Mixed billing and outage tickets are harder. This row has no naive baseline, so it gets no verdict this round. |\n\n- `spe/prediction-log.md`: add a round 3 section with the same seven columns. Fill Metric, Config, Predicted, and Same as last round. Leave Measured, Verdict, and Closer empty.\n- Commit: `spe(r03): lock round 3 predictions`\n\n## Checks before each commit\n\n- `python3 -I -c \"import yaml; yaml.safe_load(open('spe/predictions/r03.yaml'))\"` parses without error.\n- Every row in the round 3 log table has 7 cells.\n- `grep -n \"D\" spe/predictions/r03.yaml` finds no config D entry.\n- Commit messages carry no attribution lines.\n\n## Not in this plan\n\n- Running the round 3 evals. That is the next step after this one.\n- Fixing F6.\n- Any push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a302bac03c3a9cc2b",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The plan opens by reading \"next one\" as \"the step after the round 2 evaluation\", which is \"agreeing the round 3 spec and then locking the round 3 predictions\". It identified the respec phase without being told.",
+  "The decisions table gives each of P1 to P4 an explicit call (all \"Accept\", with P2 accepted with a condition). Each call has a specific reason, such as F4 for P1, baseline comparability for P2, F6 for P3, and noise at n=3 for P4.",
+  "P1 cites F4 and P3 cites F6. The failures.md edits tie F4 to P1 and F6 to the dropped config. F5 is handled in Gap 2, and the run matrix keeps grade.py reading label.priority. The requirements trace back to the failure IDs, but the run matrix line itself does not name F5.",
+  "The predictions start from round 2's measured values (A 0.86, B 0.86, C 0.80, priority C 0.71). Every predicted number is a single point, such as 0.83 and 0.76. No number has a band or range.",
+  "Every row of the predictions table has a Why column entry. Examples are \"P1 brings back the outage lookup that F4 found missing\" and \"Nothing changed for A.\"",
+  "Step 2 renames the draft to spe/predictions/r03.yaml, sets status: locked, and commits it with \"spe(r03): lock round 3 predictions\". The plan says it will run no evals, so the lock comes before any trial.",
+  "The plan has no eval run plan with gates. It defers running evals (\"That is the next step after this one\"). It names no selftest, no control regrade, and no dry run before a full run."
+ ]
+}

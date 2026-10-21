@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-T4-7",
+ "round": "r02",
+ "config": "A",
+ "task": "T4",
+ "n": 7,
+ "response": "Assumptions: I scored `pass_rates` against `category_acc`, and I appended new sections to the existing files because their earlier contents were not given. I left `spe/README.md` unchanged for the same reason.\n\n```spe/prediction-log.md (append at end)\n## Round 2 (closed 2026-10-21)\n\nPredictions: spe/predictions/r02.yaml (saved before the run)\nResults: spe/evals/results/r02/r02.json (5 trials per cell, 40 tickets)\nError is actual minus predicted.\n\n| Metric | Variant | Predicted | Actual | Error | Same as last round | Baseline error |\n|---|---|---|---|---|---|---|\n| category_acc | A | 0.85 | 0.86 | +0.01 | 0.84 | +0.02 |\n| category_acc | B | 0.88 | 0.86 | -0.02 | 0.84 | +0.02 |\n| category_acc | C | 0.90 | 0.80 | -0.10 | 0.84 | -0.04 |\n| category_acc | D | 0.75 | 0.74 | -0.01 | 0.70 | +0.04 |\n| priority_acc | C | 0.80 | 0.71 | -0.09 | n/a | n/a |\n| cost_per_ticket | D | $0.002 | $0.004 | 2.0x | n/a | n/a |\n\n### Score\n- My mean absolute error on category_acc was 0.035. The \"same as last round\" baseline scored 0.030. My predictions did slightly worse than assuming nothing changed.\n- C caused the whole gap. Without C, my error was 0.013 and the baseline error was 0.027.\n- Estimate: 40 tickets is a small set. Gaps of 0.02 between variants are too small to read as real.\n\n### Why checks\n- B, \"shorter prompt keeps focus\": not supported. B tied A on category_acc at 0.86. B scored 0.78 on priority_acc and A scored 0.79. B did cost less, at $0.011 for A and $0.009 for B.\n- C, \"merged tools cut wrong tool choice\": wrong direction. Tool calls fell from 4.1 to 2.6. But C skipped check_status on 9 outage tickets (see F4). C finished 0.06 below A on category_acc and 0.08 below A on priority_acc.\n- D, \"smaller model loses about 0.15\": close. D finished 0.12 below A. My own point estimates put D only 0.10 below A, so my number and my reason disagreed. My cost prediction was off by 2x. D retried on tickets over 2,000 words (see F5).\n\n### Carry into r03 predictions\n1. When a change removes tool calls, first list the tickets that need the removed call. Predict a gain only after that.\n2. Base cost predictions on the longest tickets as well as typical ones. Include retries.\n3. Check that each point estimate matches the reason given for it.\n```\n\n```spe/failures.md (append after F3)\n## F4: Variant C skips check_status on outage tickets\n- Round: r02\n- Variant: C (merged tools)\n- Evidence: trials r02-C-T17-1..3. The Workflow notes say C never called check_status on 9 outage tickets.\n- What happens: The merged tool lets C answer outage tickets without checking service status.\n- Effect: This is the likely cause of C's drop. C scored 0.80 on category_acc and A scored 0.86. C scored 0.71 on priority_acc and A scored 0.79. No ticket-by-ticket check has confirmed this yet.\n- Status: open\n- Next check: Score C and A on just the 9 outage tickets and compare.\n\n## F5: Variant D retries long tickets and doubles its tokens\n- Round: r02\n- Variant: D (smaller model)\n- Evidence: The Workflow notes say D retried on tickets over 2,000 words. The notes give no trial IDs.\n- What happens: On long tickets D retries, and the retry doubles the tokens used.\n- Effect: D's actual cost was $0.004 per ticket. The prediction was $0.002. The retries explain some or all of the gap. Nobody has measured how much.\n- Status: open\n- Next check: Split D's cost into tickets over 2,000 words and all other tickets.\n```\n\nCommit (local only, no push):\n\n```\ngit add spe/prediction-log.md spe/failures.md\ngit commit -m \"spe(r02): close out round 2\" -m \"Score r02 predictions against results. Predictions missed the same-as-last-round baseline (MAE 0.035 vs 0.030), driven by C. Add F4 (C skips check_status on outage tickets) and F5 (D retries long tickets, doubling cost).\"\n```",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a3bbc0623c9fed4e9",
+ "judge": [
+  false,
+  false,
+  true,
+  true,
+  false,
+  true,
+  false
+ ],
+ "critiques": [
+  "The table lists every predicted metric with Predicted, Actual, and Error columns, including priority_acc C and cost_per_ticket D. No row is marked hit or miss. The reader has to judge each error without a stated tolerance.",
+  "The table shows the same-as-last-round value and its error for the four category_acc rows. The priority_acc and cost rows show 'n/a' for the baseline. No row says which guess was closer. The answer only compares the two in aggregate ('0.035' vs '0.030').",
+  "The 'Why checks' section quotes each original Why: 'shorter prompt keeps focus', 'merged tools cut wrong tool choice', and 'smaller model loses about 0.15'. It names the wrong assumption for each one. For C it says C 'skipped check_status on 9 outage tickets'. For D it blames retries on long tickets for the cost miss.",
+  "F4 and F5 each have 'What happens', an 'Evidence' line that gives the trial IDs or the Workflow note, 'Status: open', and a 'Next check'. The Evidence lines also give the signals to look for: no check_status call on outage tickets, and retries on tickets over 2,000 words. Neither entry has a separate 'how to spot it' field, but the content covers it.",
+  "The 'Carry into r03 predictions' list gives three lessons tied to the r02 evidence. The answer writes no spe/predictions/r03.yaml or any other draft prediction, and nothing is marked as a draft.",
+  "The Score section says: 'My predictions did slightly worse than assuming nothing changed.' It backs this with MAE 0.035 for the predictions against 0.030 for the baseline.",
+  "The answer leaves r02.yaml alone. It also leaves spe/README.md unchanged on purpose ('I left spe/README.md unchanged'), and the commit step has no git tag for the round."
+ ]
+}

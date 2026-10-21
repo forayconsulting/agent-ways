@@ -1,0 +1,703 @@
+{
+ "A-H1": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 3.25,
+  "median_chars": 4083,
+  "code_fail": {
+   "band": 7,
+   "pred_file": 7
+  }
+ },
+ "A-H2": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 4.25,
+  "median_chars": 1753,
+  "code_fail": {
+   "pred_file": 8,
+   "order": 8
+  }
+ },
+ "A-H3": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.5,
+  "median_chars": 663,
+  "code_fail": {}
+ },
+ "A-H4": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 5.25,
+  "median_chars": 2777,
+  "code_fail": {
+   "pred_file": 8,
+   "same_tasks": 8
+  }
+ },
+ "A-H5": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 3.75,
+  "median_chars": 1822,
+  "code_fail": {
+   "ceiling": 7,
+   "harder": 3,
+   "next_round": 7
+  }
+ },
+ "A-T1": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 2.12,
+  "median_chars": 6356,
+  "code_fail": {
+   "spec_table": 8,
+   "pred_file": 8,
+   "plan_copy": 8,
+   "why": 6,
+   "band": 8,
+   "dry_run": 8
+  }
+ },
+ "A-T2": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 6.12,
+  "median_chars": 7600,
+  "code_fail": {
+   "band": 3,
+   "source_col": 8,
+   "defaults": 5
+  }
+ },
+ "A-T3": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 3.25,
+  "median_chars": 13493,
+  "code_fail": {
+   "critic": 8,
+   "dryrun": 6
+  }
+ },
+ "A-T4": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 3.12,
+  "median_chars": 4488,
+  "code_fail": {
+   "log_cols": 8,
+   "whybroke": 8,
+   "draft": 8,
+   "proposed": 8,
+   "tag": 8
+  }
+ },
+ "A-T5": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 5.38,
+  "median_chars": 3407,
+  "code_fail": {
+   "budget": 8,
+   "halt": 3,
+   "report": 2,
+   "pred_each": 8
+  }
+ },
+ "A-T6": {
+  "done": 8,
+  "pass": 6,
+  "incomplete": 0,
+  "rate": 0.75,
+  "ci95": [
+   0.41,
+   0.93
+  ],
+  "judge_mean": 6.62,
+  "median_chars": 4769,
+  "code_fail": {
+   "noedit": 1
+  }
+ },
+ "A-T7": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 1.5,
+  "median_chars": 1301,
+  "code_fail": {
+   "plan_copy": 8,
+   "pred_file": 8,
+   "order": 8
+  }
+ },
+ "C-H1": {
+  "done": 8,
+  "pass": 2,
+  "incomplete": 0,
+  "rate": 0.25,
+  "ci95": [
+   0.07,
+   0.59
+  ],
+  "judge_mean": 5.88,
+  "median_chars": 8013,
+  "code_fail": {
+   "band": 5
+  }
+ },
+ "C-H2": {
+  "done": 8,
+  "pass": 4,
+  "incomplete": 0,
+  "rate": 0.5,
+  "ci95": [
+   0.22,
+   0.78
+  ],
+  "judge_mean": 5.5,
+  "median_chars": 2889,
+  "code_fail": {}
+ },
+ "C-H3": {
+  "done": 8,
+  "pass": 1,
+  "incomplete": 0,
+  "rate": 0.12,
+  "ci95": [
+   0.02,
+   0.47
+  ],
+  "judge_mean": 5.75,
+  "median_chars": 812,
+  "code_fail": {
+   "no_ceremony": 7
+  }
+ },
+ "C-H4": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 4.88,
+  "median_chars": 4381,
+  "code_fail": {
+   "same_tasks": 7
+  }
+ },
+ "C-H5": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 4.88,
+  "median_chars": 2063,
+  "code_fail": {
+   "ceiling": 2
+  }
+ },
+ "C-T1": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 10650,
+  "code_fail": {
+   "band": 8
+  }
+ },
+ "C-T2": {
+  "done": 8,
+  "pass": 6,
+  "incomplete": 0,
+  "rate": 0.75,
+  "ci95": [
+   0.41,
+   0.93
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 10728,
+  "code_fail": {
+   "band": 2
+  }
+ },
+ "C-T3": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.75,
+  "median_chars": 27207,
+  "code_fail": {}
+ },
+ "C-T4": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 9736,
+  "code_fail": {}
+ },
+ "C-T5": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 7414,
+  "code_fail": {}
+ },
+ "C-T6": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.75,
+  "median_chars": 8385,
+  "code_fail": {}
+ },
+ "C-T7": {
+  "done": 8,
+  "pass": 3,
+  "incomplete": 0,
+  "rate": 0.38,
+  "ci95": [
+   0.14,
+   0.69
+  ],
+  "judge_mean": 5.5,
+  "median_chars": 1436,
+  "code_fail": {}
+ },
+ "C2-H1": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 8472,
+  "code_fail": {}
+ },
+ "C2-H2": {
+  "done": 8,
+  "pass": 7,
+  "incomplete": 0,
+  "rate": 0.88,
+  "ci95": [
+   0.53,
+   0.98
+  ],
+  "judge_mean": 6.25,
+  "median_chars": 2865,
+  "code_fail": {
+   "order": 1
+  }
+ },
+ "C2-H3": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 5.0,
+  "median_chars": 831,
+  "code_fail": {
+   "no_ceremony": 8
+  }
+ },
+ "C2-H4": {
+  "done": 8,
+  "pass": 2,
+  "incomplete": 0,
+  "rate": 0.25,
+  "ci95": [
+   0.07,
+   0.59
+  ],
+  "judge_mean": 6.0,
+  "median_chars": 4499,
+  "code_fail": {
+   "same_tasks": 6,
+   "pred_file": 1
+  }
+ },
+ "C2-H5": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 4.38,
+  "median_chars": 2042,
+  "code_fail": {
+   "ceiling": 7
+  }
+ },
+ "C2-T1": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 9805,
+  "code_fail": {}
+ },
+ "C2-T2": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 11495,
+  "code_fail": {}
+ },
+ "C2-T3": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.88,
+  "median_chars": 28418,
+  "code_fail": {}
+ },
+ "C2-T4": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 11720,
+  "code_fail": {}
+ },
+ "C2-T5": {
+  "done": 8,
+  "pass": 7,
+  "incomplete": 0,
+  "rate": 0.88,
+  "ci95": [
+   0.53,
+   0.98
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 6404,
+  "code_fail": {
+   "budget": 1
+  }
+ },
+ "C2-T6": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 7558,
+  "code_fail": {}
+ },
+ "C2-T7": {
+  "done": 8,
+  "pass": 4,
+  "incomplete": 0,
+  "rate": 0.5,
+  "ci95": [
+   0.22,
+   0.78
+  ],
+  "judge_mean": 5.75,
+  "median_chars": 1645,
+  "code_fail": {}
+ },
+ "D-H1": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.5,
+  "median_chars": 8630,
+  "code_fail": {}
+ },
+ "D-H2": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.5,
+  "median_chars": 3067,
+  "code_fail": {}
+ },
+ "D-H3": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 5.0,
+  "median_chars": 808,
+  "code_fail": {
+   "no_ceremony": 8
+  }
+ },
+ "D-H4": {
+  "done": 8,
+  "pass": 6,
+  "incomplete": 0,
+  "rate": 0.75,
+  "ci95": [
+   0.41,
+   0.93
+  ],
+  "judge_mean": 6.75,
+  "median_chars": 5437,
+  "code_fail": {
+   "same_tasks": 2
+  }
+ },
+ "D-H5": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 4.75,
+  "median_chars": 2361,
+  "code_fail": {
+   "ceiling": 3
+  }
+ },
+ "D-T1": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 9922,
+  "code_fail": {}
+ },
+ "D-T2": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 12768,
+  "code_fail": {}
+ },
+ "D-T3": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 28102,
+  "code_fail": {}
+ },
+ "D-T4": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 10583,
+  "code_fail": {}
+ },
+ "D-T5": {
+  "done": 8,
+  "pass": 7,
+  "incomplete": 0,
+  "rate": 0.88,
+  "ci95": [
+   0.53,
+   0.98
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 6417,
+  "code_fail": {
+   "pred_each": 1
+  }
+ },
+ "D-T6": {
+  "done": 8,
+  "pass": 6,
+  "incomplete": 0,
+  "rate": 0.75,
+  "ci95": [
+   0.41,
+   0.93
+  ],
+  "judge_mean": 6.62,
+  "median_chars": 7398,
+  "code_fail": {
+   "noedit": 2
+  }
+ },
+ "D-T7": {
+  "done": 8,
+  "pass": 7,
+  "incomplete": 0,
+  "rate": 0.88,
+  "ci95": [
+   0.53,
+   0.98
+  ],
+  "judge_mean": 6.5,
+  "median_chars": 2097,
+  "code_fail": {}
+ }
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-T7-6",
+ "round": "r02",
+ "config": "A",
+ "task": "T7",
+ "n": 6,
+ "response": "The plan does not name the round 2 files, so I chose `r02` filenames that follow the existing spe/ layout.\n\n1. Check where I am and what is already uncommitted, so the commit only takes spe/ files: `pwd && git branch --show-current && git status --short`\n2. Copy the approved plan into the repo, since ~/.claude/plans is outside the working tree: `cp ~/.claude/plans/quiet-river.md spe/plans/r02-plan.md`\n3. Write `spe/predictions/r02-predictions.md`. It holds the Predict table for configs A to D, copied word for word from the plan, with each predicted score and the reason for it.\n4. Append a round 2 entry to `spe/prediction-log.md`. The entry has the date, a link to spe/predictions/r02-predictions.md, and one line per config.\n5. Commit the Plan and Predict step before any eval runs, so the predictions are fixed before results exist: `git add spe/plans/r02-plan.md spe/predictions/r02-predictions.md spe/prediction-log.md && git commit -m \"spe(r02): plan and predictions for configs A to D\"`. The commit has no Co-Authored-By line. It is a local commit only, with no push.\n6. Start the Evaluate step by writing the graders that the plan lists, in `spe/evals/graders/r02-graders.js`. After that I write the tasks in `spe/evals/tasks/r02/` and the harness in `spe/evals/harness/r02-workflow.js`.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a5d8d8b69ebae0fce",
+ "judge": [
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "Step 2 saves the plan to a lasting file with `cp ~/.claude/plans/quiet-river.md spe/plans/r02-plan.md`. Step 3 writes `spe/predictions/r02-predictions.md` instead of `spe/predictions/r02.yaml`, so the prediction file has the wrong name and format.",
+  "Step 5 commits the plan, the predictions and the log \"before any eval runs\". Grader, task and harness work does not start until step 6.",
+  "Step 3 says the file holds \"each predicted score and the reason for it\", which covers the numbers and a Why per number. The answer puts the date in the log (step 4), not in the prediction file. It never mentions a round field, an author or a same-as-last-round baseline.",
+  "Step 5 says the predictions are \"fixed before results exist\" because they are committed. No step marks the prediction file itself as not to be edited after the run.",
+  "Step 6 only writes `spe/evals/graders/r02-graders.js`. No action runs a grader selftest or sets one up as a gate before trials.",
+  "The six actions end with writing graders, tasks and the harness. No small dry run is planned before the full Workflow run.",
+  "Each step names an exact path or command, such as `git status --short`, the `cp` command and the full `git add ... && git commit` command. The order of orient, save plan, predict, commit and then build graders makes sense."
+ ]
+}

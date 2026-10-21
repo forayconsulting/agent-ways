@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H4-6",
+ "round": "r02",
+ "config": "A",
+ "task": "H4",
+ "n": 6,
+ "response": "**What I do next**\n\nI open Round 5 as a model-swap round. Model is the only thing that changes. C2 stays the pinned production config on Sonnet 5.5 until Sonnet 6 beats it on the existing evals. I will not touch the pin or C2 before predictions are written and committed. First I check the current Anthropic model docs for the exact Sonnet 6 model ID, pricing, and any changed parameters. I will not trust my memory for those. I am assuming the spe/ step order is spec, predictions, plan, evals, log, failures, because that matches the folder layout.\n\n**Plan outline: spe/plans/r05-sonnet6.md**\n\n1. **Scope**\n   - Question: does C2 on Sonnet 6 beat C2 on Sonnet 5.5 on the r04 eval set?\n   - Fixed: C2 prompts, tools, temperature, and the eval set as of tag spe-r04.\n   - Variable: model ID only.\n   - Out of scope: retuning C2 for Sonnet 6. That becomes Round 6 if the swap looks promising.\n\n2. **Spec check** (spe/spec/)\n   - Confirm the spec needs no change for a model swap.\n   - Record the exact Sonnet 6 model ID and its pricing in the spec's config table.\n   - Commit: `spe r05: spec, add Sonnet 6 model entry`\n\n3. **Predictions before any run** (spe/predictions/r05.md)\n   - Give a predicted pass rate for C2 on Sonnet 6, overall and per eval category.\n   - Name which failures.md entries I expect Sonnet 6 to fix and which I expect to stay.\n   - Predict the direction of change in cost per run and latency.\n   - Name the one category most likely to regress, with the reason.\n   - Commit: `spe r05: predictions`\n\n4. **Plan** (this file)\n   - Run A: C2 on Sonnet 5.5, re-run as a fresh baseline. This checks for drift and sets the noise band.\n   - Run B: C2 on Sonnet 6, on the same cases with the same seeds and the same number of repeats as r04.\n   - Optional Run C: the r04 runner-up config on Sonnet 6. Do this only if Run B is close to C2, because a new model can reorder configs.\n   - Adoption rule: Sonnet 6 replaces Sonnet 5.5 only if its overall score beats Run A by more than the noise band, no category drops by more than the noise band, and cost per passing case stays within a set budget. I fill in the numbers from r04 data when I write the file.\n   - Commit: `spe r05: plan`\n\n5. **Evals** (spe/evals/r05/)\n   - Run A, B, and C if needed. Store the raw outputs and the scores.\n   - Commit: `spe r05: eval results`\n\n6. **Log** (spe/prediction-log.md)\n   - Compare each prediction to its result. Mark it hit or miss, with one line on why.\n   - Commit: `spe r05: prediction log`\n\n7. **Failures** (spe/failures.md)\n   - Close the failures Sonnet 6 fixed. Add the new failure modes it introduced, each with an example case ID.\n   - Commit: `spe r05: failures update`\n\n8. **Close**\n   - Decide by the adoption rule. Either re-pin to Sonnet 6 or keep Sonnet 5.5 and record why.\n   - Update spe/README.md with the current best config and its model pin.\n   - Commit: `spe r05: close, pin <model>`. Then add the local tag spe-r05.\n\nEvery commit stays local. I will not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a31e6c8c32f7c3e8d",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I open Round 5 as a model-swap round\" and ends by tagging spe-r05. The release clearly starts a new round.",
+  "The answer says \"C2 stays the pinned production config on Sonnet 5.5 until Sonnet 6 beats it.\" Run A re-runs C2 on Sonnet 5.5 as the baseline, and Run B runs C2 on Sonnet 6 next to it.",
+  "The Scope section fixes the C2 prompts, tools, temperature, and eval set, and lists \"Variable: model ID only.\" It also moves retuning out to Round 6.",
+  "The predictions file is written and committed before any run, and it promises \"a predicted pass rate... overall and per eval category.\" No prediction band or range is given. The noise band appears only in the adoption rule, not in the prediction. So the \"numbers and bands\" part is not met.",
+  "The answer fixes \"the eval set as of tag spe-r04\" and runs Sonnet 6 \"on the same cases with the same seeds and the same number of repeats as r04.\" Graders are not named separately. Pinning the eval set at the tag reasonably covers both the tasks and the graders.",
+  "The answer says \"I will not touch the pin or C2 before predictions are written.\" The re-pin happens only at Close, under the adoption rule, after the evals run.",
+  "The plan names pass rate, cost per run, cost per passing case, and latency. It never names token counts, and it does not measure anything per ticket. The required metric set is incomplete."
+ ]
+}

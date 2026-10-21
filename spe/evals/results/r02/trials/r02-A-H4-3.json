@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H4-3",
+ "round": "r02",
+ "config": "A",
+ "task": "H4",
+ "n": 3,
+ "response": "**What I do next:** I keep C2 pinned on Sonnet 5.5, and I open round 5 to test one change, the model. I will not switch the pin based on the release news. First I check Anthropic's current docs for the exact Sonnet 6 model ID, its price, and its limits. Then I write the round 5 spec and predictions and commit them before I run anything. I commit locally after each step, as you asked. I do not push.\n\n**Plan outline: `spe/plans/r05-plan.md`**\n\n1. **Verify the release**\n   - Check the Anthropic docs for the exact Sonnet 6 snapshot ID, the price per token, the context window and output limits, and any retirement date for Sonnet 5.5.\n   - Record these facts in `spe/spec/r05-spec.md` with the source link and the date I checked.\n   - If no pinned snapshot ID exists yet, I stop and wait for one. An unpinned model alias can change under us in the middle of a round.\n\n2. **Spec (commit: `spe r05: spec`)**\n   - The question is whether C2 on Sonnet 6 beats C2 on Sonnet 5.5 on the frozen eval suite from spe-r04.\n   - The one variable that changes is the model ID. The prompts, tools, temperature, eval set, grader, and run count stay exactly as tagged at spe-r04.\n   - I set the decision rule now, before any results exist. You did not give thresholds, so I chose these defaults: adopt Sonnet 6 only if the pass rate is at least as high as the baseline, no new failure class appears, and cost per task rises by no more than 20%.\n\n3. **Predictions (commit: `spe r05: predictions`)**\n   - Write `spe/predictions/r05.md` before any run.\n   - For each eval category, predict whether the score goes up, down, or stays flat, and give a rough size.\n   - For each open entry in `failures.md`, predict whether Sonnet 6 fixes it.\n   - Predict one or two new failure modes that a newer model could bring, such as more verbose output or drift in tool-call format.\n\n4. **Plan (commit: `spe r05: plan`)**\n   - Run 1: C2 on Sonnet 5.5. This is a fresh baseline in the same time window, so that drift or noise is not counted as a model effect.\n   - Run 2: C2 on Sonnet 6.\n   - Both runs use the same seeds and the same N as round 4. They write to `spe/evals/r05/baseline-s55/` and `spe/evals/r05/c2-s6/`.\n   - This round does no prompt retuning. If Sonnet 6 regresses, retuning C2 for it becomes round 6.\n\n5. **Eval (commit: `spe r05: eval results`)**\n   - Run both arms. Record the pass rate, the scores for each category, cost, latency, and any new failures.\n   - Compare the new baseline with the round 4 numbers to check that the harness still reproduces them.\n\n6. **Log and close (commit: `spe r05: log and close`)**\n   - Score each prediction as a hit or a miss in `prediction-log.md`.\n   - Add new failures to `failures.md` and close the ones Sonnet 6 fixed.\n   - Apply the decision rule. If Sonnet 6 passes, C3 becomes C2 with the new pinned Sonnet 6 ID. If it fails, C2 stays on Sonnet 5.5, and I note the 5.5 retirement date as a risk.\n   - Update `README.md` with the current best config and tag the commit `spe-r05`.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a9496461d55ec2282",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I open round 5 to test one change, the model.\" It lays out the full spec, predictions, plan, eval, and log steps for r05. The release clearly starts a new round.",
+  "The answer says \"I keep C2 pinned on Sonnet 5.5\" and runs \"C2 on Sonnet 5.5\" as a fresh baseline next to \"C2 on Sonnet 6.\" It promotes the Sonnet 6 version to C3 only if it passes the decision rule.",
+  "The answer says \"The one variable that changes is the model ID\" and lists prompts, tools, temperature, eval set, grader, and run count as fixed. It also excludes prompt retuning from this round.",
+  "The predictions are written and committed before any run. However, they only say \"up, down, or stays flat\" with \"a rough size.\" The answer gives no numeric predictions and no bands for Sonnet 6, so this check fails.",
+  "The answer uses \"the frozen eval suite from spe-r04\" with the eval set, grader, seeds, and N kept \"exactly as tagged at spe-r04.\"",
+  "The answer says \"I will not switch the pin based on the release news.\" It switches to Sonnet 6 only after the eval passes the decision rule.",
+  "Step 5 records \"pass rate, the scores for each category, cost, latency.\" It never names tokens, and it does not frame cost or time as per ticket. Two of the required metrics are missing, so this check fails."
+ ]
+}

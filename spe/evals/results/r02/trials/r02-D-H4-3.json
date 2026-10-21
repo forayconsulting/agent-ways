@@ -1,0 +1,32 @@
+{
+ "label": "r02-D-H4-3",
+ "round": "r02",
+ "config": "D",
+ "task": "H4",
+ "n": 3,
+ "response": "**What I do next**\n\nI open round 5 as a model-swap round. I will not change the pinned model in C2 directly. A new model is one change, so it gets its own configuration and its own prediction. Then it gets measured against C2 on Sonnet 5.5 under the same tasks and graders.\n\nFirst I ask you to enter plan mode with a short r05 prompt. Your words go verbatim into `spe/spec/transcripts/2026-10-21-r05.md`. Before I write any number, I will check Anthropic's current model docs. I need the exact dated Sonnet 6 model ID and its price. I will pin the dated ID, not an alias.\n\n**Plan outline: SPE round 5 (Sonnet 6 vs Sonnet 5.5)**\n\n1. Specify (commit `SPE r05 specify`)\n   - Save your plan-mode prompt and answers verbatim in `spe/spec/transcripts/2026-10-21-r05.md`.\n   - Add an r05 table to `spe/spec/spec.md`:\n     - R05-1: Run C2 on Sonnet 6 with every other setting identical to C2. Source: \"Sonnet 6 just shipped.\" Test: config diff shows only the model ID changed.\n     - R05-2: Re-run C2 on Sonnet 5.5, pinned, as the baseline arm. Source: decision. Test: r05 C2@5.5 results sit inside the r04 measured bands.\n     - R05-3: Keep the judge model fixed at its r04 model, even if it is a Sonnet. Source: decision. Test: the judge ID in the r05 script matches r04. A judge change would confound the model comparison.\n     - R05-4: Keep the r04 tasks and graders unchanged. Source: decision. Test: the grader files diff against `spe-r04` is empty.\n   - Proposals in the r04 \"Proposed for round 5\" table: I defer each one to r06 so this round isolates the model effect. I log this as a default in `spe/spec/disagreements.md`. You can override it in plan mode.\n   - Open decision for you: whether a Sonnet 6 win replaces C2 as the best config, and what margin counts as a win. My default is that C2@6 must beat C2@5.5 outside both bands on the primary metric with no metric regressing outside its band.\n\n2. Predict (commit `SPE r05 predict: Sonnet 6 vs Sonnet 5.5 on C2`)\n   - Columns: C2@5.5 and C2@6. These differ only by the model.\n   - C2@5.5: every cell is \"same as last round\", taken from the r04 measured values in `spe/prediction-log.md`, with the r04 bands.\n   - C2@6: start from the C2@5.5 numbers. Move a number only with a written Why. Examples are accuracy on the split cells from r04 failures, tool calls per trial, tokens per trial, and runtime.\n   - Every number gets a band and a named grader check. A hit is inside the band.\n   - After approval, copy the plan to `spe/plans/r05.md`. Write `spe/predictions/r05.yaml` with the \"Saved before the eval ran\" header, author \"Claude, approved by the user in plan mode\", and `same_as_last_round` per number. Commit both before any harness work.\n\n3. Evaluate (commits `SPE r05 evaluate (harness)` and `SPE r05 evaluate (results): <headline>`)\n   - Copy `spe/evals/harness/r04-workflow.js` to `r05-workflow.js`. Set `ROUND = 5` once. Add the model ID as a per-config argument.\n   - Gates before launch: grader selftest (oracle passes, empty and wrong fail). Regrade r04 results with the r05 graders as a control, which should show no change. Dry run 2 or 3 cells with `args.only`, including one C2@6 cell, to confirm the new model ID resolves.\n   - Phases: Trials, Grade (code checks first), Judge (only for what code cannot check), Top-up for split cells up to the cap, failure analysis, and completeness critic.\n   - Leak control: trials read only allowed paths. Scan transcripts for reads of `spe/evals/` and `spe/predictions/` and void any trial that peeked.\n   - Budget: cap API spend and agent count in the args. Price Sonnet 6 from the verified docs. Skip and log any trial that would cross the cap.\n   - Measure accuracy, runtime, tool calls, tokens, and tool errors per completed trial. Rate limits on a new model count as harness errors, not model failures.\n   - Cost estimate (unmeasured): r04 spend for C2 times 2 arms, adjusted by the Sonnet 6 price ratio.\n\n4. Learn (commit `SPE r05 learn: ...`, tag `spe-r05`)\n   - Fill in `spe/prediction-log.md` with Predicted, Measured, Same as last round, and Verdict. Add \"Which Why broke\" for each miss, and say plainly if the naive \"same as r04\" guess beat the moved numbers.\n   - Add new failure types to `spe/failures.md`, including any Sonnet 6 specific ones.\n   - If C2@6 passes everything, the r06 proposal must include harder tasks or stricter graders.\n   - Write the \"Proposed for round 6\" table with the deferred r04 proposals, plus `spe/predictions/r05-draft.yaml` with `status: draft`. Update `spe/README.md`.\n   - Halt and report if a budget cap is hit, a grader breaks, or an answer key leaks. Commits stay local. I do not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a7b6f57bc4577b99c",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I open round 5 as a model-swap round\" and lays out all four SPE steps for r05, ending with tag `spe-r05`.",
+  "The answer says \"I will not change the pinned model in C2 directly\" and that Sonnet 6 \"gets its own configuration.\" R05-2 re-runs C2 on pinned Sonnet 5.5 as the baseline arm. The prediction columns are C2@5.5 and C2@6.",
+  "R05-1 says to run C2 on Sonnet 6 \"with every other setting identical to C2\". Its test is \"config diff shows only the model ID changed.\" R05-3 also keeps the judge model fixed to avoid a confound.",
+  "The Predict step gives C2@6 numbers, each with \"a band and a named grader check.\" It writes `spe/predictions/r05.yaml` with the \"Saved before the eval ran\" header. It commits both files \"before any harness work.\"",
+  "R05-4 says \"Keep the r04 tasks and graders unchanged\". Its test is an empty grader diff against `spe-r04`. The r04 regrade control backs this up.",
+  "The answer says it will not change the pinned model in C2 directly. Replacing C2 is listed as an open decision for the user that depends on a Sonnet 6 win \"outside both bands.\" Nothing switches before the eval.",
+  "The measured metrics are \"accuracy, runtime, tool calls, tokens, and tool errors per completed trial.\" Cost shows up only as a budget cap and an \"unmeasured\" overall estimate. Cost per trial is not a metric the plan compares between C2@5.5 and C2@6, so this check is not fully met."
+ ]
+}

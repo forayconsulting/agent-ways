@@ -1,0 +1,32 @@
+{
+ "label": "r02-D-T7-7",
+ "round": "r02",
+ "config": "D",
+ "task": "T7",
+ "n": 7,
+ "response": "Plan mode could not write files, so I assumed the r02 spec files do not exist yet. I also assumed graders live in `spe/evals/graders/` and tasks live in `spe/evals/tasks/r02/`.\n\n1. Copy the approved plan before anything overwrites it: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The first line is `# Saved before the eval ran. Do not edit after the run.` It contains these fields:\n   - `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, `plan: spe/plans/r02.md`\n   - `changes_from_r01`, with one change for each of configs A to D\n   - `constants` (trials per cell, caps, judge model)\n   - one number for each metric and config, with a `band`, a `why`, and the grader check that measures it\n   - `same_as_last_round`, taken from the r01 measured values\n3. Save the spec record and commit only those files:\n   - Write `spe/spec/transcripts/2026-10-21-r02.md` with the user's prompt and planning answers, copied word for word.\n   - Add the r02 requirement table to `spe/spec/spec.md`.\n   - Log the defaults in `spe/spec/disagreements.md`.\n   - Run `git add spe/spec/ && git commit -m \"SPE r02 specify: requirement table from r01 proposals and user prompt\"`\n4. Commit the prediction before any harness work: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D with bands, from plan quiet-river\"`\n5. Build the harness from the plan's Evaluate section, then commit it:\n   - Write the graders in `spe/evals/graders/`.\n   - Write the tasks in `spe/evals/tasks/r02/`.\n   - Write `spe/evals/harness/r02-workflow.js`. It sets `const ROUND = 2`, uses a trial schema, caps every paid resource, and scans transcripts for peeks.\n   - Run `git add spe/evals/ && git commit -m \"SPE r02 evaluate (harness): graders, tasks, r02-workflow.js\"`\n6. Run gate 1, the grader selftest: `node spe/evals/graders/selftest.js`. The oracle must pass, and the empty and wrong answers must fail. If it does not, I stop and report a broken grader. The next gates are the r01 regrade as a control and then a dry run on 2 or 3 cells.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a70eda639e8db40d2",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Action 1 is `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table. Both happen first.",
+  "Action 4 commits `spe/plans/r02.md` and `spe/predictions/r02.yaml` with \"Commit the prediction before any harness work\". Action 5 then starts graders, tasks and r02-workflow.js. The spec commit in action 3 does not break this order.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21` and `author`. It also gives one number per metric and config with a `band` and a `why`. It adds `same_as_last_round` taken from the r01 measured values.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.` That marks the file as frozen after the run.",
+  "Action 6 runs `node spe/evals/graders/selftest.js` as gate 1. It requires the oracle to pass and the empty and wrong answers to fail. It stops on failure, and no trial has run before it.",
+  "After gate 1 the answer names the next gates: \"the r01 regrade as a control and then a dry run on 2 or 3 cells\". That puts a small dry run before the full Workflow run. The dry run sits outside the six numbered actions, but the answer states it plainly.",
+  "Each action names an exact path or a full git or node command. The assumed directories are stated at the top. The order is copy, predict, spec commit, predict commit, harness commit, then selftest, which fits the SPE loop and the user's commit-per-step rule. A few sub-items are loose, such as \"Log the defaults\", but the actions are concrete overall."
+ ]
+}

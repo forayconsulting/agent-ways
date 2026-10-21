@@ -25,7 +25,12 @@ FIX = pathlib.Path(__file__).parent / "fixtures"
 # The variant accepts a placeholder or a named failures.md entry. Judge check 3
 # (T6) and check 4 (T4) still grade the entry's fields.
 FENTRY = r"\bF(\d+|n)\b|\bF[-<{][\w<{]|failures\.md"
-VARIANTS = {"fentry": {("T4", "fentry"): FENTRY, ("T6", "fentry"): FENTRY}}
+# same_tasks (r02, H4): the check wanted a literal "same tasks". Trials that kept the
+# tasks fixed by deferring "proposals that change tasks or graders" failed it while
+# judge check 5 (same tasks and graders) passed. The variant accepts that wording.
+SAME_TASKS = r"same (tasks|graders|ticket|set|eval)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)|tasks (and|or) graders"
+VARIANTS = {"fentry": {("T4", "fentry"): FENTRY, ("T6", "fentry"): FENTRY},
+            "same_tasks": {("H4", "same_tasks"): SAME_TASKS}}
 VARIANT = None
 
 

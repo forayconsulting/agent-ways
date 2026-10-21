@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-H4-1",
+ "round": "r02",
+ "config": "C",
+ "task": "H4",
+ "n": 1,
+ "response": "I treat this as round 5. The model is the only thing that changes. I do not touch the C2 pin yet. First I check the current Anthropic docs for the exact Sonnet 6 model ID and its price. Then I save your message verbatim to `spe/spec/transcripts/2026-10-21-r05.md` and write the plan below. I need your approval in plan mode before anything runs. I don't have the r04 numbers in this message, so each prediction cell below is a change from the r04 measured value in `spe/prediction-log.md`. The saved yaml will hold the absolute numbers.\n\n# SPE r05 plan: Sonnet 6 model swap\n\n## Specify (`spe/spec/spec.md`, r05 table)\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R05-1 | Measure C2 on Sonnet 6 against C2 on Sonnet 5.5 on the same task set and graders | User: \"Sonnet 6 just shipped.\" | Both configs run on every r04 task, with r04 trial counts per cell |\n| R05-2 | Pin Sonnet 6 by its exact dated model ID, checked against current docs | Decision | The harness constant matches the docs. A preflight call returns that ID |\n| R05-3 | Rerun Sonnet 5.5 in the same run as a same-day control | Decision | The C2-S5.5 cell lands within the r04 noise band, or the run halts |\n| R05-4 | Keep LLM judges on their r04 model | Decision | The judge model ID is unchanged from `rNN-workflow.js` r04 |\n| R05-5 | Keep the C2 prompt and tools byte-identical across both configs | Decision | The config diff shows only the model field |\n| R05-6 | Each \"Proposed for round 5\" row from r04 is adopted or rejected with a reason | r04 learn | Every row appears in this table or in `disagreements.md` |\n\nDefault logged in `spe/spec/disagreements.md`: I defer the r04 proposals to r06 so the model stays the only variable. You can reverse that.\n\nOpen decision for you: whether C2 moves to Sonnet 6 after r05. I will not switch the pin until you decide.\n\n## Predict (`spe/predictions/r05.yaml`)\n\nConfigs: **C2-S5.5** (control, r04 config) and **C2-S6** (one change: the model).\n\n| Metric | C2-S5.5 | C2-S6 | Grader check | Why |\n|---|---|---|---|---|\n| Task pass rate | +0 pts | +5 pts | Code check per task | A stronger model fixes some r04 capability failures. It does not fix spec or grader failures |\n| Schema-valid outputs | +0 pts | -3 pts | Schema validator | The C2 prompt was tuned on 5.5. A new model can drift on format |\n| Judge-scored quality | +0 pts | +3 pts | Judge rubric, r04 judge model | Same reason as pass rate, with a smaller effect |\n| Cost per trial | +0% | +0% | Token log times list price | Set from the docs price check before the yaml is saved |\n| Median wall time per trial | +0% | +0% | Harness timer | No stated reason to move it |\n| Peek voids | 0 | 0 | Transcript scan | The isolation is unchanged |\n\n`same_as_last_round` is true for every C2-S5.5 cell.\n\n## Evaluate (`spe/evals/harness/r05-workflow.js`)\n\n1. Gate: the grader selftest. The oracle passes, and empty and wrong outputs fail.\n2. Gate: regrade r04 as a control. The numbers must match the r04 results.\n3. Gate: a preflight call to the Sonnet 6 ID, and a dry run on 3 cells.\n4. Full run. `ROUND = 5` is held in one constant. Paid calls get a cap set at the r04 spend times the price ratio. The harness skips and logs any trial that would cross the cap.\n5. Split cells get extra trials up to the r04 cap.\n6. Failure analysis and a completeness critic.\n\nCost estimate: unmeasured. It is about 2x one r04 config, adjusted for the Sonnet 6 price.\n\n## Close-out\n\n- Write `spe/prediction-log.md` and `spe/failures.md`. New Sonnet 6 failure types get F-numbers.\n- Write a \"Proposed for round 6\" table and `spe/predictions/r05-draft.yaml` with `status: draft`.\n- Report the pin decision to you with the evidence.\n\n## Commits (local only, no push)\n\n`SPE r05 specify`, `SPE r05 predict: Sonnet 6 swap`, `SPE r05 evaluate (harness)`, `SPE r05 evaluate (results): <headline>`, `SPE r05 learn`, then tag `spe-r05`.\n\n## Halt conditions\n\nI halt and report if any of these happen:\n\n- The Sonnet 6 ID is unavailable.\n- The control drifts outside the r04 noise band.\n- A grader gate fails.\n- The run hits the budget cap.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a11cce8921424b50c",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"I treat this as round 5.\" It plans r05 files, commits, and a `spe-r05` tag.",
+  "The answer keeps C2-S5.5 as the control (\"control, r04 config\") and adds C2-S6 next to it. It says \"I do not touch the C2 pin yet.\"",
+  "C2-S6 is described as \"one change: the model\". R05-5 requires that \"The config diff shows only the model field\". Judges stay on the r04 model (R05-4), so the difference can be attributed to the model.",
+  "The Predict step comes before Evaluate and gets its own commit. But the predictions are single point deltas like \"+5 pts\" and \"-3 pts\" with no bands or intervals. The cost cell is a placeholder that will be \"Set from the docs price check\" later. The only band mentioned is the r04 noise band for the control, so the check is not met.",
+  "R05-1 says \"Both configs run on every r04 task\" on \"the same task set and graders\". R05-4 keeps the judge model unchanged, and there is a gate to regrade r04 as a control.",
+  "The answer says \"I will not switch the pin until you decide\" and lists the pin decision as an open item for after r05. Production stays on Sonnet 5.5.",
+  "The metric table names task pass rate (accuracy), cost per trial, and median wall time per trial. Tokens are never a compared metric. They appear only inside the cost grader (\"Token log times list price\"). Because one of the four required metrics is missing, the check fails."
+ ]
+}

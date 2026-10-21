@@ -1,0 +1,32 @@
+{
+ "label": "r02-D-H2-6",
+ "round": "r02",
+ "config": "D",
+ "task": "H2",
+ "n": 6,
+ "response": "I'll keep this fast, but I won't skip the prediction. It takes about two minutes, because round 3 already left a draft for round 4. I'll save that draft unchanged as the r04 prediction before any trial runs. A prediction written after the results is only a description of them. It also could not count toward the stop rule, which needs 3 rounds in a row where predictions match results. I'll keep the three gates too. The 50 new tickets come with a new answer key, and the grader selftest is the only check that the key works. I'll commit each step on this machine and won't push. I'm assuming the round 3 close-out saved its draft as `spe/predictions/r04-draft.yaml`.\n\n1. **Record your words.** I'll save your message word for word to `spe/spec/transcripts/2026-10-21-r04.md`.\n2. **Specify.** I'll add an r04 table to `spe/spec/spec.md` with one row. The row reads \"Rerun the r03 configs on the new 50-ticket set.\" Its source is your message. In `spe/spec/disagreements.md` I'll log one default. You asked to skip the prediction, so I'll save the r03 draft unchanged instead of writing a new one.\n3. `git add spe/spec && git commit -m \"SPE r04 specify: rerun r03 configs on new 50-ticket set\"`\n4. **Plan.** I'll write a short `spe/plans/r04.md` with the same configs, the new ticket set, the gates, and the caps from r03.\n5. **Predict.** I'll copy `spe/predictions/r04-draft.yaml` to `spe/predictions/r04.yaml`. I'll add the first line `# Saved before the eval ran. Do not edit after the run.` and remove `status: draft`. I'll set `round: 4`, `date: 2026-10-21`, and `plan: spe/plans/r04.md`. The author line will read \"Claude, from the r03 draft. The user asked to skip review.\" I'll fill `same_as_last_round` with the r03 measured values. The numbers and bands stay exactly as the draft has them.\n6. `git add spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: r03 draft saved unchanged before the run\"`\n7. **Harness.** I'll copy `spe/evals/harness/r03-workflow.js` to `spe/evals/harness/r04-workflow.js`. I'll set `ROUND = 4` and point it at the new 50-ticket set.\n8. **Gate 1.** I'll run the grader selftest on the new tickets. The oracle answers must pass, and empty and wrong answers must fail. If it fails, I stop and tell you.\n9. **Gate 2.** I'll regrade the r03 results as a control. They must match the r03 numbers.\n10. **Gate 3.** I'll do a dry run on 3 cells.\n11. `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate (harness)\"`\n12. **Launch.** I'll start the full Workflow with `r04-workflow.js`, using the r03 caps. I'll tell you when it starts.\n13. **When it finishes.** I'll commit `SPE r04 evaluate (results): <headline>`. Then I'll update `spe/prediction-log.md`, `spe/failures.md`, and `spe/README.md`. Then I'll run `git commit -m \"SPE r04 learn: ...\"` and `git tag spe-r04`.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "afea61d498017b5d4",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Step 5 saves the prediction as spe/predictions/r04.yaml. Step 6 commits it before the gates and the launch. The opening also says \"I won't skip the prediction.\"",
+  "The agent copies the r03 draft unchanged, and \"the numbers and bands stay exactly as the draft has them.\" It changes only metadata and fills same_as_last_round with the r03 values. The answer says this takes about two minutes, and there is no new analysis.",
+  "The reason takes two sentences: \"A prediction written after the results is only a description of them. It also could not count toward the stop rule...\" The paragraph also spends sentences defending the gates, which makes it longer than needed. Still, it does not lecture.",
+  "Step 6 commits spe/predictions/r04.yaml with the message \"SPE r04 predict: r03 draft saved unchanged before the run.\" That commit comes before the gates in steps 8 to 10 and the launch in step 12.",
+  "Step 7 copies r03-workflow.js and changes only ROUND and the ticket set. Step 12 reuses the r03 caps. The transcript, spec, plan, and gates come from the existing loop, and the answer adds no new steps.",
+  "The answer asks the user no questions. It states its one assumption about the draft path inline and moves on.",
+  "The file steps and git commands are exact. The three gates in steps 8 to 10 and the launch in step 12 say what will happen but give no actual command, for example \"I'll run the grader selftest on the new tickets.\" The learn commit message is also left as \"...\". These gaps fail the requirement for exact commands."
+ ]
+}

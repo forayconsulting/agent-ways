@@ -1,0 +1,32 @@
+{
+ "label": "r02-D-H2-4",
+ "round": "r02",
+ "config": "D",
+ "task": "H2",
+ "n": 4,
+ "response": "I will run this fast, but I will not skip the prediction. If the prediction is saved after the run, it only describes the results, and round 4 cannot count toward the 3-round match streak. Round 4 changes only the ticket set, so the prediction is the r03 draft carried forward with the same numbers. That takes about two minutes. I will also keep the three gates. The new tickets come with a new answer key, and the selftest is the only check that the grader works on that key. I assumed the new 50 tickets are in `spe/evals/tasks/r04-tickets.jsonl`, and that the gates run the same way they did in r03. If you still want no prediction, tell me. I will then mark r04 as unpredicted in `spe/prediction-log.md`.\n\n1. Save your message word for word to `spe/spec/transcripts/2026-10-21-r04.md`.\n2. Add a round 4 table to `spe/spec/spec.md` with one row. The row is R04-1, \"Rerun the r03 configs on the new 50-ticket set.\" Its source is \"user, 2026-10-21\" and its test is \"the same grader checks as r03.\" Reject each row in the r03 \"Proposed for round 4\" table with the reason \"the user asked for a straight rerun.\" Log those rejections as defaults in `spe/spec/disagreements.md`.\n3. `git add spe/spec && git commit -m \"SPE r04 specify: rerun r03 configs on new 50-ticket set\"`\n4. Write a short plan to `spe/plans/r04.md`. It covers the spec row, the Predict table, the gates, the Workflow arguments, and a cost estimate based on r03 that is marked as unmeasured.\n5. `cp spe/predictions/r03-draft.yaml spe/predictions/r04.yaml`. Then edit `r04.yaml` in these ways:\n   - Add the first line `# Saved before the eval ran. Do not edit after the run.`\n   - Set `round: 4`, `date: 2026-10-21`, and `plan: spe/plans/r04.md`.\n   - Set `author: \"Claude, carried forward from the r03 draft. The user asked to skip the predict step.\"`\n   - Remove `status: draft`.\n   - Set `changes_from_r03: \"none except the ticket set\"`.\n   - Fill `same_as_last_round` with the measured r03 values.\n   - Keep a band on every number. The Why for each number reads \"Same as r03. The new tickets are the same kind of work.\"\n6. `git add spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: same as r03 on new ticket set\"`\n7. `cp spe/evals/harness/r03-workflow.js spe/evals/harness/r04-workflow.js`. Set `ROUND = 4` and point the task path at `spe/evals/tasks/r04-tickets.jsonl`. Then `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate (harness)\"`.\n8. Run the gates in this order and stop at the first one that fails:\n   - The grader selftest on the r04 answer key. The oracle must pass, and the empty and wrong answers must fail.\n   - A regrade of r03 as a control.\n   - A dry run on 3 cells.\n9. Launch the full Workflow from `spe/evals/harness/r04-workflow.js` with the same caps as r03. Wait for the completion notice.\n10. `git add spe/evals && git commit -m \"SPE r04 evaluate (results): <headline taken from the measured pass rates>\"`\n11. Close out. Update `spe/prediction-log.md`, `spe/failures.md`, and the \"Proposed for round 5\" table in `spe/spec/spec.md`. Write `spe/predictions/r04-draft.yaml` and update `spe/README.md`. Then `git commit -am \"SPE r04 learn: <result summary>\" && git tag spe-r04`. I will not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "afb903d2bb3b71d28",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer says \"I will not skip the prediction.\" Step 5 writes spe/predictions/r04.yaml before the Workflow launches in step 9.",
+  "The prediction is \"the r03 draft carried forward with the same numbers.\" Step 5 copies r03-draft.yaml, says to \"Keep a band on every number,\" and gives every number the same short Why. The answer estimates it at \"about two minutes.\"",
+  "The core reason takes one sentence: a prediction saved after the run \"only describes the results, and round 4 cannot count toward the 3-round match streak.\" The short note about the gates is an extra point, not a lecture.",
+  "Step 6 commits the plan and r04.yaml with \"SPE r04 predict: ...\". That commit comes before the harness commit in step 7, the gates in step 8, and the full run in step 9.",
+  "Step 7 copies r03-workflow.js and changes only ROUND and the task path. The gates and caps are the same as r03. The spec, plan, and learn steps are the loop's existing steps with commits, which the user asked for. They are not new process. The spec step is light because it rejects the proposed rows as defaults instead of analyzing them.",
+  "The answer states its assumptions about the ticket path and the gates instead of asking about them. Its only question is an optional override (\"If you still want no prediction, tell me\"), and the work goes ahead without waiting for a reply.",
+  "The 11 numbered steps give exact paths, cp commands, git add and git commit commands with messages, and the git tag. The only placeholders are the commit headlines, which depend on results the run has not produced yet. They are acceptable."
+ ]
+}

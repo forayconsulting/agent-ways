@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-H4-5",
+ "round": "r02",
+ "config": "C",
+ "task": "H4",
+ "n": 5,
+ "response": "**What I do next:** I make round 5 a single-change round, and the one change is the model. C2 stays pinned to Sonnet 5.5 until you decide otherwise. I ask you to enter plan mode, so your prompt becomes the r05 spec and I save it to `spe/spec/transcripts/2026-10-21-r05.md`. Before I write any number, I check the current Anthropic docs for the exact Sonnet 6 model ID and its price. Your message does not include the r04 numbers, so every \"r04\" cell below means the measured value in `spe/prediction-log.md`. I copy those values in when I write the plan.\n\n---\n\n# Plan outline: `spe/plans/r05.md`. SPE Round 5: C2 on Sonnet 6\n\n## Specify (rows added to `spe/spec/spec.md`)\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R5-1 | Run C2 unchanged on Sonnet 6, pinned to the dated model ID | User r05: \"Sonnet 6 just shipped.\" | The config diff shows only the model field changed |\n| R5-2 | Run C2 on Sonnet 5.5 in the same Workflow as the control | Decision: provider behavior can drift between rounds | Both configs appear in the r05 results |\n| R5-3 | Keep the r04 tasks, graders, and trial counts | Decision: change one thing per config | Grader files match tag `spe-r04` |\n| R5-4 | Rule on each row of the r04 \"Proposed for round 5\" table | r04 learn step | Each row says adopted or deferred, with a reason |\n| R5-5 | Set the cost cap from the verified Sonnet 6 price | Decision | The harness skips and logs any trial that would cross the cap |\n\nDefault for R5-4: I defer every r04 proposal that changes a config or a grader to r06. This keeps the effect of the model isolated. I log this in `spe/spec/disagreements.md`.\n\nOpen decision D-r05-1: Should the production pin move to Sonnet 6 if C2-s6 wins? The owner is the user.\n\n**Configs:** C2 is the control on Sonnet 5.5. C2-s6 is C2 with only the model changed to Sonnet 6.\n\n## Predict (saved to `spe/predictions/r05.yaml` before the run)\n\n| Metric | C2 | C2-s6 | Grader check | Why |\n|---|---|---|---|---|\n| Pass rate | r04 | r04 | Code checks in the grader | The C2 prompts were tuned on 5.5. Sonnet 6 may be more capable, but it may also fit those prompts less well. No evidence favors either side, so I hold the naive guess. |\n| Per-requirement scores | r04 | r04 | Per-check grader output | Same reason as pass rate |\n| Cost per trial | r04 | r04 \u00d7 (Sonnet 6 price \u00f7 Sonnet 5.5 price) | Token usage log | I hold token counts steady. Only the verified price ratio moves this number. |\n| Latency p50 | r04 | r04 | Harness timing | I have no measured evidence for Sonnet 6 speed |\n| Known F-types that recur | r04 | r04 | Failure analysis | The tasks are unchanged |\n| New F-types | 0 | 1 | Failure analysis | A new model changes output habits. Code checks most likely catch this as schema or format drift. |\n\n`same_as_last_round: true` holds for every row except C2-s6 cost and C2-s6 new F-types.\n\n## Evaluate (`spe/evals/harness/r05-workflow.js`)\n\nGates before launch:\n1. The grader selftest passes. The oracle passes, and the empty and wrong answers fail.\n2. A regrade of the r04 transcripts reproduces the r04 numbers.\n3. The pinned Sonnet 6 ID responds on this account.\n4. A dry run on 3 cells finishes, and at least one of those cells runs on Sonnet 6. Every trial output passes the schema.\n\nWorkflow arguments: `ROUND = 5`, configs `[C2, C2-s6]`, the r04 trials per cell, extra trials for split cells up to the cap, and the cost cap from R5-5.\n\nDuring and after the run: I scan transcripts for reads of graders, answers, or predictions, and I void any trial that peeked. The Workflow ends with failure analysis and a completeness critic.\n\nCost estimate (unmeasured): r04 cost per config for C2, plus r04 cost \u00d7 the price ratio for C2-s6.\n\n## Close-out\n\nI update `prediction-log.md`, `failures.md`, the \"Proposed for round 6\" table, `r05-draft.yaml`, and `spe/README.md`. The learn step records D-r05-1 for you to decide.\n\n## Commits (local only, never pushed)\n\n`SPE r05 specify`, `SPE r05 predict` (the plan and the yaml, before any harness work), `SPE r05 evaluate (harness)`, `SPE r05 evaluate (results): <headline taken from the measured results>`, `SPE r05 learn`, and tag `spe-r05`.\n\n## Halt conditions\n\nI halt and report in four cases: the account cannot reach Sonnet 6, I cannot verify the price, a grader breaks, or the budget cap is hit.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a7561968c5770f1e9",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I make round 5 a single-change round\" and writes `spe/plans/r05.md` with Specify, Predict, Evaluate, and Close-out steps. It ends with tag `spe-r05`.",
+  "The answer says \"C2 is the control on Sonnet 5.5. C2-s6 is C2 with only the model changed to Sonnet 6.\" R5-2 runs both configs in the same Workflow.",
+  "R5-1 says \"Run C2 unchanged on Sonnet 6\". Its test is that \"The config diff shows only the model field changed\". The answer also defers config and grader proposals to r06 \"to keep the effect of the model isolated.\"",
+  "The prediction is saved to `spe/predictions/r05.yaml` before the run. However, most cells are just \"r04\" placeholders, and cost is written as a formula. No row gives an uncertainty band or range. The check asks for numbers and bands, so it fails.",
+  "R5-3 says \"Keep the r04 tasks, graders, and trial counts\" and checks that \"Grader files match tag `spe-r04`.\" A gate also regrades the r04 transcripts to reproduce the r04 numbers.",
+  "The answer says \"C2 stays pinned to Sonnet 5.5 until you decide otherwise.\" It lists moving the production pin as open decision D-r05-1, and the user owns that decision.",
+  "The Predict table names pass rate, cost per trial, and latency p50. Tokens appear only as an input held steady (\"I hold token counts steady\"). They are not a compared metric. Nothing is framed per ticket. The check names four metrics and only three are covered, so it fails."
+ ]
+}

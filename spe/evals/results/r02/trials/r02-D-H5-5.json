@@ -1,0 +1,32 @@
+{
+ "label": "r02-D-H5-5",
+ "round": "r02",
+ "config": "D",
+ "task": "H5",
+ "n": 5,
+ "response": "No, we are not done. This result is a ceiling, and the predictions missed it. Neither of those meets the stop rule.\n\n**Why this is not a stop:**\n- The loop stops after 3 rounds in a row where predictions match results. Round 3 is a miss on all three configs. B was predicted at 0.88, C2 at 0.86 and D at 0.80, and all three measured 1.00. I did not open `spe/predictions/r03.yaml` to read the bands. Even a \u00b10.10 band tops out at 0.98, so every cell misses.\n- All three configs scored 1.00 on category, 1.00 on priority and exactly 7.0 on the judge. That means the eval can no longer tell B, C2 and D apart. The SPE rules say a round where everything passes needs harder tasks or stricter graders next.\n- A perfect, identical result on 50 tickets is also a warning sign. It could mean a trial saw the answer key. It could also mean a grader is broken. A judge mean of exactly 7.0 in every cell looks like a judge that returns a constant.\n\n**What I do next:**\n1. **Check the result before trusting it.** I scan the r03 trial transcripts for any read of the graders, the answers or the predictions. I rerun the grader selftest, where the oracle must pass and empty and wrong answers must fail. I also check the per-trial judge scores to see whether they vary at all. If I find a leak or a broken grader, I stop and report to you before doing anything else.\n2. **Commit the results** as `SPE r03 evaluate (results): all configs 1.00, eval at ceiling`.\n3. **Close out round 3.**\n   - `spe/prediction-log.md` gets the 9 rows marked \"miss\". Under \"Which Why broke\" I name the wrong assumption, which was that the ticket set still had headroom.\n   - `spe/failures.md` gets a new F-number for the ceiling or task-design failure. If step 1 finds a judge bug, that gets its own entry, with the original and regraded numbers side by side.\n   - The spec gets a \"Proposed for round 4\" table with harder tickets and stricter graders. One option for the stricter graders is judge scoring against a rubric with anchored examples.\n   - I write `spe/predictions/r04-draft.yaml` with `status: draft`.\n   - I update `spe/README.md`.\n4. **Commit** `SPE r03 learn: eval saturated, predictions missed low` and tag `spe-r03`. These are local commits only, and nothing gets pushed.\n\nAfter that, round 4 starts when you re-enter plan mode. I will respec from the proposals in that table.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a844070a045ac1e9f",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"No, we are not done.\" It also says the result does not meet the stop rule.",
+  "The answer says the identical 1.00 scores mean \"the eval can no longer tell B, C2 and D apart.\" That states the separation problem directly.",
+  "The answer plans a \"Proposed for round 4\" table \"with harder tickets and stricter graders\". It gives judge scoring against a rubric with anchored examples as one option.",
+  "The answer never says that a ceiling result makes the predictions impossible to judge. It treats round 3 as a plain miss on all three configs and plans to log 9 rows as \"miss\". That is the opposite of noting that the predictions cannot be assessed.",
+  "Step 3 updates prediction-log.md and adds a new F-number to failures.md. It also adds a round 4 proposals table, writes an r04 draft prediction, updates the README, and makes a learn commit with a tag.",
+  "The answer lists the predicted values 0.88, 0.86 and 0.80 against the measured 1.00. It marks the rows as misses and names the wrong assumption (\"the ticket set still had headroom\"). It also admits that it did not open the predictions file to check the bands.",
+  "The reply is not short. It has three \"why\" bullets and four numbered steps with sub-bullets. It also commits to the close-out work without asking first. It mentions that round 4 starts when the user re-enters plan mode, but it never asks the user whether to continue."
+ ]
+}

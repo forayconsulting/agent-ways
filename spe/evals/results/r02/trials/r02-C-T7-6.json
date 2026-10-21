@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-T7-6",
+ "round": "r02",
+ "config": "C",
+ "task": "T7",
+ "n": 6,
+ "response": "1. `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md` saves a lasting copy of the approved plan.\n2. Write `spe/predictions/r02.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` The file holds `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, configs A to D, and every number from the Predict table. Each number gets its Why, its grader check, and a `same_as_last_round` value.\n3. Write `spe/spec/transcripts/2026-10-21-r02.md`. It holds the user's round 2 plan mode prompt and planning answers, copied verbatim. I am assuming plan mode blocked file writes, so the specify files do not exist on disk yet.\n4. Append the round 2 requirement table to `spe/spec/spec.md` (ID, Requirement, Source, Test). Each round 1 proposal is marked adopted or rejected, with a reason. Then update `spe/spec/disagreements.md` with the open decisions and their owners, plus any logged defaults.\n5. `git add spe/spec/transcripts/2026-10-21-r02.md spe/spec/spec.md spe/spec/disagreements.md && git commit -m \"SPE r02 specify: requirement table from r01 evidence\"`\n6. `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D saved before harness work\"`. This is a local commit only, with no push. Harness work starts after this commit.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ac91a8cf4f2ea0baa",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the approved plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml`. These are the first two actions.",
+  "Action 6 commits `spe/plans/r02.md` and `spe/predictions/r02.yaml` and says \"Harness work starts after this commit.\" No grader, task or workflow file is touched in actions 1 to 6.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21`, an `author` field, and every number from the Predict table. It also gives each number \"its Why, its grader check, and a `same_as_last_round` value.\"",
+  "The first line of the prediction file is \"# Saved before the eval ran. Do not edit after the run.\" That line marks the file as frozen after the run.",
+  "The six actions stop at the predict commit. None of them is a grader selftest. The answer never says that a selftest gate must pass before any trial runs.",
+  "The answer does not mention a small dry run before the full Workflow run. The list ends before any harness or run step.",
+  "Each action names an exact path or a full git command. The order is logical. It saves the plan and prediction, does the specify work, makes the specify commit, then makes the predict commit. Step 4 is a little loose about what goes into disagreements.md, but its paths are exact."
+ ]
+}

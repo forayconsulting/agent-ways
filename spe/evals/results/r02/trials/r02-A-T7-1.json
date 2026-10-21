@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-T7-1",
+ "round": "r02",
+ "config": "A",
+ "task": "T7",
+ "n": 1,
+ "response": "1. Run `git -C /Users/claytonchancey/Desktop/praecipio_agent_ways status --short && git -C /Users/claytonchancey/Desktop/praecipio_agent_ways log --oneline -3`. This checks that the tree is clean and that the round 1 commits are present before round 2 starts.\n2. Copy the approved plan into the repo with `cp ~/.claude/plans/quiet-river.md spe/plans/r02-plan.md`. The plan file outside the repo is not versioned, so the copy keeps the round 2 record with the other SPE files.\n3. Write `spe/predictions/r02-predictions.md`. Copy the Predict table for configs A, B, C and D exactly as the plan gives it, with each predicted score, confidence and reason. Add a header line that says the file was written before any eval ran. I chose the `r02-` file naming pattern because the plan already names the harness `r02-workflow.js`.\n4. Append a round 2 section to `spe/prediction-log.md`. It lists the four predictions, links to `spe/predictions/r02-predictions.md`, and leaves an empty \"actual\" column for the results.\n5. Commit the Predict step locally with `git add spe/plans/r02-plan.md spe/predictions/r02-predictions.md spe/prediction-log.md && git commit -m \"spe(r02): record plan and predictions for configs A-D\"`. The commit has no Co-Authored-By line and no push. This commit fixes the predictions in history before the evals produce any results.\n6. Start the Evaluate step by writing the graders under `spe/evals/graders/` (for example `spe/evals/graders/r02-grader.js`) and the task files under `spe/evals/tasks/r02/`, as the plan's Evaluate section specifies. The next steps are to write `spe/evals/harness/r02-workflow.js`, commit the Evaluate build, and then run the Workflow.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a682c84c259f78ca4",
+ "judge": [
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "Action 2 saves the plan to spe/plans/r02-plan.md, so that part passes. Action 3 writes spe/predictions/r02-predictions.md as markdown, not spe/predictions/r02.yaml as the check asks.",
+  "Action 5 commits the plan, the predictions and the prediction log. Action 6 starts grader and task work only after that commit.",
+  "Action 3 lists the predicted score, confidence and reason for each config. It leaves out round, date, author and a same-as-last-round baseline.",
+  "The header says the file 'was written before any eval ran'. That records when it was written, but it does not mark the file as not to be edited after the run.",
+  "The answer never mentions a grader selftest. Action 6 goes from writing graders straight to the harness, a commit and the Workflow run.",
+  "The answer never mentions a small dry run. Action 6 says 'then run the Workflow' with no smaller run first.",
+  "Actions 1 to 5 give exact commands and paths in a sensible order. Action 6 is vague: it says 'for example spe/evals/graders/r02-grader.js' and lumps several later steps into one action."
+ ]
+}

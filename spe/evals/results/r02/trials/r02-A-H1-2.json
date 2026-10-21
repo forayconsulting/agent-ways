@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H1-2",
+ "round": "r02",
+ "config": "A",
+ "task": "H1",
+ "n": 2,
+ "response": "# Plan: SPE round 3, step 1 (agree the spec)\n\nThe next step is the round 3 spec. The four proposals in spec.md are marked \"not yet agreed\", so I cannot write round 3 predictions yet. This step records your decisions, updates the files that depend on them, and makes one local commit. I assume spec.md lives at `spe/spec/spec.md`.\n\n## What round 2 tells us\n\n- The naive guess beat our predictions in 4 of 5 rows. Every miss predicted a better result than we measured. Round 3 predictions should start from last round's number and move only when a Why supports the move.\n- The priority row compares against an unfair baseline. F5 fixed grade.py and we regraded r02. The round 1 priority figure (0.78) still comes from the old grader, which read the draft reply.\n- A's hit (0.85 predicted, 0.86 measured) is inside noise at n=3, just like B's miss. It is not evidence that the A prediction was right.\n\n## Decisions I need from you\n\n| ID | Proposal | My recommendation | Reason |\n|---|---|---|---|\n| P1 | Split the outage status check out of the merged tool in C | Accept | It targets F4 directly. Change only this in C so we can tie any change in C's numbers to it. |\n| P2 | Add 10 harder tickets (mixed billing and outage) | Accept, as a separate slice | The new tickets have no round 2 result. I would report the old set and the new 10 separately. The \"same as last round\" baseline applies only to the old set. |\n| P3 | Drop config D | Accept | P4 adds runs. With D: 4 configs x 3 trials = 12 runs per ticket. Without D: 3 configs x 5 trials = 15 runs per ticket. F6 stays open and gets marked \"config dropped, not fixed\". |\n| P4 | Raise trials per cell from 3 to 5 | Accept | B's miss and A's hit are both inside noise at n=3. |\n| P5 (new) | Regrade round 1 outputs with the fixed grade.py | Accept | This gives a fair priority baseline. If round 1 raw outputs were not kept, I will mark the priority baseline as \"not comparable\" and leave it out of the Closer column. |\n\nReply with accept or reject for each ID. You can also edit the wording.\n\n## Edits after you decide\n\n1. `spe/spec/spec.md`\n   - Rename the heading to `## Round 3 changes (agreed 2026-10-21)`.\n   - Keep only the accepted rows in that table.\n   - Move rejected rows to a short `### Not taken in round 3` list, with one line of reason each.\n   - For P2, add a line saying that results are reported in two slices: `original` and `hard-10`.\n2. `spe/failures.md`\n   - F4: change `Fix: open` to `Fix: planned r03 (P1)`.\n   - F6: if P3 is accepted, change it to `Fix: open, config D dropped in r03 (P3)`.\n   - F5: no change.\n3. `spe/predictions/r03-draft.yaml`\n   - Keep `status: draft`. Write no predicted values yet.\n   - Remove D from `baseline_same_as_last_round` if P3 is accepted.\n   - Add a priority baseline for C (0.71, or the regraded figure from P5) and a cost baseline.\n   - Mark the baseline as applying to the `original` slice only. Mark `hard-10` as having no baseline.\n4. `spe/prediction-log.md`\n   - Add one line under the round 2 table: \"1 hit, 4 misses. All misses were overpredictions. Naive was closer in 4 of 5.\"\n5. P5 only. Run the fixed `grade.py` on the round 1 outputs. Write the regraded numbers into the round 1 section of `spe/prediction-log.md` with a note that says \"regraded after F5\".\n\n## Checks before commit\n\n- `grep -n \"not yet agreed\" spe/spec/spec.md` returns nothing.\n- `spe/predictions/r03-draft.yaml` parses, and `status` is still `draft`.\n- Every accepted proposal ID appears in spec.md. Every failure that a proposal references (F4, F6) points back to that proposal.\n\n## Commit\n\n- Stage only the files changed above, under `spe/`.\n- Make one local commit with the message `spe: agree round 3 spec`.\n- I will not push, and the message will include no attribution lines.\n\n## After this step\n\nThe next SPE step is the round 3 predictions. For each metric, config, and slice, I will write a predicted value and a Why into `r03-draft.yaml`, and I will start each prediction from the baseline. Then I will set the file to `status: agreed` and commit it before any round 3 run starts.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a345898db5626207b",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"Plan: SPE round 3, step 1 (agree the spec)\". It reads the \"not yet agreed\" proposals as the next step without being told the phase, so it treats this as a respec for round 3.",
+  "The decisions table gives each of P1 to P4 a recommendation of \"Accept\" with a reason. P1 targets F4. P2 becomes a separate slice. P3 is about run budget and F6. P4 is because B's miss is inside noise at n=3. These are recommendations that wait for the user's reply, but each one does take a position and gives a reason.",
+  "P1 cites F4 and the new P5 cites F5 (the grader fix). The failures.md edits link F4 to P1 and F6 to P3. Each new or changed requirement points back to the failure that motivated it.",
+  "The plan writes no prediction numbers in this step. It says \"Write no predicted values yet\" and leaves predictions for the next step. It never gives a band for any number.",
+  "No predicted numbers exist in the plan, so no number has a Why. The answer only promises that later \"I will write a predicted value and a Why\".",
+  "The plan keeps the file as spe/predictions/r03-draft.yaml with status draft. It only promises to set it to agreed and commit it later. It never saves or commits spe/predictions/r03.yaml in this plan.",
+  "The plan has no eval plan. The only checks are a grep and a YAML parse before the spec commit. It has no selftest, no control regrade gate, and no dry run before a full run."
+ ]
+}

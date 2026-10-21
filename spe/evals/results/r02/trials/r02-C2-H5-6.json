@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-H5-6",
+ "round": "r02",
+ "config": "C2",
+ "task": "H5",
+ "n": 6,
+ "response": "No, we are not done. The round 3 numbers say we should check the eval itself before we trust it.\n\nWhy this is not a stop:\n- The stop rule needs predictions to match results for 3 rounds in a row. Round 3 missed on every cell. We predicted 0.88 for B, 0.86 for C2, and 0.80 for D. Each one measured 1.00.\n- Every configuration scored 1.00 on both category and priority. The rule for that case is that round 4 needs harder tickets or stricter graders.\n\nWhy I don't trust the result yet:\n- B, C2, and D each change one thing. They still scored exactly the same on all three metrics.\n- The judge mean is exactly 7.0 in every cell, across 5 trials and 50 tickets. That pattern usually means the judge is returning a fixed or default score.\n- A perfect score in every cell can mean a trial read the answer key. It can also mean the grader passes everything.\n\nWhat I do next:\n1. I commit the raw output exactly as the Workflow wrote it, as \"SPE r03 evaluate (results): 1.00 in every cell, under audit\". I will not change spe/predictions/r03.yaml.\n2. I audit the run:\n   - I rerun the grader selftest on the r03 outputs. The oracle should pass, and the empty and wrong answers should fail.\n   - I look at the per-trial judge scores to see whether every score is 7.\n   - I scan the trial transcripts for reads of graders, answers, or predictions, and I void any trial that peeked.\n   - I compare the r03 graded output with the r02 control regrade.\n3. If I find a leaked answer key or a broken grader, I stop and report it to you before any close-out. The rules require that stop. I will log the issue in spe/failures.md with the original and regraded numbers side by side.\n4. If the audit finds nothing wrong, I close out round 3:\n   - I fill in spe/prediction-log.md and quote each \"Why\" that broke.\n   - I add a \"Proposed for round 4\" table with harder tickets or stricter graders.\n   - I write spe/predictions/r04-draft.yaml with status: draft and update spe/README.md.\n   - I commit \"SPE r03 learn: ...\" and tag spe-r03.\n\nI will not push anything.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ab07ca3da817076d7",
+ "judge": [
+  true,
+  false,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"No, we are not done.\" It also says the stop rule is not met.",
+  "The answer notes that \"B, C2, and D each change one thing. They still scored exactly the same.\" It treats this as a sign of a possible grader bug or leak. It never says that a 1.00 ceiling means the tickets no longer tell the configs apart.",
+  "Step 4 says \"I add a 'Proposed for round 4' table with harder tickets or stricter graders.\" The answer also states that \"round 4 needs harder tickets or stricter graders.\"",
+  "The answer scores the predictions as plain misses: \"Round 3 missed on every cell.\" It never says that results at the ceiling make the predictions impossible to judge.",
+  "Step 4 covers the close-out. It fills in prediction-log.md, adds the round 4 proposals, writes the r04 draft, updates the README, commits, and tags. A spe/failures.md entry appears only in the broken-grader branch. The close-out depends on the audit, but log, failures, and proposals each have a path.",
+  "The answer states \"We predicted 0.88 for B, 0.86 for C2, and 0.80 for D. Each one measured 1.00.\" It also promises to \"quote each 'Why' that broke\" in prediction-log.md and to leave r03.yaml unchanged.",
+  "The reply is long, with several sections and nested steps. It sets out a full plan to carry out and never asks the user whether to continue to round 4."
+ ]
+}

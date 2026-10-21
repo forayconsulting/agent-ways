@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H4-4",
+ "round": "r02",
+ "config": "A",
+ "task": "H4",
+ "n": 4,
+ "response": "I will not switch C2 to Sonnet 6 yet. The pin stays on Sonnet 5.5 until Sonnet 6 beats it on our evals. I will open round 5 as a model-swap round. The only thing that changes in this round is the model. First I write predictions. Then I run the evals. I make one local commit after each step and I do not push.\n\nI assumed round 5 uses the same eval suite, trial count, and scoring as round 4. That keeps the results comparable.\n\n**Plan outline: `spe/plans/r05-plan.md`**\n\n**Goal**\nFind out whether C2 does better on Sonnet 6 than on Sonnet 5.5, with nothing else changed. Then either move the pin or keep it.\n\n**Step 0. Verify the model**\n- Check the current Anthropic docs for the exact Sonnet 6 snapshot ID. I will not guess the ID.\n- Confirm that our account can call that ID.\n- Record the ID, its price per token, and its context limit in the plan.\n- Commit: `spe r05: plan and model facts for Sonnet 6`\n\n**Step 1. Spec**\n- `spe/spec/` does not change. It stays as tagged at `spe-r04`.\n- The eval set in `spe/evals/` stays frozen. No cases are added or edited in this round.\n- No commit for this step, because nothing changes.\n\n**Step 2. Predictions (written before any run)**\n- Write `spe/predictions/r05.md`.\n- Predict the overall pass rate of C2 on Sonnet 6 and how far it moves from the round 4 number.\n- Predict a result for each eval case or group, and give a confidence for each one.\n- Go through each open failure class in `failures.md`. Say whether Sonnet 6 should fix it, leave it alone, or make it worse.\n- Predict how cost and latency will change.\n- Commit: `spe r05: predictions for C2 on Sonnet 6`\n\n**Step 3. Decision rule (set before any run)**\n- Adopt Sonnet 6 only if all of these are true:\n  - The pass rate is at least as high as the round 4 result for C2 on Sonnet 5.5.\n  - No critical eval gets worse.\n  - Cost and latency stay within the limit written in the plan.\n- If any of these fails, the pin stays on Sonnet 5.5.\n- I will not change any prompts in this round. If Sonnet 6 needs prompt changes, that work goes into round 6.\n- This rule goes in the Step 0 plan commit. I write it before Step 2.\n\n**Step 4. Baseline check**\n- Run C2 on Sonnet 5.5 again, with the same suite and the same number of trials.\n- This shows whether the baseline has drifted since round 4.\n- If the result is outside the round 4 range, stop and log the drift in `failures.md` before going on.\n- Commit: `spe r05: baseline rerun of C2 on Sonnet 5.5`\n\n**Step 5. Run Sonnet 6**\n- Run C2 on the pinned Sonnet 6 ID. Use the same suite, trial count, and settings as Step 4.\n- Save the raw results under `spe/evals/r05/`.\n- Commit: `spe r05: C2 results on Sonnet 6`\n\n**Step 6. Score and log**\n- Compare the results against `spe/predictions/r05.md`.\n- Log each hit and each miss, with the reason, in `prediction-log.md`.\n- Add any new failure classes to `failures.md`.\n- Commit: `spe r05: scoring and prediction log`\n\n**Step 7. Decide and close**\n- Apply the rule from Step 3.\n- If Sonnet 6 passes, the new best config is C2 on Sonnet 6, pinned to the exact ID. If it fails, the best config stays C2 on Sonnet 5.5.\n- Update `spe/README.md` with the result and the current best config.\n- Commit: `spe r05: decision and README update`\n- Tag the commit `spe-r05` locally.\n\n**Out of scope for round 5**\n- Prompt or config changes\n- New eval cases\n- Pushing to the remote",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "afe83847039c4b802",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I will open round 5 as a model-swap round\" and ends with a local tag of `spe-r05`. The release clearly starts a new round.",
+  "The answer says \"The pin stays on Sonnet 5.5 until Sonnet 6 beats it.\" Step 4 reruns C2 on Sonnet 5.5 as the baseline, and Step 5 runs Sonnet 6 next to it with the same settings. The reference stays and the new variant is run beside it.",
+  "The answer says \"The only thing that changes in this round is the model.\" It also lists prompt and config changes as out of scope and pushes any prompt work to round 6. Any difference can be attributed to the model.",
+  "Step 2 writes `spe/predictions/r05.md` before any run and asks for an overall pass rate and a confidence per case. It never asks for numeric bands or ranges, and no actual numbers appear in the answer. A confidence level is not a band, so this check fails.",
+  "The answer assumes \"the same eval suite, trial count, and scoring as round 4\". It also says the eval set in `spe/evals/` \"stays frozen.\" This covers both the tasks and the graders.",
+  "The answer opens with \"I will not switch C2 to Sonnet 6 yet.\" Adoption depends on the decision rule in Step 7, which is applied after the eval.",
+  "The plan names pass rate, cost, and latency. It never names token counts. It also never frames the metrics per ticket, so time per ticket is not stated. The required metric set is incomplete."
+ ]
+}

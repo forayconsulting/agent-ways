@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-T7-3",
+ "round": "r02",
+ "config": "C2",
+ "task": "T7",
+ "n": 3,
+ "response": "1. Copy the approved plan to a lasting file: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` The file holds `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, and configs A, B, C and D. Each metric from the Predict table gets a number, a band (for example 0.85 \u00b1 0.05), its grader check, a one-line Why, and `same_as_last_round`.\n3. Write `spe/spec/transcripts/2026-10-21-r02.md` with the user's round 2 prompt and planning answers copied verbatim. Plan mode allowed no writes outside the plan file, so I assume none of the specify files exist yet.\n4. Append the round 2 requirement table to `spe/spec/spec.md` with ID, Requirement, Source and Test columns. Each round 1 proposal is marked adopted or rejected with a reason. Log any open decisions and defaults in `spe/spec/disagreements.md`.\n5. Commit the specify step on its own: `git add spe/spec/transcripts/2026-10-21-r02.md spe/spec/spec.md spe/spec/disagreements.md && git commit -m \"SPE r02 specify: round 2 requirements from r01 evidence\"`\n6. Commit the prediction before any harness work: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D with bands, saved before eval\"`. Only after this commit do I start on graders, tasks and `spe/evals/harness/r02-workflow.js`.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "aa14e18d4e97235fe",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 runs `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml`. These are the first two actions.",
+  "Action 6 commits `spe/plans/r02.md` and `spe/predictions/r02.yaml`. It then says \"Only after this commit do I start on graders, tasks and `spe/evals/harness/r02-workflow.js`.\"",
+  "Action 2 lists `round: 2`, `date: 2026-10-21`, and an `author` field. It also gives each metric a number, a band, a grader check, \"a one-line Why\", and `same_as_last_round`.",
+  "The file's first line is `# Saved before the eval ran. Do not edit after the run.` This marks the file as not to be edited after the run.",
+  "None of the six actions mentions a grader selftest. The list ends before any grader work starts, so it never shows a selftest gate before trials.",
+  "The answer never mentions a small dry run before the full Workflow run. The harness work only appears as a future step after action 6.",
+  "Each action names an exact path or a full git command. Writing the specify files after the prediction file is a little out of order. Even so, each step gets its own commit, and the prediction is committed before harness work, so the order holds up."
+ ]
+}

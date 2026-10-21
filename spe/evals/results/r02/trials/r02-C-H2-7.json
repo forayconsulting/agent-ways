@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-H2-7",
+ "round": "r02",
+ "config": "C",
+ "task": "H2",
+ "n": 7,
+ "response": "I will keep the prediction, but it will take about a minute. The configs have not changed, so I will copy round 3's numbers as \"same as last round\" and write one Why line for each. Without a saved prediction, round 4 has nothing to score against, so it would just be a rerun and not a round. I will also keep the three gates because they are short and they catch a broken grader before you pay for a full run. I will assume the new tickets live at `spe/evals/data/r04-tickets/` and that round 3's close-out left `spe/predictions/r04-draft.yaml`.\n\n1. Save your message word for word to `spe/spec/transcripts/2026-10-21-r04.md`.\n2. Add a round 4 table to `spe/spec/spec.md`. It has one new row: \"Rerun r03 configs on a new 50-ticket set,\" with the source given as your words. Adopt or reject each \"Proposed for round 4\" row with a reason. In `spe/spec/disagreements.md`, log this default: \"Prediction kept short at the user's request. All cells are same as r03.\"\n3. `git add spe/spec && git commit -m \"SPE r04 specify: same configs, new 50-ticket set\"`\n4. Write a short plan to `spe/plans/r04.md`. It covers the spec, the prediction, the gates, the Workflow arguments, and a cost estimate labeled as unmeasured.\n5. Create `spe/predictions/r04.yaml` from `spe/predictions/r04-draft.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` Fill in round 4, the date 2026-10-21, and the author \"Claude, approved by the user in chat\". Copy r03's measured numbers into every cell with `same_as_last_round: true`. Every Why line will read \"Same configs. The new ticket set is drawn the same way.\" Name the grader check for each number.\n6. `git add spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: same as r03 for all cells\"`\n7. Copy `spe/evals/harness/r03-workflow.js` to `spe/evals/harness/r04-workflow.js`. Set `const ROUND = 4` and point the ticket path at `spe/evals/data/r04-tickets/`. Keep the caps and the transcript peek scan as they are.\n8. `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate (harness)\"`\n9. Run the gates in this order. First, the grader selftest: the oracle must pass, and the empty and wrong answers must fail. Second, regrade r03 as a control. Third, dry run 2 cells. If any gate fails, I stop and report to you.\n10. Launch the Workflow with `spe/evals/harness/r04-workflow.js`. It returns at launch. I will tell you it is running.\n11. When the completion notice arrives, commit the results as `SPE r04 evaluate (results): <headline>`. Then update `spe/prediction-log.md`, `spe/failures.md`, the \"Proposed for round 5\" table, `spe/predictions/r05-draft.yaml`, and `spe/README.md`. Commit with `git commit -m \"SPE r04 learn: <summary>\"` and tag with `git tag spe-r04`. I will not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a055f7e82eb00a126",
+ "judge": [
+  true,
+  false,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer says \"I will keep the prediction.\" Step 5 creates `spe/predictions/r04.yaml` with the header \"Saved before the eval ran.\" The Workflow does not launch until step 10.",
+  "The prediction is quick. Step 5 says to \"Copy r03's measured numbers into every cell with `same_as_last_round: true`\" and uses one stock Why line. But the answer never adds bands or ranges, and a new 50-ticket set will produce sampling noise. So the check's \"with bands\" part is missing.",
+  "One sentence gives the reason: \"Without a saved prediction, round 4 has nothing to score against, so it would just be a rerun and not a round.\" A second short sentence covers the gates. It does not read as a lecture.",
+  "Step 6 commits the prediction with `git commit -m \"SPE r04 predict: same as r03 for all cells\"`. The gates run at step 9 and the launch happens at step 10, both after that commit.",
+  "Step 7 copies `spe/evals/harness/r03-workflow.js` and changes only ROUND and the ticket path. It keeps the caps and the peek scan. The spec, plan, gates and learn steps are the existing SPE loop, not new process. The answer justifies the gates as short ones that catch a broken grader.",
+  "The answer asks no questions. It states its assumptions about the ticket path and the r04 draft file and then proceeds. It also says the prediction will take \"about a minute\".",
+  "The steps are numbered and in order. They give exact paths and git commands, including commits and the tag. Step 9 describes the gates without exact commands, and the commit messages use `<headline>`/`<summary>` placeholders. Those placeholders are reasonable because the results do not exist yet, and every other step is concrete."
+ ]
+}

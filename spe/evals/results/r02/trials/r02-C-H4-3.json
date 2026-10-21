@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-H4-3",
+ "round": "r02",
+ "config": "C",
+ "task": "H4",
+ "n": 3,
+ "response": "**What I do next**\n\nI treat Sonnet 6 as round 5. A model swap counts as one change, so round 5 tests only that change. First I check the Anthropic models page for the exact Sonnet 6 model ID and its price. I will pin that exact snapshot string the same way C2 pins Sonnet 5.5. I save your message verbatim to `spe/spec/transcripts/2026-10-21-r05.md`. Then I bring you the plan below in plan mode. I write no harness code until you approve the plan.\n\n**Round 5 plan outline: Sonnet 6 swap**\n\n**1. Specify** (in `spe/spec/spec.md`, round 5 table)\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R5-1 | Run C2 unchanged on Sonnet 5.5 as the control. | r04 best config | Control lands within the r04 noise band. |\n| R5-2 | Run C2 on Sonnet 6. Prompt, tools, tasks, graders, and trial count stay identical. | User: \"Sonnet 6 just shipped.\" | The config diff shows only the model field changed. |\n| R5-3 | Pin both model IDs as exact snapshot strings. | r04 pinning decision | The harness checks the model ID on every trial result. |\n| R5-4 | Keep the judge model the same as in r04. | Change one thing per config | The judge ID in r05 matches the judge ID in r04. |\n| R5-5 | Give Sonnet 6 its own spend cap. | Halt rule | A skip log exists if the cap is hit. |\n\n- r04 \"Proposed for round 5\" rows: I defer each one to r06 because it would confound the model swap. The one exception is a grader fix for a logged r04 failure. I adopt grader fixes because they apply to both configs equally.\n- Open decisions in `spe/spec/disagreements.md`, owned by you:\n  - What result makes Sonnet 6 the new pinned model? My logged default is to recommend the switch only if C2 on Sonnet 6 ties or beats C2 on Sonnet 5.5 on every pass metric. Its cost per passing trial must also stay at or below 1.5 times the Sonnet 5.5 cost.\n  - Can the C2 prompt be retuned for Sonnet 6? My logged default is no in r05. A retune becomes an r06 proposal.\n- Commit: `SPE r05 specify`.\n\n**2. Predict**\n\n- Configs: `C2` (Sonnet 5.5, pinned) and `C2-S6` (Sonnet 6, pinned).\n- Rows: every r04 metric, plus cost per trial and latency per trial. Each row names its grader check and has a one-line Why.\n- The C2 column copies the r04 measured values from `spe/prediction-log.md`. A miss there points to a harness problem.\n- The C2-S6 column starts from C2. I move a number only for a stated reason. A launch claim can move a number only if it names a task like ours.\n- After approval: copy the plan to `spe/plans/r05.md`. Write `spe/predictions/r05.yaml` with the \"Saved before the eval ran\" header and `same_as_last_round`. Commit `SPE r05 predict`.\n\n**3. Evaluate**\n\n- `spe/evals/harness/r05-workflow.js` starts as a copy of the r04 script. It sets `ROUND = 5` and holds one model constant per config.\n- Gates before launch:\n  - The grader selftest must pass. The oracle passes, and the empty and wrong answers fail.\n  - A regrade of the r04 transcripts must reproduce the r04 numbers.\n  - A dry run covers 3 cells, 2 of them on Sonnet 6. It confirms that the Sonnet 6 ID resolves and that the output matches the schema.\n- Trials use the r04 tasks and trial count. Split cells get extra trials up to the cap. I scan transcripts for peeking and void any trial that peeked.\n- Cost estimate (unmeasured): the r04 cost per trial, times the Sonnet 6 to Sonnet 5.5 price ratio, times the trial count. I fill in the number after I check pricing.\n- The run ends with failure analysis and a completeness critic. Each new failure is tagged with its model.\n- Commits: `SPE r05 evaluate (harness)` and `SPE r05 evaluate (results): <headline>`.\n\n**4. Learn**\n\n- Update `spe/prediction-log.md` and `spe/failures.md`. Add the \"Proposed for round 6\" table, which includes the deferred r04 proposals. Write `spe/predictions/r05-draft.yaml` marked `status: draft`. Update `spe/README.md`.\n- I report whether Sonnet 6 met the default bar. You decide whether C2 moves to Sonnet 6.\n- Commit `SPE r05 learn` and tag `spe-r05`. I do not push.\n\n**Halt and report if** the Sonnet 6 ID is not available on the account, a spend cap is hit, the r04 regrade does not reproduce, or the judge output drifts from r04.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ac15a84bff94f58f5",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I treat Sonnet 6 as round 5\" and lays out the Specify, Predict, Evaluate, and Learn steps for r05. Each step has its own commit, and the round ends with the tag spe-r05.",
+  "R5-1 runs \"C2 unchanged on Sonnet 5.5 as the control\". The Predict step lists two configs side by side: \"C2 (Sonnet 5.5, pinned) and C2-S6 (Sonnet 6, pinned)\".",
+  "R5-2 says \"Prompt, tools, tasks, graders, and trial count stay identical\" and is tested by checking that \"only the model field changed\". R5-4 keeps the judge model the same, and the answer defers the r04 proposals because they \"would confound the model swap\".",
+  "The answer writes r05.yaml with a \"Saved before the eval ran\" header before the run. The C2-S6 column \"starts from C2\" and moves only for a stated reason. But the answer never mentions bands or ranges for the Sonnet 6 numbers, so the check's \"numbers and bands\" requirement is not clearly met.",
+  "The answer says \"Trials use the r04 tasks and trial count\" and lists graders among the things that \"stay identical\". It adds a regrade gate on the r04 transcripts. The one grader fix it allows applies to both configs equally.",
+  "The answer says \"I report whether Sonnet 6 met the default bar. You decide whether C2 moves to Sonnet 6.\" It writes no harness code before the plan is approved and does not push.",
+  "The answer lists \"every r04 metric, plus cost per trial and latency per trial\" and refers to \"pass metric\" elsewhere. It never names tokens. It frames cost and time per trial, not per ticket, so it does not name all four required metrics."
+ ]
+}

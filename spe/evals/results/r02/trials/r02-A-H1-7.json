@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H1-7",
+ "round": "r02",
+ "config": "A",
+ "task": "H1",
+ "n": 7,
+ "response": "# Plan: SPE round 3, spec step\n\nI took \"next one\" to mean the round 3 spec step. Round 2 is measured and logged, and the four proposals at the end of `spec.md` are not yet agreed.\n\nThis step changes the spec only. It writes no predictions and runs nothing. The predict step comes after it and gets its own commit.\n\n## What round 2 tells us\n\n- The naive baseline was closer in 4 of 5 rows.\n- Every miss came in below the prediction. C category was 0.10 low. C priority was 0.09 low. D cost was double the predicted $0.002.\n- C's Why broke. Merging the tools hid the outage-status lookup, so outage tickets got P3 (F4).\n\n## Decisions I recommend\n\n| ID | Recommendation | Reason |\n|---|---|---|\n| P1 | Adopt. Split the outage status check out of C's merged tool. Change nothing else in C. | It fixes F4 directly. Keeping the rest of C the same means round 3 tests this one change. |\n| P2 | Adopt, with one condition. Tag the 10 new tickets as a separate slice. Report the original set and the new slice separately. | A and B are at 0.86 on category. If the new tickets are mixed into one number, the \"same as last round\" baseline stops being comparable. The new slice has no last-round baseline, and the log will say so. |\n| P3 | Adopt. Drop config D. | Cost rose from $0.003 to $0.004, and F6 is still open. F6 will read \"closed by removing D, not fixed\". |\n| P4 | Adopt. Raise trials per cell from 3 to 5. | B missed by 0.02, which may be inside noise at n=3. This raises run count by about 67%, before the 10 new tickets are added. |\n| P5 (new, mine) | Add a noise rule. Each cell records the min and max across trials. A verdict is marked \"inside noise\" when the gap between predicted and measured is smaller than that spread. | P4 alone does not tell us when a miss is real. This rule does. You have not agreed to it yet. |\n\n## Check before editing\n\nF5 changed `grade.py` to read `label.priority`. The round 2 numbers were regraded. The priority baseline of 0.78 came from round 1. If round 1 was graded with the old grader, the round 2 priority verdict compares two different graders.\n\n- I will check whether `r01` was graded before or after the F5 fix.\n- If it was graded before, I will regrade `r01` priority with the fixed `grade.py`. I will update the 0.78 in the round 2 row and add a note that it was regraded. I will make that change only if you approve it.\n\n## File changes\n\n1. `spe/spec.md`\n   - Rename \"Proposed for round 3 (not yet agreed)\" to \"Round 3 changes (agreed)\".\n   - List only the items you approve, with the P2 slice condition and P5 if you accept them.\n   - Add one line under it. The line says that all four round 2 misses came in below the prediction, so round 3 predictions should account for that.\n2. `spe/failures.md`\n   - F4: change \"Fix: open\" to \"Fix: P1, round 3\".\n   - F6: change \"Fix: open\" to \"Closed by removing D in round 3. Not fixed.\" This applies only if P3 is approved.\n3. `spe/predictions/r03-draft.yaml` stays unchanged in this step. Its baseline still lists D at 0.74 and has no entry for the new slice. The predict step will fix both.\n\n## Commit\n\nThis is a local commit only. Nothing gets pushed.\n\n```\ngit add spe/spec.md spe/failures.md\ngit commit -m \"spe: agree round 3 spec changes (P1-P4)\"\n```\n\nIf the `r01` regrade happens, `spe/prediction-log.md` is added to the same commit. The commit message says so.\n\n## What I need from you\n\n1. Approve P1 to P4 as recommended, or tell me which ones to change.\n2. Say yes or no to P5, the noise rule.\n3. Say yes or no to regrading `r01` priority if the check shows it used the old grader.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a8861ec20714027a0",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"I took 'next one' to mean the round 3 spec step\". It works this out from the logged round 2 results and the unagreed proposals, and nobody named the phase.",
+  "The decisions table adopts each of P1 to P4 and gives a reason for each. P1 fixes F4. P2 gets a slice condition because A and B sit at 0.86. P3 cites the cost rise and the open F6. P4 cites B's miss inside noise at n=3.",
+  "P1 cites F4 and P3 cites F6. F5 is cited in the 'Check before editing' section to justify the r01 regrade. The failures.md edits tie F4 and F6 to their round 3 fixes.",
+  "The answer says \"This step changes the spec only. It writes no predictions\". No number starts from round 2's measured values, and no number has a band.",
+  "The answer contains no predicted numbers, so no number has a Why.",
+  "The answer leaves spe/predictions/r03-draft.yaml unchanged and defers the work to the predict step. It never mentions saving or committing spe/predictions/r03.yaml before any trial.",
+  "The answer has no eval plan. It mentions no selftest, no control regrade, and no dry run before a full run. The r01 regrade check concerns baseline comparability. It is not a gate before the round 3 run."
+ ]
+}

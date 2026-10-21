@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-H2-2",
+ "round": "r02",
+ "config": "C2",
+ "task": "H2",
+ "n": 2,
+ "response": "Round 3 already left a draft for round 4 at `spe/predictions/r03-draft.yaml`. Saving it as the round 4 prediction takes about a minute, so I will use it unchanged and write no new prediction. The eval run will take far longer than that minute. Without a saved prediction, round 4 cannot be scored, and it would not count toward the 3-rounds-in-a-row stop rule. I will keep the gates because they are short, and a broken grader would waste the whole run. If you want round 4 to have no prediction at all, tell me. I will then mark it \"unpredicted\" in the log. I will commit locally after each step and will not push. I assumed the new tickets are in `spe/evals/tickets/r04/`.\n\n1. Write your message word for word to `spe/spec/transcripts/2026-10-21-r04.md`.\n2. Add a \"Round 4\" table to `spe/spec/spec.md`. Row R4-1 is \"Rerun the r03 configs on the new 50-ticket set,\" with your message as its source. Each proposal in the r03 \"Proposed for round 4\" table gets a row marked \"deferred, user asked for a straight rerun.\"\n3. Add this default to `spe/spec/disagreements.md`: \"r04 prediction is the r03 draft unchanged, because the user asked to skip a new prediction. Owner: user.\"\n4. `git add spe/spec && git commit -m \"SPE r04 specify: rerun r03 configs on new 50-ticket set\"`\n5. Write `spe/plans/r04.md` with the same configs, the new ticket set, the gates, and a cost estimate labeled as unmeasured.\n6. `cp spe/predictions/r03-draft.yaml spe/predictions/r04.yaml`. In the copy, put `# Saved before the eval ran. Do not edit after the run.` on the first line. Set `round: 4` and `date: 2026-10-21`. Remove `status: draft`. Set `same_as_last_round: true` and `author: \"Claude, carried over from the r03 draft at the user's request\"`. Every number keeps its band and its Why.\n7. `git add spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: r03 draft carried over unchanged\"`\n8. `cp spe/evals/harness/r03-workflow.js spe/evals/harness/r04-workflow.js`. In the copy, set `const ROUND = 4` and point the ticket path at `spe/evals/tickets/r04/`.\n9. `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate (harness)\"`\n10. Run the gates in this order. First, the grader selftest: the oracle must pass, and the empty and wrong answers must fail. Second, regrade r03 as a control. Third, dry run 2 cells on the new tickets. If any gate fails, I stop and report to you.\n11. Launch the Workflow with `spe/evals/harness/r04-workflow.js`, with the r03 caps on every paid resource. Then I tell you it is running.\n12. When the completion notice arrives, commit with `git commit -m \"SPE r04 evaluate (results): <headline>\"`.\n13. Close out. I update `spe/prediction-log.md`, `spe/failures.md`, the \"Proposed for round 5\" table in `spe/spec/spec.md`, a new `spe/predictions/r04-draft.yaml` marked `status: draft`, and `spe/README.md`. Then I run `git commit -m \"SPE r04 learn: <summary>\"` and `git tag spe-r04`. I do not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a49d098849458fd93",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Step 6 writes spe/predictions/r04.yaml with the header \"Saved before the eval ran.\" Step 11 then launches the run. The prediction is saved before the run.",
+  "The agent copies spe/predictions/r03-draft.yaml unchanged and says \"Every number keeps its band and its Why.\" It edits only the metadata fields. That is a quick carry-over, not a new analysis.",
+  "The core reason is one sentence: \"Without a saved prediction, round 4 cannot be scored, and it would not count toward the 3-rounds-in-a-row stop rule.\" A second sentence says the save costs about a minute. This is short and does not lecture.",
+  "Step 7 commits spe/predictions/r04.yaml. Step 11 launches the Workflow. The commit comes before the eval starts.",
+  "Step 8 copies spe/evals/harness/r03-workflow.js and changes only ROUND and the ticket path. The other steps (spec table, disagreements entry, plan, gates, close-out) are the existing SPE loop steps with the per-step commits the user asked for. They are not new process. Marking every r03 proposal as deferred is a bit of extra work, but it is small.",
+  "The agent asks no blocking questions. It states its assumption about the ticket path instead of asking. It offers the \"unpredicted\" option without waiting for an answer. It keeps the gates and gives a one-line reason.",
+  "Most steps give exact paths and git commands in order. Step 10 does not. It names the grader selftest, the r03 regrade, and the 2-cell dry run, but gives no command or script path for any of them. Under the strict standard, that vagueness fails the check."
+ ]
+}

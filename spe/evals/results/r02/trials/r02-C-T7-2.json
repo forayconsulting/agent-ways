@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-T7-2",
+ "round": "r02",
+ "config": "C",
+ "task": "T7",
+ "n": 2,
+ "response": "1. Copy the approved plan to the lasting copy with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`.\n2. Write `spe/spec/transcripts/2026-10-21-r02.md`. It holds the user's round 2 plan mode prompt and planning answers, copied verbatim.\n3. Add the round 2 requirement table to `spe/spec/spec.md`. The columns are ID, Requirement, Source and Test, and each round 1 proposal gets an adopt or reject row with a reason. In the same step, log the open decisions and defaults in `spe/spec/disagreements.md`.\n4. Commit the spec with `git add spe/spec && git commit -m \"SPE r02 specify: round 2 requirements from r01 evidence\"`.\n5. Write `spe/predictions/r02.yaml`.\n   - The first line is `# Saved before the eval ran. Do not edit after the run.`\n   - It records round 2, date 2026-10-21, author \"Claude, approved by the user in plan mode\", and configs A to D.\n   - It copies every number from the plan's Predict table, with a Why and the grader check for each number.\n   - Each number also gets a `same_as_last_round` flag.\n6. Commit the prediction with `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A to D\"`. This happens before any grader, task or `spe/evals/harness/r02-workflow.js` work. The commit has no Claude attribution, and nothing gets pushed.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a831108bac96c718d",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 5 writes `spe/predictions/r02.yaml`. Spec work sits between them, but both artifacts appear among the first six actions.",
+  "Action 6 commits `spe/plans/r02.md spe/predictions/r02.yaml`. The answer states this happens \"before any grader, task or `spe/evals/harness/r02-workflow.js` work.\"",
+  "Action 5 lists round 2, date 2026-10-21, an author, every number from the Predict table, \"a Why and the grader check for each number\", and a `same_as_last_round` flag for each number.",
+  "The first line of the prediction file is `# Saved before the eval ran. Do not edit after the run.`",
+  "None of the six actions mentions a grader selftest. The answer does not say that a selftest must pass before any trial runs.",
+  "The answer never mentions a small dry run before the full Workflow run. The list stops at the prediction commit.",
+  "Each action names an exact path or a full git command, such as `git add spe/spec && git commit -m \"SPE r02 specify: ...\"`. The order goes plan, transcript, spec, spec commit, prediction, prediction commit, which is sensible."
+ ]
+}

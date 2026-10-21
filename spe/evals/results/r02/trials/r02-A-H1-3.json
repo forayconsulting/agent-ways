@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H1-3",
+ "round": "r02",
+ "config": "A",
+ "task": "H1",
+ "n": 3,
+ "response": "# Plan: SPE round 3, step 1 (agree the spec)\n\nThe next step is the round 3 spec. The four proposals at the end of spec.md are still marked \"not yet agreed\". Predictions for round 3 cannot be written until the spec is fixed. This plan settles the spec, updates the spe/ files, makes one local commit, and stops before predictions.\n\nI assume spec.md lives at `spe/spec/spec.md`. I will confirm the path on the first read.\n\n## Decisions I need from you\n\n| ID | My recommendation | Reason |\n|---|---|---|\n| P1 | Accept | F4 shows that C never called the status check inside the merged tool. Outage tickets got P3 as a result. Splitting the check back out tests C's broken Why directly. |\n| P2 | Accept, with one condition | The 10 new tickets change the test set. The 0.86 baselines for A and B were measured on the old set. They are not a fair \"same as last round\" number for the larger set. I will score the old tickets and the new tickets separately. The new tickets will have no naive baseline in round 3, and the spec will say so. |\n| P3 | Accept | Dropping D does not fix F6. I will mark F6 as \"not fixed, config dropped in r03\". D's round 2 miss stays in the prediction log. |\n| P4 | Accept | B's miss (0.88 predicted, 0.86 measured) is 0.02. At 3 trials that gap is inside noise. Going to 5 trials adds 2 runs per cell. With D dropped, that is 3 configs x 5 trials. |\n\nTwo more items are not in the proposal table. I think they belong in this step.\n\n1. **The round 1 priority baseline may be wrong.** F5 fixed grade.py in round 2 and regraded r02 only. C's \"same as last round\" priority score of 0.78 came from round 1. If round 1 used the old grade.py, it read priority from the draft reply. In that case 0.78 is not a valid baseline. I will check which grader version scored r01. If it was the old one, I will regrade r01 priority with the fixed grade.py.\n2. **The hit rule is not written down.** A counted as a hit at 0.01 off. B counted as a miss at 0.02 off. I propose this rule for round 3: a prediction is a hit when it falls inside the min-to-max range of that cell's 5 trial scores. The rule must be fixed now, before any run, so it cannot be tuned after the results.\n\n## Steps\n\n1. Read `spe/README.md` for the step definitions and the commit convention. Read `spe/spec/spec.md`, `spe/failures.md`, and `spe/predictions/r03-draft.yaml` in full.\n2. Check the r01 eval outputs in `spe/evals/` and the grade.py history. Find out whether r01 priority was read from `label.priority`.\n3. If r01 used the old grader, regrade r01 priority. Add a dated note under the round 1 section of `spe/prediction-log.md` with the corrected value. I will not overwrite the original row.\n4. Edit `spe/spec/spec.md`. Replace \"Proposed for round 3 (not yet agreed)\" with \"Round 3 spec (agreed 2026-10-21)\". The section will list configs A, B, and C, 5 trials per cell, the old test set plus 10 mixed billing and outage tickets scored separately, the C change from P1, and the hit rule.\n5. Edit `spe/failures.md`. Set F4 to \"Fix: planned in r03 (P1)\". Set F6 to \"Fix: none. Config D dropped in r03 (P3)\". Leave F5 as it is.\n6. Edit `spe/predictions/r03-draft.yaml`. Remove D from `baseline_same_as_last_round`. Add a note that the 10 new tickets have no baseline. Replace C's priority baseline if step 3 changed it. Keep `status: draft`. I will not write any predicted values in this step.\n7. Run `git status` and confirm that only spe/ files changed. Then make one local commit: `git commit -m \"spe(r03): agree round 3 spec\"`. I will not push.\n\n## Out of scope for this step\n\n- Writing round 3 predictions.\n- Running any eval.\n- Fixing F6.\n\n## Checks before the commit\n\n- spec.md no longer has a \"not yet agreed\" section.\n- r03-draft.yaml lists baselines for A, B, and C only.\n- failures.md shows a fix status for F4, F5, and F6.\n- The diff touches nothing outside spe/.\n\n## Next step after this one\n\nThe next step is round 3 predictions. In round 2 the naive baseline was closer than my prediction in 4 of 5 rows, and A was a tie. That means my round 2 predictions moved too far from last round's numbers. In round 3, each prediction will state how far it moves from the baseline, and each Why will name the mechanism behind that move.\n\nReply with \"go\" to accept all four recommendations, or name the IDs you want changed.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a857848747631a0d7",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "The plan is titled \"SPE round 3, step 1 (agree the spec)\". It says the proposals are \"still marked 'not yet agreed'\" and that this step settles the spec. The agent worked out the respec phase on its own from \"ok, next one\".",
+  "The \"Decisions I need from you\" table gives each of P1 to P4 a recommendation with a reason. For example, P3 is \"Accept\" because dropping D avoids F6, and P4 is \"Accept\" because the 0.02 miss is inside noise at n=3. P2 is accepted with a condition to score old and new tickets separately.",
+  "The P1 reason cites F4. The P3 reason and step 5 cite F6. The added item about the r01 priority baseline cites F5 (\"F5 fixed grade.py in round 2 and regraded r02 only\"). Each new requirement is tied to the failure ID behind it.",
+  "The plan writes no round 3 predictions. It lists \"Writing round 3 predictions\" as out of scope, and step 6 says \"I will not write any predicted values in this step.\" No number starts from round 2's measured values, and no number has a band.",
+  "The plan contains no predicted numbers, so no number has a Why. It only says that in the next step \"each Why will name the mechanism behind that move.\"",
+  "The plan keeps spe/predictions/r03-draft.yaml at \"status: draft\" and never creates or commits spe/predictions/r03.yaml. The only commit is \"spe(r03): agree round 3 spec\", which contains no predictions.",
+  "The plan has no eval plan and lists \"Running any eval\" as out of scope. It names no selftest, no control regrade gate, and no dry run before a full run. The r01 regrade in step 3 is a baseline fix. It is not a gate before the round 3 run."
+ ]
+}

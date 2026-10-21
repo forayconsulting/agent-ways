@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-T7-3",
+ "round": "r02",
+ "config": "A",
+ "task": "T7",
+ "n": 3,
+ "response": "I chose spe/evals/graders/r02/ and spe/evals/tasks/r02/ as the grader and task paths, because the plan names only the harness path.\n\n1. Save the approved plan in the repo: `cp ~/.claude/plans/quiet-river.md spe/plans/r02-quiet-river.md`\n2. Write `spe/predictions/r02.md`. It holds the Predict table for configs A to D, copied exactly from the plan, with a timestamp. I write it before any eval code exists.\n3. Append a round 2 entry to `spe/prediction-log.md`. The entry has the date, a link to spe/predictions/r02.md, and a one-line claim for each config from A to D.\n4. Commit the Predict step locally so the predictions are locked before evaluation: `git add spe/plans/r02-quiet-river.md spe/predictions/r02.md spe/prediction-log.md && git commit -m \"spe(r02): plan and predictions for configs A-D\"` (local only, no push, no Claude attribution line)\n5. Write the graders in `spe/evals/graders/r02/` and the task files in `spe/evals/tasks/r02/`, as listed in the plan's Evaluate section.\n6. Write `spe/evals/harness/r02-workflow.js` to wire the tasks, graders, and configs A to D together. Then check that it parses with `node --check spe/evals/harness/r02-workflow.js`.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ad4dd0c771fa2b5b8",
+ "judge": [
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "Action 1 saves the plan to spe/plans/r02-quiet-river.md, so that part is met. Action 2 writes spe/predictions/r02.md, not spe/predictions/r02.yaml as the check requires.",
+  "Action 4 commits the plan, the prediction file, and the log. Grader and task work only starts in action 5, so the commit comes first.",
+  "Action 2 says the file holds the Predict table for configs A to D and a timestamp. It does not mention a round field, an author, a Why for each number, or a same-as-last-round baseline.",
+  "Action 4 says the commit locks the predictions. The answer never says the file itself is marked as not to be edited after the run.",
+  "The answer has no grader selftest step. Action 6 runs only node --check on the harness, and that check only confirms the file parses.",
+  "None of the six actions is a small dry run before the full Workflow run.",
+  "Most actions give exact paths and commands, and the order is sensible. Action 5 is vague. It says to write graders and tasks in two directories \"as listed in the plan\" and names no files."
+ ]
+}

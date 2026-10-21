@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-H4-7",
+ "round": "r02",
+ "config": "C2",
+ "task": "H4",
+ "n": 7,
+ "response": "**What I do next**\n\nI open round 5 as a model-swap round. C2 stays pinned to Sonnet 5.5 as the control. I add C3, which is C2 with only the model changed to Sonnet 6. I do not repin C2 in place, because that would erase the baseline. First I check the current Anthropic model docs for the exact Sonnet 6 model ID and its price. Next I save your message as the r05 transcript. Then I write the plan below and wait for your approval.\n\nI do not have the r04 measured numbers in this message. The outline therefore says how each cell gets its value and does not list the values.\n\n**Plan outline: SPE round 5, C3 on Sonnet 6 against C2 on Sonnet 5.5**\n\n1. Specify\n- Save `spe/spec/transcripts/2026-10-21-r05.md` with \"Sonnet 6 just shipped.\" exactly as you wrote it.\n- Add an r05 table to `spe/spec/spec.md`:\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R5-1 | C3 is C2 with the model set to the pinned Sonnet 6 ID | User, 2026-10-21 | The config diff between C2 and C3 shows only the model field |\n| R5-2 | C2 stays pinned to Sonnet 5.5 as the control | Decision | C2's r05 results fall inside its r04 bands |\n| R5-3 | The graders and any judge model stay as they were at spe-r04 | Decision | Grader file hashes and the judge model ID match tag spe-r04 |\n| R5-4 | Each trial records tokens and cost | Decision | Every trial record has token and cost fields |\n\n- Handle the r04 \"Proposed for round 5\" table. Each proposal changes something other than the model. I defer each one to r06 and give that reason, so this round changes only one thing. I log this as a default in `spe/spec/disagreements.md` and name you as owner. You can bring back any proposal as its own config.\n- Commit `SPE r05 specify: Sonnet 6 swap against pinned C2`.\n\n2. Predict\n- The configs are C2 (Sonnet 5.5, control) and C3 (Sonnet 6, model change only).\n- I start from `spe/predictions/r04-draft.yaml` and the r04 measured values.\n- C2 cells copy the r04 measured value and band. The Why is that nothing changed.\n- C3 cells start at \"same as last round\". A number moves only with a written reason that cites an r04 failure ID, such as \"r04 F7\". C3 bands are wider than C2 bands because we have no Sonnet 6 evidence yet. A hit is a result inside the band.\n- I add a cost-per-trial row for C3 compared with C2. It comes from published pricing and is labeled an estimate.\n- Each number names its grader check.\n- After approval I copy the plan to `spe/plans/r05.md`. I write `spe/predictions/r05.yaml` with the \"# Saved before the eval ran. Do not edit after the run.\" header and a `same_as_last_round` field for each number. I commit `SPE r05 predict: C3 Sonnet 6 vs C2 Sonnet 5.5` before any harness work.\n\n3. Evaluate\n- Copy the r04 Workflow script to `spe/evals/harness/r05-workflow.js`. Set `ROUND = 5`. Add the Sonnet 6 ID as a pinned constant. Change nothing else.\n- Gates before launch:\n  - The grader selftest must pass. The oracle passes, and the empty and wrong answers fail.\n  - Regrade the r04 transcripts as a control. The regrade must reproduce the r04 numbers.\n  - Dry run 2 or 3 C3 cells. This confirms that Sonnet 6 calls work and that the output fits the trial schema.\n- Use the same trials per cell as r04. Cells with split results get extra trials up to the r04 cap.\n- Scan the transcripts. Void any trial that read the graders, the answers, or the predictions.\n- Raise the r04 cost cap by the Sonnet 6 to Sonnet 5.5 price ratio for C3 trials. Skip and log any trial that would cross the cap. The unmeasured cost estimate is the r04 C2 spend plus the r04 C2 spend times that price ratio.\n- Commit `SPE r05 evaluate (harness)` and launch. When the completion notice arrives, commit `SPE r05 evaluate (results)` with the measured headline.\n\n4. Learn\n- Update `spe/prediction-log.md` and the \"Which Why broke\" section. Say plainly whether \"same as last round\" beat the moved C3 numbers.\n- Add any new Sonnet 6 failure types to `spe/failures.md`.\n- Add a \"Proposed for round 6\" table, which includes the deferred r04 proposals. Write `spe/predictions/r05-draft.yaml` with `status: draft`. Update `spe/README.md`.\n- Commit `SPE r05 learn` and tag `spe-r05`. All commits stay local. I do not push.\n- Only you can decide whether C3 replaces C2 as the best config. The final report lists it as an open decision.\n\nHalt and report if any of these happen:\n- The Sonnet 6 ID is not available on our API account.\n- The new price makes the cap too small for a full round.\n- The r04 regrade control does not match.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a7da8858c0c6ecb6a",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I open round 5 as a model-swap round.\" It then lays out r05 Specify, Predict, Evaluate, and Learn steps.",
+  "The answer says \"C2 stays pinned to Sonnet 5.5 as the control. I add C3.\" It also says \"I do not repin C2 in place, because that would erase the baseline.\"",
+  "R5-1 requires that \"the config diff between C2 and C3 shows only the model field.\" The answer also defers the r04 proposals to r06 \"so this round changes only one thing.\"",
+  "The answer says C3 cells get values and bands, and that C3 bands are wider than C2 bands. It saves r05.yaml with the \"Saved before the eval ran\" header and commits it \"before any harness work.\" It does not list the actual numbers because the r04 values were not given, but it says exactly how each one is set.",
+  "R5-3 pins the graders and the judge model to spe-r04 by hash. The harness is copied with \"Change nothing else\" and uses the same trials per cell. A regrade of r04 is a gate that must pass before launch.",
+  "C2 stays the pinned control. The answer says \"Only you can decide whether C3 replaces C2 as the best config\" and lists that as an open decision for the user.",
+  "The plan names cost and tokens (R5-4 and a cost-per-trial row), and it implies accuracy through grader checks and hits. It never names time or latency per ticket as a metric, so the required set is incomplete."
+ ]
+}

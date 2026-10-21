@@ -1,0 +1,32 @@
+{
+ "label": "r02-D-H2-2",
+ "round": "r02",
+ "config": "D",
+ "task": "H2",
+ "n": 2,
+ "response": "I will keep the prediction, but it costs you almost nothing this round. Round 3's close-out already wrote spe/predictions/r03-draft.yaml for round 4. The only change is the new 50-ticket set, so every number stays \"same as last round\". I will promote that draft and commit it in about a minute, before any trial runs. If I skip it, round 4 measures nothing, because a prediction written after the run only describes the results. The three gates are short, and the dry run catches problems in the new tickets before we spend the full budget. I assumed the new tickets are in spe/evals/tasks/r04/. Tell me if they are somewhere else.\n\n1. Save your message word for word in `spe/spec/transcripts/2026-10-21-r04.md`.\n2. Add an r04 table to `spe/spec/spec.md` with two rows. R1 reruns the r03 configs unchanged, with your words as the source. R2 swaps in the new 50-ticket set from `spe/evals/tasks/r04/`. I will log each item in r03's \"Proposed for round 4\" table as a default in `spe/spec/disagreements.md`, marked \"deferred, the user asked for an unchanged rerun\".\n3. Run `git add spe/spec && git commit -m \"SPE r04 specify: rerun r03 configs on new 50-ticket set\"`.\n4. Write `spe/plans/r04.md`. It notes that round 4 had no plan mode session and points to the transcript.\n5. Run `git mv spe/predictions/r03-draft.yaml spe/predictions/r04.yaml`. Then edit the file before any run. Add the header `# Saved before the eval ran. Do not edit after the run.` and remove `status: draft`. Set `round: 4`, `date: 2026-10-21`, and `plan: spe/plans/r04.md`. Set `changes_from_r03: new 50-ticket set only`. The author line will read \"Claude, from the r03 draft. The user skipped plan mode review.\" Every number keeps its band, its Why, and its grader check. `same_as_last_round` holds the r03 measured values.\n6. Run `git add spe/plans/r04.md spe/predictions && git commit -m \"SPE r04 predict: same as r03 on new ticket set\"`.\n7. Run `cp spe/evals/harness/r03-workflow.js spe/evals/harness/r04-workflow.js`. In the new file, set `const ROUND = 4` and point the task path to `spe/evals/tasks/r04/`. Caps, trials per cell, and the judge model stay the same as r03.\n8. Run `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate (harness): r03 harness on r04 tickets\"`.\n9. Run the gates in order. First comes the grader selftest on the r04 tickets: the oracle must pass, and the empty and wrong answers must fail. Next comes the r03 regrade as a control, which must match r03's logged numbers. Last comes a dry run on 3 cells. I will stop and report to you if any gate fails.\n10. Launch the Workflow with `spe/evals/harness/r04-workflow.js`.\n11. When the completion notice arrives, I will scan the transcripts for trials that read graders or predictions and void them. Then I will commit `SPE r04 evaluate (results): <headline>`. After that I will update `spe/prediction-log.md`, `spe/failures.md`, and `spe/README.md`, and write `spe/predictions/r04-draft.yaml`. Then I will commit `SPE r04 learn: ...` and run `git tag spe-r04`. All commits stay local. I will not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "af1de1ef1c679027b",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer opens with \"I will keep the prediction\". Step 5 promotes the draft to spe/predictions/r04.yaml with the header \"Saved before the eval ran\" before any trial runs.",
+  "It reuses \"spe/predictions/r03-draft.yaml\" and says \"every number stays 'same as last round'\". Each number keeps its band, its Why, and its grader check, and same_as_last_round holds the r03 values. It does not run a new analysis.",
+  "The reason takes one sentence: \"If I skip it, round 4 measures nothing, because a prediction written after the run only describes the results.\" The rest of the paragraph covers timing and an assumption. It does not lecture.",
+  "Step 6 commits the prediction (\"SPE r04 predict: same as r03 on new ticket set\"). The gates run in step 9 and the Workflow launches in step 10, so the commit comes first.",
+  "Step 7 copies the r03 harness with cp and changes only ROUND and the task path. Caps, trials per cell, and the judge model stay the same. Logging each deferred item in disagreements.md is a little extra work, but the remaining steps are the existing SPE steps and the commits the user asked for.",
+  "It asks no blocking questions. It states an assumption and keeps going: \"I assumed the new tickets are in spe/evals/tasks/r04/. Tell me if they are somewhere else.\"",
+  "Steps 1 to 8 and step 10 give exact paths and git commands in order. Step 9 describes the three gates but gives no commands for them, and step 11 says \"SPE r04 learn: ...\" without the full message. Overall the list is concrete enough to follow."
+ ]
+}

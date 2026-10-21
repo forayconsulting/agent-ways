@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-H4-8",
+ "round": "r02",
+ "config": "C",
+ "task": "H4",
+ "n": 8,
+ "response": "**What I do next**\n\nI treat this as the start of round 5. In it, I change one thing: the model under C2. I do not switch the pinned config to Sonnet 6. Only the eval can justify that switch, and the switch is your decision.\n\n1. I check the current Anthropic docs for the exact Sonnet 6 model ID, its pricing, and any changed defaults. I do not guess the ID.\n2. I ask you to enter plan mode with your prompt. I save that prompt verbatim to `spe/spec/transcripts/2026-10-21-r05.md`.\n3. I keep round 4's \"Proposed for round 5\" items out of this round. Each of those items would be a second change. I log each one in `spe/spec/disagreements.md` as deferred to r06 by default. You can overrule that.\n4. I commit after each step under the `SPE r05 ...` names. I add no co-author lines. I do not push.\n\nI assume round 4's draft lives at `spe/predictions/r05-draft.yaml`. If it sits at `r04-draft.yaml`, I use that file instead.\n\n---\n\n**Plan outline: SPE round 5, Sonnet 6 model swap**\n\n**1. Specify** (commit `SPE r05 specify`)\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R5.1 | Run C2 unchanged on pinned Sonnet 5.5 as the control. | Decision: separate model effect from run-to-run drift | Control results fall inside the r04 C2 measured range |\n| R5.2 | Run C2 on Sonnet 6 with the exact pinned ID. Prompts, tools, graders, and sampling settings stay identical to C2. | User: \"Sonnet 6 just shipped.\" | Config diff between the two cells shows only the model field |\n| R5.3 | Defer the r04 proposals to r06 and log each one as a default. | Decision: one change per config | Each proposal appears in `disagreements.md` with a reason |\n| R5.4 | Report cost and latency per trial for each model. | Decision: a model switch changes spend | Both values are recorded per trial |\n| R5.5 | If both cells pass every check, flag the task set as saturated. | SPE stop rule | Failure analysis states whether the graders still separate the cells |\n| R5.6 | Adoption of Sonnet 6 as the new pinned model stays an open decision. You own it. | Decision only the user can make | The open item appears in `disagreements.md` |\n\n**2. Predict** (written to `spe/plans/r05.md` and `spe/predictions/r05.yaml` before any harness work, commit `SPE r05 predict: C2 on Sonnet 6 vs Sonnet 5.5`)\n\n- There is one row per r04 metric and two columns: `C2@S5.5` and `C2@S6`.\n- The `C2@S5.5` cell equals the r04 measured value from `spe/prediction-log.md`. Its Why reads \"same model, same config. Expect r04 within noise.\"\n- The `C2@S6` cell starts at \"same as last round.\" I move a number only when I can name a reason tied to a known r04 failure ID. One example would be \"r03 F4 was a reasoning slip that a stronger model should reduce.\" Each moved number names its grader check.\n- The cost row uses Sonnet 6 list pricing from the docs. It is labeled as an estimate.\n- The file states that my priors on a new model are weak. If the naive \"same as last round\" guess wins, the log will say so.\n\n**3. Evaluate** (commit `SPE r05 evaluate (harness)` and then `SPE r05 evaluate (results): <headline>`)\n\n- I copy the r04 Workflow to `spe/evals/harness/r05-workflow.js`. `ROUND = 5` is set once. The model is a config field, not prompt text.\n- Gates before launch:\n  - The grader selftest passes. The oracle passes, and the empty and wrong answers fail.\n  - A regrade of r04 reproduces the r04 numbers.\n  - A dry run on 2 or 3 cells per model confirms that the Sonnet 6 ID resolves and that its output fits the trial schema.\n- Trials use the same trial count as r04. Split cells get extra trials up to the r04 cap.\n- I set a spend cap for the round, with a per-model sub-cap. I skip and log any trial that would cross a cap.\n- I scan transcripts for reads of graders, answers, or predictions. I void any trial that peeked.\n- The run ends with failure analysis and a completeness critic. Any new failure type that appears only on Sonnet 6 gets its own F-number.\n\n**4. Learn** (commit `SPE r05 learn: ...` and tag `spe-r05`)\n\n- I fill `spe/prediction-log.md` and the \"Which Why broke\" section. New failure types go to `spe/failures.md`.\n- I update `spe/README.md`.\n- I write the \"Proposed for round 6\" table. It holds the deferred r04 proposals, run on whichever model wins.\n- I write `spe/predictions/r06-draft.yaml` with `status: draft`.\n- I halt and report the adoption decision to you. I do not repin C2 myself.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a275278162ef4eaeb",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"I treat this as the start of round 5\" and lays out the specify, predict, evaluate, and learn steps under r05 names with a spe-r05 tag.",
+  "R5.1 keeps \"C2 unchanged on pinned Sonnet 5.5 as the control\". R5.2 adds C2 on Sonnet 6 as a second cell, with the two columns `C2@S5.5` and `C2@S6`.",
+  "R5.2 says \"Prompts, tools, graders, and sampling settings stay identical to C2\". Its test is that the \"Config diff between the two cells shows only the model field\". The r04 proposals are deferred so they do not add a second change.",
+  "The prediction is written to `spe/predictions/r05.yaml` \"before any harness work\", and its cells start from r04 values. The answer never mentions bands or ranges for the Sonnet 6 predictions. Only the control gets a loose \"within noise\", so the bands part of this check is missing.",
+  "R5.2 keeps graders identical. The evaluate step copies the r04 Workflow, regrades r04 to reproduce its numbers, and uses \"the same trial count as r04\". The task set stays the same under the one-change rule.",
+  "The answer says \"I do not switch the pinned config to Sonnet 6\". It ends with \"I halt and report the adoption decision to you. I do not repin C2 myself.\"",
+  "The plan says \"one row per r04 metric\" and names cost and latency per trial in R5.4. It never names accuracy or tokens, and it never mentions a per-ticket unit, so the required metric list is not fully named."
+ ]
+}

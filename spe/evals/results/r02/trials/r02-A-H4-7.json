@@ -1,0 +1,32 @@
+{
+ "label": "r02-A-H4-7",
+ "round": "r02",
+ "config": "A",
+ "task": "H4",
+ "n": 7,
+ "response": "**What I do next.** I keep C2 pinned on Sonnet 5.5. I do not swap the model in place. I open round 5 and test Sonnet 6 as the only change. I write the prediction before I run anything. I commit locally after each step and do not push.\n\n**Plan outline: `spe/plans/r05-sonnet-6.md`**\n\n1. **Confirm the facts**\n   - Look up the exact Sonnet 6 model ID, pricing, context window, and any Sonnet 5.5 deprecation date in the current Anthropic docs.\n   - Record them in the plan with links. Mark anything I could not confirm as unverified.\n\n2. **Write the prediction first**\n   - Write `spe/predictions/r05.md` and add an entry to `spe/prediction-log.md`.\n   - Predict the change in score for each eval group, the change in cost and latency, and which known items in `failures.md` will flip.\n   - Commit: `spe r05: predict C2 on Sonnet 6`.\n\n3. **Fix the experiment**\n   - The only variable is the model. C2's prompt, tools, temperature, and settings stay byte-identical to `spe-r04`.\n   - Arm A is C2 on Sonnet 5.5, rerun today as a same-day control.\n   - Arm B is C2 on Sonnet 6, pinned to the exact dated ID.\n   - Both arms use the eval set from `spe-r04` with the same cases, the same number of runs per case, and the same seeds where the API supports them.\n   - The grader keeps its current pinned model. It does not move to Sonnet 6.\n   - Decision rule: adopt Sonnet 6 only if B beats A by more than the run-to-run noise seen in earlier rounds, and no must-pass case regresses. I chose this default because no threshold was given. Cost and latency are reported but do not block adoption.\n   - Commit: `spe r05: plan`.\n\n4. **Run**\n   - Save raw outputs, scores, cost, and latency under `spe/evals/r05/`.\n   - Commit: `spe r05: eval results`.\n\n5. **Compare and record**\n   - Score the results against the r05 prediction in `prediction-log.md`.\n   - Add new failures and any flipped failures to `failures.md`.\n   - Commit: `spe r05: compare to prediction`.\n\n6. **Decide and close**\n   - If B passes, update `spe/spec/` and `README.md` so the best config is C2 on Sonnet 6. Leave Sonnet 5.5 recorded as the fallback.\n   - If B fails, C2 stays on Sonnet 5.5. I open round 6 to retune for Sonnet 6, one change at a time.\n   - Commit: `spe r05: decision`. Then tag `spe-r05` locally, as I did for `spe-r04`.\n\n**Out of scope for r05.** No prompt retuning in this round. No grader change. No push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ac82e30452558725d",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I open round 5 and test Sonnet 6 as the only change\" and names the plan r05-sonnet-6.md.",
+  "The answer says \"I keep C2 pinned on Sonnet 5.5. I do not swap the model in place.\" It sets Arm A as C2 on Sonnet 5.5 for the control and Arm B as C2 on Sonnet 6 next to it.",
+  "The answer says \"The only variable is the model. C2's prompt, tools, temperature, and settings stay byte-identical to spe-r04.\"",
+  "The prediction is written and committed before the run, and it covers \"the change in score for each eval group, the change in cost and latency.\" The answer never asks for numeric values with bands or ranges, so this check fails under strict grading.",
+  "The answer says both arms \"use the eval set from spe-r04 with the same cases\" and \"The grader keeps its current pinned model.\"",
+  "C2 stays pinned on Sonnet 5.5. The best config changes to Sonnet 6 only in step 6, after the eval passes the decision rule.",
+  "The plan names score, cost, and latency. It never names tokens, and it gives latency without saying it is measured per ticket. Tokens are missing, so this check fails."
+ ]
+}

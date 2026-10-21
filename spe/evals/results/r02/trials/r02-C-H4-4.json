@@ -1,0 +1,32 @@
+{
+ "label": "r02-C-H4-4",
+ "round": "r02",
+ "config": "C",
+ "task": "H4",
+ "n": 4,
+ "response": "Sonnet 6 is a new model, so I start round 5. Swapping the model is one change, so C2 stays as it is and only the model differs between the two configs. C2 on Sonnet 5.5 stays the pinned best config until the evidence and your decision say otherwise.\n\n**What I do next**\n\n1. I check the current Anthropic docs for the exact dated Sonnet 6 model ID, its price, and its context limits. I pin that dated ID and not an alias. I also confirm that the account can call it.\n2. I save your message verbatim to `spe/spec/transcripts/2026-10-21-r05.md`.\n3. I enter plan mode and draft the r05 plan below. I begin from the \"Proposed for round 5\" table and `spe/predictions/r04-draft.yaml`.\n4. After you approve, I copy the plan to `spe/plans/r05.md` and save `spe/predictions/r05.yaml`. Then I commit both locally as `SPE r05 predict`. I do this before any harness work.\n\nYou did not include the r04 metric table here. So I write each prediction as a change from the r04 measured value. The saved YAML will hold the absolute numbers.\n\n**Plan outline: SPE round 5**\n\n**Specify** (commit `SPE r05 specify`)\n- R5.1. Compare C2 on Sonnet 6 with C2 on Sonnet 5.5, keeping all other settings the same. The source is your words, \"Sonnet 6 just shipped.\"\n- R5.2. Pin both models to dated IDs and record them in the run output. The source is a decision.\n- R5.3. Run the control config in the same Workflow run. That way the run itself shows how much model drift and noise there is. The source is a decision.\n- R5.4. Adopt or reject each row of the r04 \"Proposed for round 5\" table with a reason. I defer any proposal that changes prompts or tasks to r06, because r05 changes only the model.\n- I add one open decision to `spe/spec/disagreements.md`. The question is whether C2's default model moves to Sonnet 6. You own that decision, and I will not make it.\n\n**Predict** (each change is from the r04 measured value, and each one names its grader check)\n\n| Metric | C2-S55 (control) | C2-S6 | Why |\n|---|---|---|---|\n| Task pass rate | +0 pts | +2 pts | Nothing changed for the control. Sonnet 6 should be a bit stronger, but C2's prompts were tuned on 5.5, and that may cancel part of the gain. |\n| Per-requirement check pass rate | +0 pts | +2 pts | This has the same reasons as the pass rate. The grader check is the existing code checks. |\n| Voided trials (peeking) | 0 | 0 | The harness isolation is unchanged. |\n| Cost per trial (USD) | +0% | r04 tokens times the Sonnet 6 price | I compute this number in step 1, before you approve. |\n| Wall time per trial | +0% | +0% | I have no evidence that it will move. |\n\nEach row starts with `same_as_last_round` filled in.\n\n**Evaluate** (`spe/evals/harness/r05-workflow.js`, with `ROUND = 5`)\n- Gate 1 is the grader selftest. The oracle must pass, and the empty and wrong answers must fail.\n- Gate 2 regrades r04 as a control. The numbers must match the r04 log.\n- Gate 3 is a dry run on 3 cells, with at least 1 cell on Sonnet 6. This confirms that the model ID resolves.\n- The arguments are the configs `[C2-S55, C2-S6]`, the same task set and trial count as r04, and extra trials for split cells up to a cap.\n- The paid cap is set from the Sonnet 6 price. The run skips and logs any trial that would cross the cap. If the cap is reached, I halt and report.\n- The run ends with failure analysis and a completeness critic. I commit `SPE r05 evaluate (harness)` before launch. I commit `SPE r05 evaluate (results): <headline>` after the completion notice arrives.\n- The cost estimate is unmeasured. It is about r04's spend times the price ratio, plus the control arm.\n\n**Learn**\n- I update `prediction-log.md` and `failures.md`, add the \"Proposed for round 6\" table, write `r05-draft.yaml`, and update the README.\n- I commit `SPE r05 learn` and tag `spe-r05`. Everything stays local, and I will not push.\n- If C2-S6 passes everything, r06 needs harder tasks or stricter graders.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ab73079789ab63fdc",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"Sonnet 6 is a new model, so I start round 5\". The plan outline is titled \"SPE round 5\" and runs Specify, Predict, Evaluate, and Learn.",
+  "The answer says \"C2 on Sonnet 5.5 stays the pinned best config\". It runs C2-S55 as the \"control\" next to a new C2-S6 config, with configs `[C2-S55, C2-S6]`.",
+  "The answer says \"only the model differs between the two configs\". R5.1 compares the two \"keeping all other settings the same\". R5.4 defers prompt or task changes to r06.",
+  "The prediction is saved and committed as `SPE r05 predict` before harness work. It gives point values like \"+2 pts\" but no bands or ranges. The Sonnet 6 cost row has no number yet. Bands are missing, so this fails.",
+  "The plan uses \"the same task set and trial count as r04\" and \"the existing code checks\". Gate 2 regrades r04 to confirm that the graders still match the r04 log.",
+  "The answer keeps C2 on Sonnet 5.5 as the pinned best config \"until the evidence and your decision say otherwise\". It logs the default-model switch as an open decision that the user owns.",
+  "The predict table names pass rate (accuracy), cost per trial, and wall time per trial. Tokens appear only as an input to the cost estimate (\"r04 tokens times the Sonnet 6 price\"). Tokens are not a compared metric, so the list is incomplete."
+ ]
+}

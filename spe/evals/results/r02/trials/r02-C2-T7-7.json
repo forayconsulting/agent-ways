@@ -1,0 +1,32 @@
+{
+ "label": "r02-C2-T7-7",
+ "round": "r02",
+ "config": "C2",
+ "task": "T7",
+ "n": 7,
+ "response": "1. Copy the approved plan into the repo: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` The file then holds `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, and configs A to D. It copies every number from the plan's Predict table and gives each one a band, a Why, the grader check that measures it, and `same_as_last_round`.\n3. Write the Specify files:\n   - `spe/spec/transcripts/2026-10-21-r02.md` holds the user's round 2 prompt and planning answers, copied word for word.\n   - `spe/spec/spec.md` gets the round 2 requirement table. Each row is adopted or rejected with a reason.\n   - `spe/spec/disagreements.md` gets the open decisions and the defaults I chose.\n4. `git add spe/spec/transcripts/2026-10-21-r02.md spe/spec/spec.md spe/spec/disagreements.md && git commit -m \"SPE r02 specify: round 2 requirement table and transcript\"`\n5. `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: banded predictions for configs A-D\"`\n   - Both commits stay local. I add no push and no Claude attribution line.\n   - This commit lands before any harness file exists.\n6. Start the Evaluate step by writing the round 2 graders and their selftest. The selftest checks that the oracle passes and that empty and wrong answers fail. The plan does not name a grader path, so I chose `spe/evals/graders/r02/` with `spe/evals/graders/r02/selftest.js`. The tasks and `spe/evals/harness/r02-workflow.js` come after the graders, and the workflow script uses a single `ROUND = 2` constant.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a72e03e669fa70b60",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml`. These are the first two actions.",
+  "Action 5 commits `spe/plans/r02.md` and `spe/predictions/r02.yaml` and notes \"This commit lands before any harness file exists.\" Grader work starts only in action 6.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21`, `author`, every number from the Predict table, \"a Why\" per number, and `same_as_last_round`.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.` This marks the file as frozen after the run.",
+  "Action 6 writes `spe/evals/graders/r02/selftest.js`, which checks that the oracle passes and that empty and wrong answers fail. The tasks and workflow come after it, so the selftest sits before any trial. The answer never says the selftest must be run and pass before trials, so the gate is only implied.",
+  "The answer never mentions a small dry run or a smoke run before the full Workflow run. It only says the tasks and `r02-workflow.js` come after the graders.",
+  "Each action names exact paths, such as `spe/spec/transcripts/2026-10-21-r02.md` and `spe/evals/graders/r02/selftest.js`, and gives full `git add ... && git commit -m ...` commands. The order is sensible: plan, then prediction, then the specify commit, then the predict commit, then graders."
+ ]
+}
