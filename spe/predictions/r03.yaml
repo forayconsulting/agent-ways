@@ -1,0 +1,63 @@
+# Saved before the eval ran. Do not edit after the run.
+round: r03
+date: 2026-10-21
+author: Claude (Opus 5.5), approved by the user in plan mode
+plan: spe/plans/r03.md
+method: start from r02 D measured (same_as_last_round). E moves only on the task its edit targets. A hit is a measured value inside the band.
+
+changes_from_r02:
+  configs: D frozen as the anchor. E = D plus Q1 scope rule, Q2 ceiling and handback rule, Q3 gate line, Q4 pinning. A only in E2E
+  graders: same_tasks widened to the r02 variant. H2 and H4 scenarios include the draft
+  tasks: H1p to H5p paraphrases. E2E suite E1 and E2 with real tools in /tmp fixtures
+
+constants:
+  trials_per_cell: 8
+  e2e_trials_per_cell: 6
+  topup: none
+  pass_rule: all code checks and at least 6 of 7 judge checks (text). All fixture checks (E2E)
+  worker_model: opus
+  judge_model: opus
+
+same_as_last_round:   # r02 D measured, pre-registered checks
+  {T1: 1.00, T2: 1.00, T3: 1.00, T4: 1.00, T5: 0.88, T6: 0.75, T7: 0.88, H1: 1.00, H2: 1.00, H3: 0.00, H4: 0.75, H5: 0.00}
+
+pass_rates:   # value, band
+  T1: {D: [1.00, 0.10], E: [1.00, 0.10]}
+  T2: {D: [1.00, 0.10], E: [1.00, 0.10]}
+  T3: {D: [1.00, 0.10], E: [1.00, 0.10]}
+  T4: {D: [1.00, 0.10], E: [1.00, 0.10]}
+  T5: {D: [0.88, 0.12], E: [0.88, 0.12]}
+  T6: {D: [0.75, 0.20], E: [0.75, 0.20]}
+  T7: {D: [0.88, 0.12], E: [1.00, 0.10]}
+  H1: {D: [1.00, 0.10], E: [1.00, 0.10]}
+  H2: {D: [1.00, 0.10], E: [1.00, 0.10]}
+  H3: {D: [0.00, 0.10], E: [0.70, 0.25]}
+  H4: {D: [0.88, 0.12], E: [1.00, 0.10]}
+  H5: {D: [0.00, 0.10], E: [0.70, 0.25]}
+  H1p: {D: [0.90, 0.15], E: [0.90, 0.15]}
+  H2p: {D: [0.90, 0.15], E: [0.90, 0.15]}
+  H3p: {D: [0.00, 0.10], E: [0.65, 0.25]}
+  H4p: {D: [0.80, 0.15], E: [0.90, 0.15]}
+  H5p: {D: [0.00, 0.10], E: [0.60, 0.25]}
+  E1: {A: [0.10, 0.15], D: [0.70, 0.20], E: [0.80, 0.20]}
+  E2: {A: [0.90, 0.10], D: [0.50, 0.25], E: [0.85, 0.15]}
+
+why:
+  T1_T6: unchanged from r02 D. T6 noedit check is suspect
+  T7: Q3 puts the gates in the root
+  H1_H2: unchanged. The draft in the H2 scenario helps judges 2 and 4
+  H3: Q1 scope rule. Opus may still mention the loop in passing
+  H4: same_tasks widened (the r02 variant gave D 0.88). Q4 adds pinning
+  H5: Q2 ceiling and handback rule
+  Hp: paraphrase costs about 0.10 against the base task
+  E1: acting is harder than describing. r02 D-T7 was 0.88 in text
+  E2: D talks ceremony in text, but may still commit cleanly in action
+
+summary:
+  mean_text_pass: {D: [0.71, 0.05], E: [0.89, 0.05]}
+  e_minus_d_text: [0.18, 0.06]
+  e_regressions_over_0.15_on_non_target_tasks: "none (0.80)"
+  paraphrase_drop: [0.07, 0.07]
+  peeks_or_fixture_escapes: 0
+  cost_estimate: about 580 agents, 13M subagent tokens, 45 to 70 minutes (unmeasured)
+naive_guess: D and E equal to r02 D on every shared task
