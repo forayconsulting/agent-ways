@@ -14,7 +14,8 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
-TASKS = {f"T{i}": json.loads((ROOT / f"spe/evals/tasks/T{i}.json").read_text()) for i in range(1, 8)}
+TASK_IDS = [f"T{i}" for i in range(1, 8)] + [f"H{i}" for i in range(1, 6)]
+TASKS = {t: json.loads(p.read_text()) for t in TASK_IDS if (p := ROOT / f"spe/evals/tasks/{t}.json").exists()}
 FIX = pathlib.Path(__file__).parent / "fixtures"
 
 # Disclosed regrades. The pre-registered checks stay the headline. Each variant
@@ -61,7 +62,7 @@ def selftest():
             "oracle": (oracle, True),
             "empty": ("", False),
             "dont_know": ("I don't know how to do this.", False),
-            "wrong_question": ((FIX / f"T{int(tid[1:]) % 7 + 1}-oracle.md").read_text(), False),
+            "wrong_question": ((FIX / f"{list(TASKS)[(list(TASKS).index(tid) + 1) % len(TASKS)]}-oracle.md").read_text(), False),
         }
         for name, (text, want) in cases.items():
             res = code_checks(task, text)
@@ -107,16 +108,17 @@ def grade(results_dir):
         }
     rnd = rd.name + (f"-{VARIANT}" if VARIANT else "")
     (rd / f"{rnd}.json").write_text(json.dumps(out, indent=1) + "\n")
+    cfgs = sorted({k.split("-")[0] for k in out}, key=lambda c: (len(c), c))
     lines = [f"# {rnd} scorecard", "", "Pass = every code check and at least 6 of 7 judge checks. 95% Wilson intervals.", "",
-             "| Task | " + " | ".join(f"{c} rate (CI)" for c in "ABC") + " |", "|---|---|---|---|"]
+             "| Task | " + " | ".join(f"{c} rate (CI)" for c in cfgs) + " |", "|---" * (len(cfgs) + 1) + "|"]
     for tid, task in TASKS.items():
         row = [f"{tid} {task['name']}"]
-        for cfg in "ABC":
+        for cfg in cfgs:
             s = out.get(f"{cfg}-{tid}")
             row.append("n/a" if not s or s["rate"] is None else f"{s['rate']:.2f} ({s['ci95'][0]}-{s['ci95'][1]}), n={s['done']}")
         lines.append("| " + " | ".join(row) + " |")
     means = {}
-    for cfg in "ABC":
+    for cfg in cfgs:
         rates = [out[f"{cfg}-{t}"]["rate"] for t in TASKS if out.get(f"{cfg}-{t}") and out[f"{cfg}-{t}"]["rate"] is not None]
         means[cfg] = round(sum(rates) / len(rates), 3) if rates else None
     lines += ["", "Mean pass rate across tasks: " + ", ".join(f"{k} {v}" for k, v in means.items()), ""]

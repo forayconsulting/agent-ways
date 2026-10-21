@@ -32,6 +32,11 @@
       "regex": "\\bwhy\\b"
     },
     {
+      "id": "band",
+      "desc": "predicted numbers carry a band",
+      "regex": "\u00b1|\\+/-|plus or minus|\\bband\\b|interval"
+    },
+    {
       "id": "dry_run",
       "desc": "dry run before the full run",
       "regex": "dry.?run"

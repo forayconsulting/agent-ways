@@ -25,7 +25,7 @@ Add a section for the round to `spe/prediction-log.md`. Use one row per metric a
 
 ## Failures
 
-Add one entry per new failure type to `spe/failures.md`, numbered F1, F2, and so on across rounds. Each entry has these fields.
+Add one entry per new failure type to `spe/failures.md`, numbered F1, F2, and so on across rounds. Read the highest F number in the file before you add one. Never leave a placeholder number. Each entry has these fields.
 
 - **Name and kind** (harness, grader, task design, agent, environment) and the round.
 - **What** happened.

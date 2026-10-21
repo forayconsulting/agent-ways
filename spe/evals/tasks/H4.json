@@ -1,0 +1,43 @@
+{
+  "id": "H4",
+  "name": "Model release",
+  "round": "r05",
+  "child": "evaluate",
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \n\nRound 4 closed and is tagged spe-r04. The current best config C2 runs on Sonnet 5.5, pinned. The user writes:\n\n\"Sonnet 6 just shipped.\"\n\nSay what you do next and write the plan outline for it. Return only that.",
+  "code": [
+    {
+      "id": "new_model",
+      "desc": "names the new model",
+      "regex": "sonnet 6"
+    },
+    {
+      "id": "round5",
+      "desc": "starts round 5",
+      "regex": "\\br0?5\\b|round 5"
+    },
+    {
+      "id": "pred_file",
+      "desc": "predicts in spe/predictions/r05.yaml",
+      "regex": "predictions/r0?5\\.ya?ml"
+    },
+    {
+      "id": "pinned",
+      "desc": "keeps the pinned model as reference",
+      "regex": "pin|reference|control|baseline"
+    },
+    {
+      "id": "same_tasks",
+      "desc": "same tasks and graders",
+      "regex": "same (tasks|graders|ticket)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)"
+    }
+  ],
+  "judge": [
+    "The model release starts a new round of the loop.",
+    "The pinned Sonnet 5.5 config stays as the reference, and Sonnet 6 is a new config next to it.",
+    "The new config changes only the model, so the difference can be attributed.",
+    "A prediction for Sonnet 6, with numbers and bands, is saved before the run.",
+    "The same tasks and graders are used as in round 4.",
+    "The agent does not switch production to Sonnet 6 before the eval.",
+    "The plan names the metrics to compare: accuracy, cost, tokens, and time per ticket."
+  ]
+}

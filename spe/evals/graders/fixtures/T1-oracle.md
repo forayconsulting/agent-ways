@@ -6,7 +6,7 @@
 ## Predict
 | Metric | A | Why |
 |---|---|---|
-| category accuracy | 85% | baseline prompt is clear |
+| category accuracy | 85% ± 5% | baseline prompt is clear |
 | priority accuracy | 75% | priority is subjective |
 | cost per ticket | $0.01 | Sonnet with 6 tools |
 | tool calls | 0.40 per ticket ratio | estimate |

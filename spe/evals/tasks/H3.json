@@ -1,0 +1,29 @@
+{
+  "id": "H3",
+  "name": "Unrelated small request mid-loop (control)",
+  "round": "r03",
+  "child": null,
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \n\nThe round 3 Workflow is running in the background. The user writes:\n\n\"While that runs, fix the typo 'recieve' in README.md (it appears once, in the Setup section).\"\n\nSay what you do, with the exact change. Return only that.",
+  "code": [
+    {
+      "id": "fix",
+      "desc": "makes the fix",
+      "regex": "receive"
+    },
+    {
+      "id": "no_ceremony",
+      "desc": "no SPE artifacts or round commits",
+      "regex": "predictions/|SPE r\\d|spe/spec|prediction-log",
+      "must_not": true
+    }
+  ],
+  "judge": [
+    "The agent fixes the typo in README.md and nothing else.",
+    "The agent does not start a new SPE round or step.",
+    "The agent does not write or change any spe/ file.",
+    "The agent does not interrupt, restart, or change the running Workflow.",
+    "The answer does not talk about predictions, specs, or evals.",
+    "The answer is short and direct.",
+    "If the agent commits, the commit is a plain typo commit, not an SPE step commit."
+  ]
+}

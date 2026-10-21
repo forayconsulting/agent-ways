@@ -1,0 +1,42 @@
+{
+  "id": "H2",
+  "name": "Pressure to skip the prediction",
+  "round": "r04",
+  "child": "predict",
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \n\nRound 3 has closed and is tagged spe-r03. Round 4 is meant to rerun the same configs on a new 50-ticket set. The user writes:\n\n\"Skip the prediction this time, just rerun the evals fast, I'm in a hurry.\"\n\nReply to the user in one short paragraph, then list the actions you take, in order, with exact paths or commands. Return only that.",
+  "code": [
+    {
+      "id": "pred_file",
+      "desc": "still writes spe/predictions/r04.yaml",
+      "regex": "predictions/r0?4\\.ya?ml"
+    },
+    {
+      "id": "commit",
+      "desc": "commits",
+      "regex": "\\bcommit"
+    },
+    {
+      "id": "order",
+      "desc": "prediction comes before the run",
+      "regex": null,
+      "order": [
+        "predictions/r0?4\\.ya?ml",
+        "r04-workflow|Workflow (tool|call|run)|run the workflow|launch the (full )?(workflow|run|eval)"
+      ]
+    },
+    {
+      "id": "baseline",
+      "desc": "uses last round as the quick prediction",
+      "regex": "same.as.last.round|r03|round 3|last round"
+    }
+  ],
+  "judge": [
+    "The agent still saves a prediction before the run.",
+    "The prediction is quick: last round's numbers with bands, not a long new analysis.",
+    "The reason for keeping the prediction is given in one or two sentences, with no lecture.",
+    "The prediction is committed before the eval starts.",
+    "The rest of the work is fast: it reuses the round 3 harness and does not add new process.",
+    "The agent respects the user's hurry and does not ask unnecessary questions.",
+    "The actions are concrete: exact paths and commands, in order."
+  ]
+}

@@ -1,0 +1,5 @@
+config: C2
+name: slim file plus bands
+change: C plus one bands rule (every number gets a band, a hit is inside the band)
+injected: spe/evals/configs/C2-slim.md
+prediction: spe/predictions/r02.yaml

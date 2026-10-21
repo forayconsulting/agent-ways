@@ -22,6 +22,11 @@
       "regex": "same.as.last.round|naive|baseline"
     },
     {
+      "id": "band",
+      "desc": "predicted numbers carry a band",
+      "regex": "\u00b1|\\+/-|plus or minus|\\bband\\b|interval"
+    },
+    {
       "id": "source_col",
       "desc": "requirement table with a Source column",
       "regex": "\\|[^\\n]*\\bSource\\b[^\\n]*\\|"

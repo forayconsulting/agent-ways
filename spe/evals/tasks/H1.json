@@ -1,0 +1,44 @@
+{
+  "id": "H1",
+  "name": "Unlabeled respec",
+  "round": "r03",
+  "child": "specify",
+  "prompt": "You are Claude Code working in the user's repository. The repository already has an spe/ folder from earlier rounds (spec/, predictions/, plans/, evals/, prediction-log.md, failures.md, README.md). The user has asked for a local commit after each SPE step in this loop.\n\nProject: \n\nThe session is in plan mode. The user pastes this and writes nothing else but the last line:\n\nspe/prediction-log.md (round 2 section):\n| Metric | Config | Predicted | Measured | Same as last round | Verdict | Closer |\n|---|---|---|---|---|---|---|\n| category accuracy | A | 0.85 | 0.86 | 0.84 | hit | tie |\n| category accuracy | B | 0.88 | 0.86 | 0.84 | miss | naive |\n| category accuracy | C | 0.90 | 0.80 | 0.84 | miss | naive |\n| priority accuracy | C | 0.80 | 0.71 | 0.78 | miss | naive |\n| cost per ticket | D | $0.002 | $0.004 | $0.003 | miss | naive |\nWhich Why broke: C's Why said \"merged tools cut wrong tool choice\". Merged tools hid the outage-status lookup, so outage tickets got P3.\n\nspe/failures.md (new in round 2):\nF4. Outage lookup hidden by merged tool (agent, r02). What: C never called the status check inside the merged tool. Seen in: r02-C-T17-1..3. Fix: open.\nF5. Grader read priority from the draft reply, not the label field (grader, r02). Fix: grade.py reads label.priority. Regraded r02, numbers above are regraded.\nF6. Haiku retries doubled tokens on long tickets (agent, r02). Fix: open.\n\nEnd of spec.md:\n## Proposed for round 3 (not yet agreed)\n| ID | Proposed change | Why (round 2 evidence) |\n|---|---|---|\n| P1 | Split the outage status check back out of the merged tool in config C | F4 |\n| P2 | Add 10 harder tickets (mixed billing and outage) | category accuracy is at 0.86 in A and B, near ceiling |\n| P3 | Drop config D | F6, and cost rose |\n| P4 | Raise trials per cell from 3 to 5 | B's miss is inside noise at n=3 |\n\nspe/predictions/r03-draft.yaml: status: draft, baseline_same_as_last_round: A 0.86, B 0.86, C 0.80, D 0.74.\n\n\"ok, next one\"\n\nWrite the complete plan you would present. Return only the plan in markdown.",
+  "code": [
+    {
+      "id": "round3",
+      "desc": "treats it as round 3",
+      "regex": "\\br0?3\\b|round 3"
+    },
+    {
+      "id": "pred_file",
+      "desc": "saves spe/predictions/r03.yaml",
+      "regex": "predictions/r0?3\\.ya?ml"
+    },
+    {
+      "id": "baseline",
+      "desc": "same-as-last-round baseline",
+      "regex": "same.as.last.round|naive|baseline"
+    },
+    {
+      "id": "band",
+      "desc": "predicted numbers carry a band",
+      "regex": "\u00b1|\\+/-|plus or minus|\\bband\\b|interval"
+    },
+    {
+      "id": "proposals",
+      "desc": "addresses proposals by ID",
+      "regex": "\\bP[1-4]\\b",
+      "min_count": 3
+    }
+  ],
+  "judge": [
+    "The answer recognizes the request as the start of round 3 of the loop (a respec) without being told the phase.",
+    "Each proposal P1 to P4 is adopted or rejected with a reason.",
+    "New requirements cite the failure IDs (F4, F5, F6) that motivated them.",
+    "The prediction starts from round 2's measured values and gives each number a band.",
+    "Each predicted number has a Why.",
+    "The prediction is saved to spe/predictions/r03.yaml and committed before any eval trial.",
+    "The eval plan has gates (selftest, a control regrade, a dry run) before the full run."
+  ]
+}

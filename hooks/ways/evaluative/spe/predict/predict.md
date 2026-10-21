@@ -36,6 +36,7 @@ Start the file with the comment `# Saved before the eval ran. Do not edit after 
 | `constants` | Trials per cell, caps, judge model |
 | `configs` | One entry per configuration |
 | Metrics | Pass rate, tool calls, tokens, minutes, and cost per task, per configuration |
+| `band` | The error band for each number, such as 0.85 ± 0.05. A hit is a result inside the band |
 | `why` | One line per number |
 | `same_as_last_round` | Last round's measured values (round 2 on) |
 
@@ -45,6 +46,10 @@ Start the file with the comment `# Saved before the eval ran. Do not edit after 
 - Predict every round, even when nothing changed.
 - Give each predicted number the grader check that will measure it. A number with no check gets dropped or gets a check.
 - Never edit `rNN.yaml` after a trial has run. When a grader bug forces a correction, the log shows both the original and the corrected comparison.
+
+## Then the gates
+
+After the commit, run the gates in order: the grader selftest, last round regraded as a control, and a dry run on 2 or 3 cells. Only then launch the full Workflow (evaluative/spe/evaluate).
 
 ## See Also
 
