@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H4p-6",
+ "round": "r03",
+ "config": "D",
+ "task": "H4p",
+ "n": 6,
+ "response": "I would not switch Q to Opus 6 directly. I would test it as round 7, with one new configuration, and let the numbers decide.\n\n**What I do next**\n\nI ask you to enter plan mode for round 7. I need one answer from you before I can predict. How much extra cost per invoice is acceptable for each point of field accuracy? Only you can make that tradeoff. If you don't set a limit, I will use this default and log it in `spe/spec/disagreements.md`: switch only if accuracy rises above Q's band and cost stays at or below $0.03 per invoice.\n\n**Plan outline for round 7**\n\n1. **Specify.** I add rows to `spe/spec/spec.md` from the \"Proposed for round 7\" table. I adopt or reject each proposal with a reason. The new row is \"S = Q with the model changed to Opus 6\", and its source is your question, quoted. Before I write the row, I check the current Anthropic docs for Opus 6's dated model id and its price. I pin S to that dated id, the same way Q is pinned. S changes only the model. The prompt, schema, and tools stay as they are in Q. I keep R out of this round, so the model change is the only variable.\n\n2. **Predict.** I start from `spe/predictions/r06-draft.yaml` and keep Q at 0.93 accuracy, $0.011 per invoice, and 14 s per invoice, with its bands. For S, I move each number only for a stated reason. Field accuracy goes up a little, because a larger model reads messy line items better. Cost goes up by the ratio between Opus 6 and Sonnet 5.5 prices from the docs. Latency goes up. Every cell gets a band and names its grader check. I also write down the decision rule ahead of time. After approval, I copy the plan to `spe/plans/r07.md` and write `spe/predictions/r07.yaml`. Then I commit both as `SPE r07 predict: Opus 6 as config S`.\n\n3. **Evaluate.** I copy the round 6 script to `spe/evals/harness/r07-workflow.js` and set `ROUND = 7`. I run the gates before launch. The grader selftest must pass. I regrade the round 6 results as a control. I do a dry run on 2 or 3 cells with `args.only`. I rerun Q in the same Workflow so that S and Q face the same day and the same API conditions. Both run on the same 60 invoices with 3 trials each. I cap API spend at $20 for the round. That cap is an unmeasured estimate. Q costs about $2 for 180 trials, and S costs about $10 if Opus 6 costs 5 times as much per invoice. I also break accuracy out by field, so we can see where Opus 6 helps. Commits are `SPE r07 evaluate (harness)` and `SPE r07 evaluate (results): <headline>`.\n\n4. **Learn.** I fill in `spe/prediction-log.md` and `spe/failures.md`. Then I write the round 8 draft and commit `SPE r07 learn: ...`, tagged `spe-r07`. I make no change to production. The result tells you whether S beats Q by more than the band, and what that gain costs per invoice. The final call stays with you.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a09629d8cfecf3e67",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I would test it as round 7, with one new configuration\" and lays out Specify, Predict, Evaluate, and Learn steps for round 7.",
+  "Q stays the reference. The answer keeps \"Q at 0.93 accuracy, $0.011 per invoice, and 14 s\" with its bands, reruns Q in the same Workflow, and adds S as a new config next to it, pinned to a dated id.",
+  "The answer says \"S changes only the model. The prompt, schema, and tools stay as they are in Q.\" It also keeps R out \"so the model change is the only variable.\"",
+  "In the Predict step, every cell gets a band and the agent writes spe/predictions/r07.yaml. It commits that file before the Evaluate step, and the cost estimate uses the price ratio from the docs. The answer gives directions and the method rather than the final numbers. That is acceptable because the numbers depend on the Opus 6 price, which the agent will look up.",
+  "The answer says \"Both run on the same 60 invoices with 3 trials each.\" It copies the round 6 harness, runs the grader selftest, and regrades the round 6 results as a control. Together these keep the same set and graders.",
+  "The answer says \"I make no change to production\" and \"The final call stays with you.\" It opens with \"I would not switch Q to Opus 6 directly.\"",
+  "The answer names field accuracy, cost per invoice, and latency, and it breaks accuracy out by field. It never names tokens as a metric to compare, so the required list is incomplete."
+ ]
+}

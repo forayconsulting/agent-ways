@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-T7-8",
+ "round": "r03",
+ "config": "D",
+ "task": "T7",
+ "n": 8,
+ "response": "I assumed the graders live in `spe/evals/graders/` and the round 1 transcripts live in `spe/evals/runs/r01/`, because the situation does not name either path.\n\n1. Copy the approved plan so it lasts after plan mode overwrites the file: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table.\n   - Line 1 is `# Saved before the eval ran. Do not edit after the run.`\n   - The header fields are `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"` and `plan: spe/plans/r02.md`.\n   - `changes_from_r01` gives one change per config: A is the baseline, B shortens the prompt to 12 lines, C merges the tools to 3, and D moves C to Haiku 5.5.\n   - `constants` holds the trials per cell, the caps and the judge model.\n   - For A, B, C and D, each metric gets a number, a band (for example 0.85 \u00b1 0.05), a `why` line and a grader check. The metrics are category accuracy, priority accuracy, reply-draft pass rate, tool calls, tokens, minutes and cost per ticket.\n   - `same_as_last_round` holds the r01 measured values.\n3. Commit the prediction before any harness work: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: A-D on 40 tickets, bands from r01\"`\n4. Build the harness. Write the graders and tasks under `spe/evals/graders/` and `spe/evals/tasks/`. Then write `spe/evals/harness/r02-workflow.js` with a single `const ROUND = 2` and a schema for each trial. Code checks come first, and a judge scores only the reply draft. The script caps every paid resource and logs any skipped trials. It also scans transcripts and voids any trial that read the graders, the reference labels or the predictions.\n5. Run the first gate, the grader selftest: `node spe/evals/graders/selftest.js`. It must show the oracle labels passing and the empty and wrong answers failing. If it fails, I stop and report a broken grader.\n6. Run the second gate, which regrades round 1 as a control: `node spe/evals/harness/regrade.js --round 1 --runs spe/evals/runs/r01/`. Then I compare its output with the r01 measured values in `spe/prediction-log.md`. The next steps after this are a dry run on 2 or 3 cells, the `SPE r02 evaluate (harness)` commit, and the Workflow launch.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a649ea28ed69c0580",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Action 3 commits `spe/plans/r02.md` and `spe/predictions/r02.yaml` \"before any harness work\". Grader, task and workflow writing starts only in action 4.",
+  "Action 2 lists `round: 2`, `date`, `author`, and a number with a band and a `why` line for each metric. It also lists `same_as_last_round` holding the r01 values.",
+  "Line 1 of the prediction file is `# Saved before the eval ran. Do not edit after the run.` This marks the file as not to be edited after the run.",
+  "Action 5 runs `node spe/evals/graders/selftest.js` and requires oracle labels to pass and empty or wrong answers to fail. The answer runs this before any trial and stops if it fails.",
+  "The answer says the next steps after action 6 are \"a dry run on 2 or 3 cells\" and then \"the Workflow launch\". The dry run sits outside the six listed actions and has no command. Still, the answer states clearly that it comes before the full run.",
+  "Action 4 bundles many writes into one step. It names only directories (`spe/evals/graders/`, `spe/evals/tasks/`) and gives no exact file names. It never says it creates `selftest.js` or `regrade.js`, but actions 5 and 6 run those files. The answer also admits the grader and run paths are assumed. So the actions are not fully concrete with exact paths."
+ ]
+}

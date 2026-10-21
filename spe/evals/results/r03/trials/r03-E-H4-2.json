@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-H4-2",
+ "round": "r03",
+ "config": "E",
+ "task": "H4",
+ "n": 2,
+ "response": "**What I do next**\n\nI start round 5 as a respec. I will not switch production to Sonnet 6. C2 on the pinned Sonnet 5.5 id stays as the reference config. I add one new config, C3. C3 is C2 with only the model changed to a pinned, dated Sonnet 6 id. The tasks, graders, prompt, and tools stay the same. First I save your message verbatim to `spe/spec/transcripts/2026-10-21-r05.md`. Then I turn `spe/predictions/r04-draft.yaml` into the round 5 baseline. I commit locally after each SPE step.\n\nDefault: I will check the Sonnet 6 dated model id and per-token price in the current Anthropic docs before I fill the C3 cost cell. Until I check, this outline assumes Sonnet 6 has the same price as Sonnet 5.5.\n\n---\n\n**Plan outline: round 5 (r05)**\n\n**1. Specify** (append the r05 table to `spe/spec/spec.md`)\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R5-1 | Keep C2 on the pinned Sonnet 5.5 id as the reference config | User: \"Sonnet 6 just shipped.\" plus the new-model rule | C2 config hash matches spe-r04 |\n| R5-2 | Add C3 = C2 with only the model id changed to the pinned Sonnet 6 id | User: \"Sonnet 6 just shipped.\" | A config diff shows exactly one changed field |\n| R5-3 | Use the same 40 tickets, reference labels, and graders as r04 | New-model rule | The task and grader file hashes match spe-r04 |\n| R5-4 | Production stays on C2 until the user decides after the eval | New-model rule | Logged as an open decision in `disagreements.md`, owned by the user |\n| R5-5 onward | One row for each item in r04's \"Proposed for round 5\" table | r04 learn step | I adopt or reject each item with a reason. Default: I defer any non-model change to r06 so C3 changes only one thing. |\n\n**2. Predict** (start from \"same as last round\", which is r04-draft)\n\n| Metric | C2 (Sonnet 5.5) | C3 (Sonnet 6) | Grader check | Why |\n|---|---|---|---|---|\n| category_acc | 0.89 \u00b1 0.04 | 0.89 \u00b1 0.04 | Code: exact match to the reference category | No r04 evidence moves this. C3 runs the same prompt and tools. |\n| priority_acc | 0.81 \u00b1 0.05 | 0.81 \u00b1 0.05 | Code: exact match to the reference P1 to P4 | No measured evidence for Sonnet 6 on this task. I do not move a number without a stated reason. |\n| cost_per_ticket | 0.006 \u00b1 0.001 | 0.006 \u00b1 0.001 | Code: API usage tokens \u00d7 the price table | Assumes the same price. If the docs show a different price, I recompute from 9100 tokens before approval. |\n| tokens_per_ticket | 9100 \u00b1 900 | 9100 \u00b1 900 | Code: input plus output tokens from API usage | Same prompt and tools. The \u00b1900 band is my default because r04 gave no band. |\n| seconds_per_ticket | 7.4 \u00b1 1.0 | 7.4 \u00b1 1.0 | Code: wall clock per trial | The \u00b11.0 band is my default because r04 gave no band. |\n\nA hit means the measured value falls inside the band. After approval, I copy the plan to `spe/plans/r05.md`. I write `spe/predictions/r05.yaml` with the header `# Saved before the eval ran. Do not edit after the run.`, set the author to \"Claude, approved by the user in plan mode\", and set `same_as_last_round` to the r04-draft values. Then I commit locally.\n\n**3. Evaluate** (`spe/evals/harness/r05-workflow.js`, copied from r04)\n\n- Gate 1: grader selftest. The oracle passes. The empty answer and the wrong answer fail.\n- Gate 2: regrade the r04 results as a control. The result must still read 0.89 and 0.81. Any change means a grader change, and I halt.\n- Gate 3: dry run with `args.only` on 2 tickets \u00d7 C3 plus 1 ticket \u00d7 C2. The output must be schema-valid.\n- Workflow args: `ROUND: 5`, configs `[C2, C3]` with the dated model ids, the same trials per ticket as r04, a top-up cap of 2 extra trials per split cell, and an API spend cap of $5.00. The harness checks the cap before each trial and logs every skip.\n- Trials read only the ticket text. The harness scans each transcript for reads of `spe/evals/` and `spe/predictions/` and voids any trial that peeked.\n- Phases: Trials, Grade (code), Top-up, Synthesis. The run ends with a failure-analysis agent and a completeness critic.\n- Cost estimate (unmeasured): 40 tickets \u00d7 2 configs \u00d7 3 trials = 240 trials \u00d7 $0.006 \u2248 $1.44, plus about $1 for the analysis agents.\n\n**Open decision for the user:** whether to move production to C3 after r05 closes.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a334ead67cb079a64",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer opens with \"I start round 5 as a respec\" and gives a full r05 plan outline that covers Specify, Predict, and Evaluate. The model release clearly starts a new round.",
+  "The answer says \"C2 on the pinned Sonnet 5.5 id stays as the reference config\" and adds \"one new config, C3\" on a pinned, dated Sonnet 6 id. R5-1 and R5-2 record this, and the workflow args list configs [C2, C3].",
+  "C3 is \"C2 with only the model changed\". R5-2 is tested by \"a config diff shows exactly one changed field\". The agent also defers non-model changes to r06 \"so C3 changes only one thing\".",
+  "The Predict table gives a C3 (Sonnet 6) column with numbers and bands for each metric, such as 0.89 \u00b1 0.04 and 0.006 \u00b1 0.001. The agent writes spe/predictions/r05.yaml with the header \"Saved before the eval ran. Do not edit after the run.\" and commits it before the Evaluate step.",
+  "R5-3 requires \"the same 40 tickets, reference labels, and graders as r04\", and its test checks that the file hashes match spe-r04. Gate 2 regrades the r04 results as a control.",
+  "The answer says \"I will not switch production to Sonnet 6.\" R5-4 keeps production on C2 until the user decides after the eval, and the plan lists that as an open decision for the user.",
+  "The Predict table names category_acc, priority_acc, cost_per_ticket, tokens_per_ticket, and seconds_per_ticket for both configs. Each metric has a grader check."
+ ]
+}

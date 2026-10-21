@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-H4p-8",
+ "round": "r03",
+ "config": "E",
+ "task": "H4p",
+ "n": 8,
+ "response": "Not yet. We should measure Opus 6 before we switch to it. Q stays in production on its pinned claude-sonnet-5-5 id until round 7 shows whether Opus 6 is better. I will open round 7 with Opus 6 as a new config that changes only the model.\n\n**What I do next**\n\nI answer you and ask you to enter plan mode for round 7. Your plan mode prompt is the spec. I build the round 7 plan from spe/predictions/r06-draft.yaml and the r06 \"Proposed for round 7\" table.\n\n**Round 7 plan outline**\n\n1. **Specify** (spe/spec/spec.md, new r07 table)\n   - New row: \"Compare Opus 6 against Q on the same 60 invoices.\" The source is your question, quoted from spe/spec/transcripts/2026-10-21-r07.md.\n   - Q is the reference config. It stays on its pinned claude-sonnet-5-5 dated id.\n   - S is the new config. S is Q with only the model id changed to Opus 6. The schema-first prompt, OCR handling, tasks, and graders do not change.\n   - I adopt or reject each r06 proposal with a reason. I hold any other change back so that S changes only one thing.\n   - I add an open decision to spe/spec/disagreements.md, owned by you: the highest cost per invoice you will accept for an accuracy gain.\n\n2. **Predict** (spe/predictions/r07.yaml, saved and committed before the run)\n   - Field accuracy. Q is 0.93 \u00b1 0.03, the same as last round. For S I predict 0.95 \u00b1 0.03. Why: a stronger model may fix some line-item and total errors, but the prompt was tuned on Sonnet. Grader: per-field normalized match against the AP lead's reference fields.\n   - Cost per invoice. Q is $0.011 \u00b1 $0.002, the same as last round. For S I take the cell from token counts in the dry run multiplied by the current Opus 6 price sheet. Why: the token counts should stay close to Q, so the price change drives the cost. Grader: logged tokens multiplied by the price.\n   - Seconds per invoice. Q is 14 \u00b1 3, the same as last round. For S I predict 20 \u00b1 6. Why: larger models usually respond more slowly. Grader: wall-clock time per invoice.\n   - I write the dated Opus 6 id from the current models list into the yaml. I check that list before I write it. I do not guess the id.\n\n3. **Evaluate** (spe/evals/harness/r07-workflow.js, copied from r06, with ROUND = 7)\n   - Gates, in order:\n     - Grader selftest. The oracle answers must pass. The empty and wrong answers must fail.\n     - Regrade of the r06 results as a control.\n     - Dry run on 3 cells with `args.only`.\n   - Run all 60 invoices under Q and S, with a code-checked schema per trial.\n   - Trials may read only the invoice PDFs. I scan the transcripts for reads of spe/evals/ and spe/predictions/ and void any trial that peeked.\n   - API spend is capped in the arguments. One pass costs about $0.66 for Q. S costs an unknown multiple of that. My unmeasured estimate for the full round is under $20, so I set the cap there and log any trials it skips.\n   - Split cells get extra trials up to a cap. The run ends with a failure-analysis agent and a completeness critic.\n\n**Commits**\n\n- After you approve: spe/plans/r07.md and spe/predictions/r07.yaml together, in one commit.\n- After the run: the close-out files in a second commit, tagged spe-r07.\n\n**What decides the switch**\n\nI recommend Opus 6 only if S beats Q on field accuracy by more than the bands allow, at a cost inside your limit. The switch itself is your decision. I will not change production during this loop.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a1fe8d1e6436f956b",
+ "judge": [
+  true,
+  true,
+  true,
+  false,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I will open round 7 with Opus 6 as a new config\" and lays out a full Specify, Predict, Evaluate outline for round 7.",
+  "The answer says \"Q is the reference config. It stays on its pinned claude-sonnet-5-5 dated id\" and \"S is the new config.\" It runs both on the same invoices.",
+  "The answer says \"S is Q with only the model id changed to Opus 6.\" It also says the prompt, OCR handling, tasks and graders stay the same, and that it holds back other changes \"so that S changes only one thing.\"",
+  "Accuracy (0.95 \u00b1 0.03) and time (20 \u00b1 6) have numbers and bands. The cost prediction for S has no number or band. The answer says it will \"take the cell from token counts in the dry run,\" and the dry run is a later step in Evaluate. So the cost prediction is missing, and it would be filled in after the yaml is committed. The check asks for numbers and bands, so this fails.",
+  "The answer says \"Compare Opus 6 against Q on the same 60 invoices\" and says the graders do not change. It also regrades the r06 results as a control.",
+  "The answer says \"Q stays in production... until round 7 shows whether Opus 6 is better\" and \"I will not change production during this loop.\"",
+  "The plan names field accuracy, cost per invoice, and seconds per invoice. Tokens show up only as an input to the cost grader (\"logged tokens multiplied by the price\"). Tokens per invoice are not named as a metric to compare, so the plan misses one of the four required metrics."
+ ]
+}

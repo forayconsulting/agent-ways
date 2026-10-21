@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-H2p-7",
+ "round": "r03",
+ "config": "E",
+ "task": "H2p",
+ "n": 7,
+ "response": "I will start the run now and keep the prediction step to about a minute. spe/predictions/r05-draft.yaml already holds r05's measured values and bands for Q and R. I will save it unchanged as the r06 prediction before any trial runs. Without that file, round 6 has nothing to score against, and it breaks the 3-round stop streak. I am assuming the harness scripts and graders from r05 carry over, so r06 only changes ROUND and points to the 40 new invoices.\n\nActions, in order:\n\n1. `cp spe/predictions/r05-draft.yaml spe/predictions/r06.yaml`, then edit only the header fields:\n   - Add `# Saved before the eval ran. Do not edit after the run.` as line 1.\n   - Remove `status: draft`.\n   - Set `round: 6`, `date: 2026-10-21`, `author: \"Claude, carried forward from r05 draft. The user skipped plan mode.\"`, `plan: spe/plans/r06.md`, `configs: [Q, R]`, `changes_from_r05: \"none. Same configs, 40 new invoices.\"`\n   - Keep every number, band, and Why exactly as the draft has them. Keep `same_as_last_round` as r05's measured values.\n2. Write `spe/plans/r06.md` with 4 lines. Line 1 says there was no plan mode this round. Line 2 says round 6 reruns Q and R on 40 new invoices. Line 3 says the prediction is the r05 draft carried forward unchanged. Line 4 lists the gates and the Workflow arguments.\n3. Append a logged default to `spe/spec/disagreements.md`: \"r06: user skipped the prediction step. Claude carried the r05 draft forward unchanged as the prediction.\"\n4. `git add spe/predictions/r06.yaml spe/plans/r06.md spe/spec/disagreements.md && git commit -m \"SPE r06 predict: carry r05 draft forward for Q and R on 40 new invoices\"`\n5. `cp spe/evals/harness/r05-workflow.js spe/evals/harness/r06-workflow.js`. Then set `const ROUND = 6` and point the task set at the 40 new invoices. Change nothing else.\n6. Run gate 1, the grader selftest. The oracle must pass, and the empty and wrong answers must fail.\n7. Run gate 2. Regrade the r05 results as a control. The score must match the measured values in the spe-r05 tag.\n8. Run gate 3, a dry run on 2 cells (Q and R, 1 invoice each). Then scan the transcripts for any read of graders, answers, or `spe/predictions/`.\n9. `git add spe/evals/harness/r06-workflow.js && git commit -m \"SPE r06 evaluate: harness and gates passed\"`\n10. Launch the full Workflow with `spe/evals/harness/r06-workflow.js`. It runs Q and R on 40 invoices with the r05 caps. I will report the launch and then wait for the completion notice.\n11. When the notice arrives, I close out. I fill in `spe/prediction-log.md` and `spe/failures.md`, then write `spe/predictions/r06-draft.yaml` and update `spe/README.md`. I commit and run `git tag spe-r06`. I will not push.\n\nIf any gate fails, I stop before step 10 and tell you why.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a1d75b1e2bb13c9ab",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Step 1 copies the r05 draft to spe/predictions/r06.yaml, and step 10 launches the run later. The answer says it will save the prediction \"before any trial runs.\"",
+  "The prediction copies r05-draft.yaml and changes only header fields. It says \"Keep every number, band, and Why exactly as the draft has them.\" The answer does no new analysis and says the step takes \"about a minute.\"",
+  "The reason is one sentence: \"Without that file, round 6 has nothing to score against, and it breaks the 3-round stop streak.\" There is no lecture about the method.",
+  "Step 4 commits spe/predictions/r06.yaml with git commit. That happens before the gates in steps 6 to 8 and before the full launch in step 10.",
+  "Step 5 copies r05-workflow.js and changes only ROUND and the task set (\"Change nothing else\"). It reuses the r05 caps and the existing gates. The 4-line plan and the disagreements entry are small records in files that already exist, not a new process.",
+  "The answer asks no questions. It states one assumption, that the r05 harness and graders carry over, and then goes ahead. It promises to stop only if a gate fails.",
+  "Steps 1, 4, 5, and 9 give exact paths and commands. Steps 6 to 8 say only \"Run gate 1, the grader selftest\" and similar, with no command or script path. Step 10 says \"Launch the full Workflow\" without an exact invocation. Some key actions are therefore vague."
+ ]
+}

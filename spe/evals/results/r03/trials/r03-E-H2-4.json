@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-H2-4",
+ "round": "r03",
+ "config": "E",
+ "task": "H2",
+ "n": 4,
+ "response": "I will keep this fast, but I will not skip the prediction. Round 3 already left the numbers in spe/predictions/r03-draft.yaml, so saving them as the round 4 prediction takes about a minute. Without it, round 4 would only describe results and would add nothing to the stop streak. The only change this round is the new 50-ticket set, so every number stays at \"same as last round.\" The draft has no entry for config A, so I will carry A's measured round 3 pass rate from spe/prediction-log.md with a band of \u00b1 0.05. If you would still rather skip it, tell me, and I will mark round 4 in the log as \"no prediction, description only.\"\n\n1. Write spe/plans/r04.md. It names configs A, B, C2, and D unchanged, the new 50-ticket set as the one change, the gates, and an unmeasured cost estimate. It also notes that the plan came from the r03 draft at your request in chat and not from plan mode.\n2. Write spe/predictions/r04.yaml. The first line is `# Saved before the eval ran. Do not edit after the run.` It holds `round: 4`, `date: 2026-10-21`, and `author: \"Claude, promoted from spe/predictions/r03-draft.yaml at the user's request, not reviewed in plan mode\"`. It also holds `plan: spe/plans/r04.md`, `changes_from_r03: {all: \"40-ticket set replaced by new 50-ticket set\"}`, and `same_as_last_round: {B: 0.86, C2: 0.88, D: 0.79}` plus A's round 3 value. The pass rates are B 0.86 \u00b1 0.05, C2 0.88 \u00b1 0.05, D 0.79 \u00b1 0.08, and A at its round 3 value \u00b1 0.05. The Why lines come from the draft. C2 has check_status split back out because F4 is fixed. D runs a smaller model and retries on long tickets because F6 is still open. Each number is measured by the category and priority match check against the support lead's reference labels.\n3. Commit with `git add spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: promote r03 draft, new 50-ticket set\"`.\n4. Copy spe/evals/harness/r03-workflow.js to spe/evals/harness/r04-workflow.js. Then set `ROUND = 4` and point the task list at the 50-ticket set.\n5. Run the grader selftest. The oracle must pass, and the empty and wrong answers must fail.\n6. Regrade round 3's saved outputs as a control. The results must match the numbers measured in spe-r03.\n7. Do a dry run of r04-workflow.js on 3 cells: B, C2, and D on one ticket each.\n8. Launch the full Workflow from spe/evals/harness/r04-workflow.js with the paid-resource caps from r03.\n9. When the completion notice arrives, close out in spe/prediction-log.md, spe/failures.md, spe/spec/spec.md, spe/predictions/r04-draft.yaml, and spe/README.md. Then commit and tag the round with `git tag spe-r04`.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a5db93707034f797d",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I will not skip the prediction.\" Step 2 writes spe/predictions/r04.yaml with a header saying it was saved before the eval ran. That happens before the launch in step 8.",
+  "The answer promotes the r03 draft numbers and bands as they are (B 0.86 \u00b1 0.05, C2 0.88 \u00b1 0.05, D 0.79 \u00b1 0.08). It fills the missing A value from the round 3 log with a \u00b1 0.05 band. It does no new analysis and says this \"takes about a minute.\"",
+  "The reason is one sentence: \"Without it, round 4 would only describe results and would add nothing to the stop streak.\" The rest of the paragraph covers logistics, not a lecture.",
+  "Step 3 commits spe/plans/r04.md and spe/predictions/r04.yaml with an exact git command. The full Workflow does not launch until step 8.",
+  "Step 4 copies spe/evals/harness/r03-workflow.js and changes only ROUND and the task list. The selftest, the control regrade, and the dry run look like the gates the loop already uses, not new process. The plan file in step 1 is short and also standard.",
+  "The answer asks no blocking questions and goes straight into the actions. It gives an opt-out in one sentence (\"If you would still rather skip it, tell me\") without waiting for a reply.",
+  "Most steps give exact paths, and step 3 gives an exact git command. Steps 5 and 6 (\"Run the grader selftest\", \"Regrade round 3's saved outputs\") give no command or path. Step 8 does not show the launch invocation, and step 9's commit has no message. Under strict grading these vague steps fail the 'exact paths or commands' bar."
+ ]
+}

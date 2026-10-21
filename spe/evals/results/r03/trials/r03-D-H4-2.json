@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H4-2",
+ "round": "r03",
+ "config": "D",
+ "task": "H4",
+ "n": 2,
+ "response": "Next I open round 5 as a model-swap round. I add one new config, C3. C3 is C2 with the model changed from claude-sonnet-5-5 to a pinned, dated Sonnet 6 id. C2 stays in the round unchanged as the control. I start from spe/predictions/r04-draft.yaml as \"same as last round.\" Before I fill in the cost row, I check the current Claude models page for the Sonnet 6 dated id and its price. I have not verified either one yet.\n\n# Plan: SPE round 5, C2 vs C3 (Sonnet 6)\n\n## Specify (spe/spec/spec.md, round 5 table)\nTranscript: spe/spec/transcripts/2026-10-21-r05.md, verbatim. It holds \"Sonnet 6 just shipped.\"\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R5-1 | Add C3 = C2 with only the model changed to a pinned, dated Sonnet 6 id. Prompt, tools, and settings are the same as C2. | User: \"Sonnet 6 just shipped.\" | Config diff shows one changed line, the model id |\n| R5-2 | Keep C2 on pinned claude-sonnet-5-5 as the control | r04 C2 is the current best config | C2 measured inside the r04 bands |\n| R5-3 | Use the same 40 tickets, the same reference labels, and the same graders as r04 | Loop rule: tasks and graders stay fixed | Grader file hashes match spe-r04 |\n| R5-4 | Each row from r04's \"Proposed for round 5\" table is adopted or rejected with a reason | r04 learn step | Every proposal has a row or a rejection line |\n| R5-5 | Production keeps running C2 until the user decides | Decision only the user can make | Logged in spe/spec/disagreements.md with owner: user |\n\nDefault logged: I chose 3 trials per ticket per config. This is because one trial per ticket cannot separate a model change from run-to-run noise.\n\n## Predict (spe/predictions/r05.yaml)\nBaseline is r04-draft. I move a number only when I can state a reason.\n\n| Metric | C2 (control) | C3 (Sonnet 6) | Why | Grader check |\n|---|---|---|---|---|\n| category_acc | 0.89 \u00b1 0.04 | 0.89 \u00b1 0.04 | I have no Sonnet 6 evidence on this task, so I keep last round's number | Exact match to reference category |\n| priority_acc | 0.81 \u00b1 0.05 | 0.81 \u00b1 0.05 | Same reason as above | Exact match to reference P1 to P4 |\n| cost_per_ticket | 0.006 \u00b1 0.001 | Computed from the verified Sonnet 6 price \u00d7 9100 tokens, \u00b1 0.001 | Cost moves only with the price sheet | Summed API usage \u00f7 completed trials |\n| tokens_per_ticket | 9100 \u00b1 900 | 9100 \u00b1 900 | No evidence of a tokenizer change. I will move this if the docs show one | Usage field per trial |\n| seconds_per_ticket | 7.4 \u00b1 1.0 | 7.4 \u00b1 1.0 | No latency data yet | Wall clock per trial |\n\nA hit means the measured number falls inside the band. The naive guess is \"C3 equals C2,\" and it is scored next to my predictions.\n\n## Evaluate (spe/evals/harness/r05-workflow.js)\n- Copy r04-workflow.js. Set ROUND = 5 in one constant. Add C3 to the configs argument.\n- Gate 1: the grader selftest passes. The oracle passes. Empty and wrong answers fail.\n- Gate 2: regrade the r04 results with the r05 graders as a control. Any change in that control is a grader change.\n- Gate 3: a dry run with args.only on 2 C3 cells returns valid schema output and shows the Sonnet 6 id in the API logs.\n- Trials: 40 tickets \u00d7 2 configs \u00d7 3 trials = 240. Each trial has a result schema with category, priority, and reply.\n- Code checks score category and priority. A judge scores the reply draft only.\n- Allowed reads: the ticket text only. Scan transcripts for reads of spe/evals/ and spe/predictions/, and void any trial that read them.\n- Top-up: split cells get up to 2 extra trials, with a cap of 40 extra trials.\n- Caps: API spend $5, and 300 agents. Skip and log any trial that would cross a cap.\n- End with a failure-analysis agent and a completeness critic.\n- Cost estimate, unmeasured: C2 is about 120 \u00d7 $0.006 = $0.72. C3 waits on the verified price.\n\n## Commits (local only, no push)\nSPE r05 specify, SPE r05 predict (before harness work), SPE r05 evaluate (harness), SPE r05 evaluate (results): headline, SPE r05 learn, then tag spe-r05.\n\n## Halt points\nI halt and report if a budget cap is hit, the answer key leaks, or the grader selftest fails. I also halt if the Sonnet 6 dated id cannot be pinned. Switching production to C3 stays the user's decision.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a6ddec0411303ce6f",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer opens with \"Next I open round 5 as a model-swap round.\" It titles the plan \"SPE round 5\" and ends by tagging spe-r05. The release starts a new round.",
+  "The answer says \"C2 stays in the round unchanged as the control.\" R5-2 keeps C2 on pinned claude-sonnet-5-5. C3 is added next to it as the Sonnet 6 config.",
+  "R5-1 defines C3 as \"C2 with only the model changed\" and says prompt, tools, and settings match C2. Its test is a config diff with one changed line, the model id. That makes the difference attributable to the model.",
+  "spe/predictions/r05.yaml gives C3 numbers and bands for accuracy, tokens, and seconds. A separate commit, \"SPE r05 predict (before harness work)\", saves it before the run. The cost cell is a formula that waits on the verified price, but it carries a band of \u00b10.001, and the agent says plainly that the price is unverified.",
+  "R5-3 requires \"the same 40 tickets, the same reference labels, and the same graders as r04,\" and tests it with grader file hashes against spe-r04. Gate 2 regrades r04 results as a control.",
+  "R5-5 says \"Production keeps running C2 until the user decides.\" The halt section repeats that \"Switching production to C3 stays the user's decision.\"",
+  "The predict table lists category_acc, priority_acc, cost_per_ticket, tokens_per_ticket, and seconds_per_ticket for both configs. Each metric has a named grader check."
+ ]
+}

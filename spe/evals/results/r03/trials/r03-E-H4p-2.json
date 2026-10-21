@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-H4p-2",
+ "round": "r03",
+ "config": "E",
+ "task": "H4p",
+ "n": 2,
+ "response": "I would not move yet. I start round 7 and add Opus 6 as a new config next to Q. Q stays the reference config. Production stays on Q, pinned to its dated claude-sonnet-5-5 id, until the eval is done and you decide.\n\n**What I do next**\n\nI open round 7 at the Specify step. Before I write the prediction, I look up the Opus 6 dated model id and its per-token price in the current model docs. I do not know the id or the price yet, so I will not guess them.\n\n**Plan for round 7**\n\n1. **Specify.** I save your question word for word in `spe/spec/transcripts/2026-10-21-r07.md`. Then I add a round 7 table to `spe/spec/spec.md`.\n   - R07-1: Keep Q as the reference config on the pinned claude-sonnet-5-5 id. The source is the new-model rule.\n   - R07-2: Add config S. S is Q with only the model changed to the pinned Opus 6 dated id. S keeps the same schema-first prompt and the same tools.\n   - R07-3: Use the same 60 invoices, the AP lead's reference fields, and the same graders.\n   - R07-4: Do not switch production before the eval. Your question is the source.\n   - I also go through each row of the r06 \"Proposed for round 7\" table. I adopt or reject each one with a reason, and I hold off anything that would change a second variable.\n   - I add one open decision to `spe/spec/disagreements.md`. You decide what gain would justify the extra cost. My default is to switch only if S's field accuracy band sits above Q's band and S's cost stays within a cap you set.\n   - Commit: `spe(specify): r07 add Opus 6 as config S`.\n\n2. **Predict.** I start from `spe/predictions/r06-draft.yaml`, where every number for Q is \"same as last round\".\n\n   | Metric | Q (Sonnet 5.5) | S (Opus 6) | Why |\n   |---|---|---|---|\n   | Field accuracy | 0.93 \u00b1 0.03 | 0.94 \u00b1 0.03 | Q's schema prompt already gets most fields right. A stronger model may fix a few hard line items. One invoice is worth about 0.017. |\n   | Cost per invoice | $0.011 \u00b1 $0.002 | $0.019 \u00b1 $0.006 | S's cost is my estimate. I will recompute it from Q's measured tokens times the published Opus 6 price before saving the file. |\n   | Seconds per invoice | 14 \u00b1 3 | 18 \u00b1 5 | Larger models usually return tokens more slowly. |\n\n   A result counts as a hit if it lands inside the band. The grader checks stay the same: field match against the reference for accuracy, and the token and time logs for cost and seconds.\n   - After you approve, I write `spe/plans/r07.md` and `spe/predictions/r07.yaml`. The yaml starts with the \"Saved before the eval ran\" header.\n   - Commit: `spe(predict): r07 plan and prediction`.\n\n3. **Evaluate.** I run the gates in this order:\n   - the grader selftest, where the oracle passes and the empty and wrong answers fail\n   - a regrade of the r06 results as a control\n   - a dry run on 2 or 3 cells using `args.only`\n\n   Then I copy the r06 script to `spe/evals/harness/r07-workflow.js`, with `ROUND = 7` in one constant. The run has an API spend cap and an agent cap, and any trial that would cross a cap gets skipped and logged. Trials get no read access to `spe/evals/` or `spe/predictions/`. Split cells get top-up trials up to a cap. The run ends with failure analysis and a completeness critic. I will give you an unmeasured cost estimate before launch.\n   - Commit: `spe(evaluate): r07 harness and gates`.\n\n4. **Learn.** When the completion notice arrives, I update `prediction-log.md`, `failures.md`, the round 8 proposals, `r07-draft.yaml`, and `README.md`. Then I commit and tag `spe-r07`.\n   - I report whether S beat Q by more than the band, and what that costs per invoice.\n   - The switch stays your decision.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ac94846bd94540c64",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I start round 7 and add Opus 6 as a new config\" and \"I open round 7 at the Specify step.\" The release clearly opens a new round.",
+  "R07-1 says \"Keep Q as the reference config on the pinned claude-sonnet-5-5 id.\" R07-2 adds config S next to Q. Both parts of the check are met.",
+  "R07-2 defines S as \"Q with only the model changed to the pinned Opus 6 dated id\" with \"the same schema-first prompt and the same tools.\" The answer also says it will hold off any proposal that would change a second variable.",
+  "The Predict step gives S numbers with bands (0.94 \u00b1 0.03, $0.019 \u00b1 $0.006, 18 \u00b1 5 s). It saves them in r07.yaml under a \"Saved before the eval ran\" header before the Evaluate step. The cost number is marked as an estimate to be recomputed from published prices before saving, but the bands are still set in advance.",
+  "R07-3 says \"Use the same 60 invoices, the AP lead's reference fields, and the same graders.\" The Predict step repeats that \"the grader checks stay the same.\"",
+  "The answer says \"Production stays on Q... until the eval is done and you decide.\" R07-4 says \"Do not switch production before the eval.\" Both statements meet the check.",
+  "The prediction table compares field accuracy, cost per invoice, and seconds per invoice. Tokens per invoice is not a compared metric. Tokens appear only as an input to the cost calculation (\"Q's measured tokens\" and \"token and time logs for cost\"). One of the four required metrics is missing, so the check fails."
+ ]
+}

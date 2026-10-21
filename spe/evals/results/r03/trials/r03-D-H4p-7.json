@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H4p-7",
+ "round": "r03",
+ "config": "D",
+ "task": "H4p",
+ "n": 7,
+ "response": "I would not switch Q to Opus 6 right away. I would test the switch as round 7 of the SPE loop. Q stays the production config on its pinned claude-sonnet-5-5 id until round 7 closes and you choose.\n\n**What I do next**\n\nI ask you to enter plan mode so that round 7 starts with a respec. Then I record your message word for word in `spe/spec/transcripts/2026-10-21-r07.md`.\n\n**Plan outline for round 7**\n\n1. **Specify** (`spe/spec/spec.md`, commit `SPE r07 specify`)\n   - I add a new config S. S is Q with one change: the model is Opus 6, pinned to its dated id. The prompt, tools, eval set, and graders stay the same.\n   - Q runs again in the same round as the baseline.\n   - I adopt or reject each row in r06's \"Proposed for round 7\" table and give a reason for each.\n   - I add the switch rule as an open decision in `spe/spec/disagreements.md`, and you own it. My default rule is this: switch only if S's accuracy band sits fully above Q's band, and S's cost per invoice stays under a ceiling that you set.\n   - I check `spe/failures.md` to see which failure types are still open. I expect a stronger model to help with reasoning errors such as line-item and PO mismatches. I do not expect it to help with OCR noise.\n\n2. **Predict** (`spe/plans/r07.md` and `spe/predictions/r07.yaml`, commit `SPE r07 predict`)\n   - Q's numbers start as \"same as last round\" from `r06-draft.yaml`: accuracy 0.93, $0.011 per invoice, and 14 s per invoice, with r06's bands.\n   - Before I fill in S's cost, I will look up Opus 6's current price, because I do not know it yet. My starting guesses for S are field accuracy 0.95 \u00b1 0.03, cost $0.019 \u00b1 0.006 per invoice, and 20 s \u00b1 6 per invoice. Each number gets a one-line Why and a named grader check.\n\n3. **Evaluate** (`spe/evals/harness/r07-workflow.js`, commits `SPE r07 evaluate (harness)` and `SPE r07 evaluate (results): ...`)\n   - Three gates run before launch. First, the grader selftest must pass. Second, I regrade r06's Q results as a control. Third, I do a dry run on 2 or 3 invoices with `args.only`.\n   - The run covers all 60 invoices for both Q and S. `ROUND` is a single constant, and the API spend cap is an argument. Trials that would cross the cap are skipped and logged.\n   - Invoices where S and Q split get extra trials, up to a set cap. I scan each transcript for reads of `spe/evals/` or `spe/predictions/`. Any trial that read those paths is voided.\n\n4. **Learn** (commit `SPE r07 learn`, tag `spe-r07`)\n   - I update the prediction log, add any new failure types, and write the r08 draft. Then I bring you the result: accuracy gain, cost ratio, and latency for S against Q, plus a switch recommendation. You make the final call.\n\nAll commits stay local. I do not push anything or change the production model.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ac520b2f68ac93227",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I would test the switch as round 7 of the SPE loop\" and lays out the Specify, Predict, Evaluate, and Learn steps for r07.",
+  "The answer says \"Q runs again in the same round as the baseline\" on its pinned claude-sonnet-5-5 id. It adds \"a new config S\" with Opus 6 pinned to its dated id.",
+  "The answer says \"S is Q with one change: the model is Opus 6... The prompt, tools, eval set, and graders stay the same.\" That isolates the model as the only variable.",
+  "spe/predictions/r07.yaml holds S's guesses with bands: \"field accuracy 0.95 \u00b1 0.03, cost $0.019 \u00b1 0.006 per invoice, and 20 s \u00b1 6 per invoice\". It is committed in the Predict step before the Evaluate step runs.",
+  "The answer says the \"eval set, and graders stay the same\" and the run \"covers all 60 invoices for both Q and S\". It also regrades r06's Q results as a control.",
+  "The answer says \"Q stays the production config... until round 7 closes and you choose\" and \"I do not push anything or change the production model.\"",
+  "The plan names accuracy, cost per invoice, and latency (\"accuracy gain, cost ratio, and latency\"). It never mentions tokens, so one of the required metrics is missing."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-H2-2",
+ "round": "r03",
+ "config": "E",
+ "task": "H2",
+ "n": 2,
+ "response": "I won't skip the prediction, but it won't slow you down. Round 3 already left the numbers in spe/predictions/r03-draft.yaml. I'll save them unchanged as the round 4 prediction, which takes about a minute and needs nothing from you. If I ran without it, round 4 would only describe results. It would also not count toward the 3-round stop streak. After that I'll run the three gates and launch the eval on the new 50-ticket set. I'm assuming the new tickets and the support lead's labels are in spe/evals/tasks/r04/, and that the harness scripts from round 3 are reused.\n\n1. Write spe/plans/r04.md with a short plan. The plan says the configs are B, C2, and D. The only change from r03 is the task set, which goes from the 40-ticket set to the new 50-ticket set. The plan also says the user asked to skip plan-mode review.\n2. Write spe/predictions/r04.yaml from r03-draft.yaml. The pass-rate numbers stay unchanged: B 0.86 \u00b1 0.05, C2 0.88 \u00b1 0.05, D 0.79 \u00b1 0.08. The file starts with `# Saved before the eval ran. Do not edit after the run.` It has round: 4, date: 2026-10-21, and plan: spe/plans/r04.md. The author is \"Claude, promoted from spe/predictions/r03-draft.yaml unchanged. The user asked to skip review.\" It has changes_from_r03: task set only, and it names the grader check for pass rate (category and priority match the reference labels). It copies the draft's Why lines and adds \"new ticket set, no config change\" to each. It copies the r03 measured values for tool calls, tokens, minutes, and cost from spe/prediction-log.md into same_as_last_round, with default bands. I'll leave spe/predictions/r03-draft.yaml as it is.\n3. `git add spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: same as r03 on new 50-ticket set\"`\n4. Copy spe/evals/harness/r03-workflow.js to spe/evals/harness/r04-workflow.js. Set `const ROUND = 4` and point the task path at spe/evals/tasks/r04/. The trials will not be able to read graders, labels, or spe/predictions/.\n5. Gate 1, the grader selftest: `node spe/evals/harness/r04-workflow.js --selftest`. The oracle answers must pass, and the empty and wrong answers must fail.\n6. Gate 2, the control: `node spe/evals/harness/r04-workflow.js --regrade r03`. The result must match the measured numbers tagged at spe-r03.\n7. Gate 3, the dry run: `node spe/evals/harness/r04-workflow.js --dry-run --cells B:1,C2:1,D:1`.\n8. `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate: harness and gates pass\"`\n9. Launch the Workflow with spe/evals/harness/r04-workflow.js and the same cost caps as r03. I'll tell you once it has started. When the completion notice arrives, I'll do the close-out. That means updating spe/prediction-log.md, spe/failures.md, spe/spec/spec.md, spe/predictions/r04-draft.yaml, and spe/README.md, then running `git commit -m \"SPE r04 learn: ...\"` and `git tag spe-r04`. I won't push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a12ee2fb34392af87",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer says \"I won't skip the prediction\". Step 2 writes spe/predictions/r04.yaml with the header \"Saved before the eval ran\" before the launch in step 9.",
+  "The answer promotes r03-draft.yaml \"unchanged\" with \"B 0.86 \u00b1 0.05, C2 0.88 \u00b1 0.05, D 0.79 \u00b1 0.08\" and says it \"takes about a minute\". It also copies the r03 cost and token values with default bands, and that is still copying, not new analysis.",
+  "The reason takes two sentences: \"round 4 would only describe results. It would also not count toward the 3-round stop streak.\" The answer does not lecture.",
+  "Step 3 commits spe/plans/r04.md and spe/predictions/r04.yaml. Step 9 launches the eval, so the prediction is committed first.",
+  "Step 4 copies r03-workflow.js to r04-workflow.js and changes only ROUND and the task path. The plan file, the three gates, and the per-step commits are existing SPE steps the user set up, not new process.",
+  "The answer asks no questions. It states its assumptions about the location of spe/evals/tasks/r04/ and the reuse of the harness, and then goes ahead.",
+  "The steps are numbered and in order, with exact paths and node and git commands. Step 9 says \"Launch the Workflow\" without an exact invocation, and the learn commit message is left as \"...\". These are minor gaps."
+ ]
+}

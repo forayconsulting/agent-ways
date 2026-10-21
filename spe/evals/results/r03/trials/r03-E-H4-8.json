@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-H4-8",
+ "round": "r03",
+ "config": "E",
+ "task": "H4",
+ "n": 8,
+ "response": "Next step: I leave production on C2 with the pinned Sonnet 5.5 id. I open round 5 as a model-only comparison. C2 on Sonnet 5.5 stays as the reference config. A new config, C2-S6, changes only the model to Sonnet 6. The 40 tickets and the graders stay the same. I do not switch production until the eval has run.\n\nDefault: I don't have the exact dated Sonnet 6 id or its price yet. Until I check them in the Claude API docs, I assume Sonnet 6 costs the same per token as Sonnet 5.5. If the price differs, I change the cost cell before I save the prediction.\n\n## Plan outline: round 5 (r05), Sonnet 6 vs pinned Sonnet 5.5\n\n### 1. Specify\n- Save the user's message and planning answers verbatim to `spe/spec/transcripts/2026-10-21-r05.md`.\n- Add an r05 table to `spe/spec/spec.md` with these rows.\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| r05-1 | Keep C2 on the pinned Sonnet 5.5 id as the reference config | way rule on new models | Config diff shows only the model field changed |\n| r05-2 | Add C2-S6 as C2 with the dated Sonnet 6 id and nothing else changed | user: \"Sonnet 6 just shipped\" | Same prompt hash, same 3 tools |\n| r05-3 | Same 40 tickets, same reference labels, same graders as r04 | way rule on new models | Grader file hashes match spe-r04 |\n| r05-4 | Production stays on C2 Sonnet 5.5 during the round | way rule on new models | No deploy or config change outside spe/ |\n\n- I go through each row of the r04 \"Proposed for round 5\" table. I adopt or reject each one with a reason. I defer any proposal that would change a second thing, so each config differs from C2 by one change only. I log each deferral as a default in `spe/spec/disagreements.md`.\n\n### 2. Predict (starts from `spe/predictions/r04-draft.yaml`)\n\n| Metric | C2 (Sonnet 5.5, reference) | C2-S6 (Sonnet 6) | Grader check | Why |\n|---|---|---|---|---|\n| category_acc | 0.89 \u00b1 0.04 | 0.89 \u00b1 0.04 | Code: exact match with the lead's category | I have no Sonnet 6 evidence on these tickets yet. One ticket is 0.025, so I keep last round's number. |\n| priority_acc | 0.81 \u00b1 0.05 | 0.81 \u00b1 0.05 | Code: exact match with the lead's P1 to P4 | I use the same reason as for category. |\n| cost_per_ticket ($) | 0.006 \u00b1 0.001 | 0.006 \u00b1 0.001 | Code: usage tokens times the list price | This assumes equal pricing, which I will check against the docs. |\n| tokens_per_ticket | 9100 \u00b1 1000 | 9100 \u00b1 1000 | Code: summed usage | The prompt and tools are unchanged. |\n| seconds_per_ticket | 7.4 \u00b1 1.5 | 7.4 \u00b1 1.5 | Code: wall clock per trial | Latency for a new model is not measured yet. |\n| draft_reply_ok | same as r04 | same as r04 | Judge, only because code cannot grade tone and correctness | Unchanged. If no judge from another model family is available, I note that. |\n\n- A hit is a measured value inside the band. Every C2-S6 cell matches the naive \"same as last round\" guess, and I say that in the plan. The C2 column also measures run-to-run noise on the reference.\n\n### 3. Evaluate\n- Gates, in order:\n  1. Grader selftest. The oracle passes, and the empty and wrong answers fail.\n  2. Regrade the spe-r04 C2 results with the r05 graders as a control. Any shift is a grader change.\n  3. Dry run with `args.only` on 2 tickets \u00d7 2 configs.\n- Script: `spe/evals/harness/r05-workflow.js`, copied from r04. It has one `ROUND = 5` constant and no round numbers written by hand in prompt text.\n- Phases: Trials, Grade (code), Judge (draft reply only), Top-up, Synthesis. The Synthesis phase ends with a failure-analysis agent and a completeness critic.\n- Arguments: `configs: [C2, C2-S6]`, `tickets: 40`, `trials_per_cell: 3`, `topup_cap: 2 extra trials per split ticket`, `api_spend_cap: $10`, `agent_cap: 320`.\n- Leak control: trials get a read allowlist. I scan transcripts for reads of `spe/evals/` and `spe/predictions/` and void any trial that peeked.\n- Cost estimate, not measured: 240 trials \u00d7 $0.006 is about $1.45. Judges and top-ups add about $2, so the total is under $5. Serial runtime is about 30 minutes.\n\n### 4. After approval, before launch\n- Copy the plan to `spe/plans/r05.md`.\n- Write `spe/predictions/r05.yaml`, with the header line \"Saved before the eval ran. Do not edit after the run.\"\n- Make a local commit for each step: specify, predict, evaluate, learn. I do not push.\n\n### 5. Decision rule for the user\nIf C2-S6 beats C2 by more than the band on category_acc or priority_acc, and cost stays inside its band, I propose switching production in round 6. Only the user makes that switch.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "acc2e6d1c3b20b2fa",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer says \"I open round 5 as a model-only comparison\" and titles the plan \"round 5 (r05)\". It includes specify, predict, evaluate, and learn steps, so the release starts a new round.",
+  "The answer says \"C2 on Sonnet 5.5 stays as the reference config\" and adds \"C2-S6\" as a new config. Both configs appear side by side in `configs: [C2, C2-S6]` and in the prediction table.",
+  "Row r05-2 requires \"C2 with the dated Sonnet 6 id and nothing else changed\" and tests it with the same prompt hash and the same 3 tools. The answer also defers any r04 proposal that would change a second thing.",
+  "The predict table gives numbers and bands for C2-S6, for example category_acc 0.89 \u00b1 0.04 and cost 0.006 \u00b1 0.001. Step 4 writes `spe/predictions/r05.yaml` before launch with the line \"Saved before the eval ran. Do not edit after the run.\"",
+  "Row r05-3 requires the \"Same 40 tickets, same reference labels, same graders as r04\" and tests that the grader file hashes match spe-r04. The plan also regrades the r04 results as a control.",
+  "The answer says \"I do not switch production until the eval has run.\" Row r05-4 keeps production on C2 Sonnet 5.5 during the round, and the decision rule says \"Only the user makes that switch.\"",
+  "The prediction table names category_acc, priority_acc, cost_per_ticket, tokens_per_ticket, and seconds_per_ticket. This covers accuracy, cost, tokens, and time per ticket."
+ ]
+}

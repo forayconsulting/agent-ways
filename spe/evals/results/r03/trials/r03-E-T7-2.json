@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-T7-2",
+ "round": "r03",
+ "config": "E",
+ "task": "T7",
+ "n": 2,
+ "response": "1. Copy the approved plan into the repo: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The first line is `# Saved before the eval ran. Do not edit after the run.` It includes `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, `plan: spe/plans/r02.md`, and `changes_from_r01` with one change per config (A is the baseline, B shortens the prompt to 12 lines, C merges the tools to 3, D moves to Haiku 5.5). It also includes `constants` (trials per cell, caps, judge model) and, for configs A to D, category accuracy, priority accuracy, reply pass rate, tool calls, tokens, minutes and cost per ticket. Each number gets a band, a one-line `why`, and its grader check. `same_as_last_round` holds the r01 measured values.\n3. Commit both files locally: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: triage configs A-D, 40 tickets\"`\n4. Build the graders and tasks the plan names. I chose the default paths `spe/evals/graders/` and `spe/evals/tasks/r02/` because the plan does not give them. Code checks match the support lead's category and priority labels on the 40 tickets. A judge grades only the reply draft. Then write `spe/evals/harness/r02-workflow.js` with one `ROUND = 2` constant, a trial schema, cost caps that skip and log trials past the cap, and a transcript scan that voids any trial that read the graders, answers or predictions.\n5. Run gate 1, the grader selftest: `node spe/evals/graders/selftest.js`. The oracle answers must pass, and the empty and wrong answers must fail. If any of these checks gives the wrong result, I stop and report a broken grader.\n6. Run gate 2 by regrading round 1 as a control: `node spe/evals/graders/regrade.js --round 1`. Then I compare the result with the r01 numbers in `spe/prediction-log.md`. The dry run on 2 or 3 cells comes next, and only after that do I launch the Workflow.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ab37c95c168db05b7",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table. Both happen before any other work.",
+  "Action 3 commits both files with `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...`. Grader, task and workflow script work starts later, in action 4.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21`, an `author` field, and numbers for configs A to D. It also gives each number a band and a one-line `why`, and adds `same_as_last_round` holding the r01 measured values.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.` This marks the file as frozen after the run.",
+  "Action 5 runs `node spe/evals/graders/selftest.js` before any trial. The oracle answers must pass and the empty and wrong answers must fail. The agent stops if any check gives the wrong result.",
+  "Action 6 says \"The dry run on 2 or 3 cells comes next, and only after that do I launch the Workflow.\" So a small dry run comes before the full run. The dry run sits outside the six numbered actions, but the order is stated clearly.",
+  "Most actions give exact paths and commands, and the order is sensible: save the plan, predict, commit, build, selftest, control regrade. Action 4 is weaker. It bundles three builds into one step and names only directories for the graders and tasks. It never says it creates the selftest.js and regrade.js files that actions 5 and 6 run. These gaps are not large enough to fail the check."
+ ]
+}

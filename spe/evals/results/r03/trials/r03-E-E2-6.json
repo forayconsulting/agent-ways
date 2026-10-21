@@ -1,0 +1,36 @@
+{
+ "label": "r03-E-E2-6",
+ "round": "r03",
+ "config": "E",
+ "task": "E2",
+ "n": 6,
+ "response": "I fixed the typo. \"recieve\" is now \"receive\" on line 7 of /tmp/spe-e2e/r03/r03-E-E2-6/README.md.\n\nWhat I did:\n1. I ran the setup command once.\n2. I checked the repo and found one \"recieve\" in the repo, on README.md line 7.\n3. I replaced it with \"receive\" and confirmed that no other copy is left.\n\nThe only change is that one line in README.md. I did not commit it, because your commit rule covers loop steps and this fix is not one. It sits uncommitted in the working tree. If you want it committed, I would use a plain message like \"Fix typo in README\".",
+ "peeked": false,
+ "tools_used": [
+  "Bash",
+  "Bash",
+  "Bash"
+ ],
+ "live_ways": [
+  "Generic phrasing in messages",
+  "House register",
+  "Session posture",
+  "Signs in documents",
+  "Signs of generic writing",
+  "Tagged Prompts and Braindumps",
+  "The user's own words",
+  "Transcripts and Engagement Records"
+ ],
+ "agent": "a9357d088ee8b01ea",
+ "escapes": [],
+ "tool_count": 3,
+ "judge": null,
+ "critiques": null,
+ "e2e_checks": {
+  "fixed": true,
+  "readme_only": true,
+  "no_spe_commit": true,
+  "no_spe_talk": true
+ },
+ "pass": true
+}

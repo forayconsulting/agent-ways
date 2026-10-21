@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-H4-7",
+ "round": "r03",
+ "config": "E",
+ "task": "H4",
+ "n": 7,
+ "response": "**What I do next**\n\nI open round 5 in plan mode. Production stays on C2 with the pinned claude-sonnet-5-5. Sonnet 6 joins the eval as a new config, C2-S6. C2-S6 is C2 with only the model changed. The tasks, graders, prompt, and tools stay the same. I save your message verbatim to `spe/spec/transcripts/2026-10-21-r05.md`. I add the round 5 rows to `spe/spec/spec.md` and commit locally as \"spe: r05 specify\". Before I set the C2-S6 cost number, I check the current Claude docs for the Sonnet 6 model id and price. If the docs give no price, I assume the Sonnet 5.5 list price and log that default in `spe/spec/disagreements.md`.\n\n**Plan outline: round 5 (Sonnet 6 as a new config)**\n\n1. Specify\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R5-1 | Keep C2 on the pinned claude-sonnet-5-5 as the reference config. | User: \"Sonnet 6 just shipped.\" Way rule for a new model. | The C2 model id in the Workflow args equals the r04 id. |\n| R5-2 | Add C2-S6. It is C2 with only the model id changed to the dated Sonnet 6 id. | Same | A diff of the two config objects shows only `model`. |\n| R5-3 | Use the same 40 tickets and the same graders as r04. | Way rule | Ticket set hash and grader hash match r04. |\n| R5-4 | Do not switch production before the eval closes. | Way rule | Production config file unchanged in r05 commits. |\n| R5-5 | Carry forward the \"Proposed for round 5\" rows from r04. | r04 learn | Each row is marked adopted or rejected with a reason. |\n\nOpen decision for `disagreements.md`. Owner: the user. Question: should production switch to Sonnet 6 if C2-S6 wins? I do not decide this.\n\n2. Predict\n\nI start from `spe/predictions/r04-draft.yaml`. The draft gives no band for tokens or seconds. I chose \u00b11000 tokens and \u00b11.5 s.\n\n| Metric | C2 (Sonnet 5.5, pinned) | C2-S6 (Sonnet 6) | Why | Grader check |\n|---|---|---|---|---|\n| category_acc | 0.89 \u00b1 0.04 | 0.89 \u00b1 0.04 | C2 has not changed. Sonnet 6 has no round evidence yet, and the 12-line prompt was tuned on 5.5. | Code check: exact match to the support lead's category. |\n| priority_acc | 0.81 \u00b1 0.05 | 0.81 \u00b1 0.05 | Same reason. | Code check: exact match to the reference P1 to P4. |\n| cost_per_ticket | 0.006 \u00b1 0.001 | 0.006 \u00b1 0.001 | This assumes the Sonnet 6 price equals Sonnet 5.5 until the docs check confirms it. | Usage tokens times the price table. |\n| tokens_per_ticket | 9100 \u00b1 1000 | 9100 \u00b1 1000 | Same prompt and tools. | API usage fields. |\n| seconds_per_ticket | 7.4 \u00b1 1.5 | 7.4 \u00b1 1.5 | No latency evidence for Sonnet 6 yet. | Wall clock per trial. |\n\nA hit means the measured value is inside the band. Every number above is same_as_last_round. The C2 column also works as a control. If C2 moves outside its band, the cause is in the harness or the API, not in Sonnet 6.\n\nAfter you approve, I copy the plan to `spe/plans/r05.md`. I promote the draft to `spe/predictions/r05.yaml` with the header `# Saved before the eval ran. Do not edit after the run.` I commit both as \"spe: r05 predict\".\n\n3. Evaluate\n\n- Script: `spe/evals/harness/r05-workflow.js`, copied from r04. It uses `ROUND = 5` as the only round reference.\n- Gates, in order:\n  1. Grader selftest. The oracle passes. The empty and wrong answers fail.\n  2. Regrade the r04 results with the r05 graders as a control.\n  3. Dry run with `args.only` on 3 cells. That is 2 tickets on C2-S6 and 1 ticket on C2.\n- Args: `round: 5`, `configs: [C2, C2-S6]`, `tickets: 40`, `trials_per_cell: 3`, `topup_cap: 2` extra trials for split cells, `api_spend_cap_usd: 10`, `agent_cap: 300`.\n- Phases: Trials, Grade (code checks), Top-up, Synthesis. A failure-analysis agent and a completeness critic run at the end.\n- Answer keys stay hidden. Trials get a read allowlist. I scan transcripts for reads of `spe/evals/` and `spe/predictions/` and void any trial that peeked.\n- Cost estimate (not measured): 240 trials times about $0.006 is about $1.44. Top-ups and the analysis agents add a little more. That is well under the $10 cap.\n- I commit the script as \"spe: r05 evaluate\" and then launch.\n\n4. Learn (when the completion notice arrives)\n\nI update `prediction-log.md`, `failures.md`, the \"Proposed for round 6\" table, the r05 draft, and `README.md`. Then I commit \"spe: r05 learn\" and tag `spe-r05` locally. I do not push. The production switch stays your decision.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a7453cd2926cc0aeb",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer says \"I open round 5 in plan mode\" and gives a full round 5 outline that runs from Specify through Learn. The model release starts a new round of the loop.",
+  "R5-1 keeps \"C2 on the pinned claude-sonnet-5-5 as the reference config\". C2-S6 is added as a new config, and the eval args list `configs: [C2, C2-S6]` side by side.",
+  "R5-2 defines C2-S6 as \"C2 with only the model id changed\". Its test is that \"a diff of the two config objects shows only `model`\". The answer also says that the prompt, tools, tasks, and graders stay the same.",
+  "The Predict table gives C2-S6 numbers and bands for every metric, for example \"0.89 \u00b1 0.04\". The draft becomes `spe/predictions/r05.yaml` with the header \"Saved before the eval ran\". It is committed as \"spe: r05 predict\" before the evaluate step launches.",
+  "R5-3 requires \"the same 40 tickets and the same graders as r04\". Its test is that the ticket set hash and the grader hash match r04. The gates also regrade the r04 results with the r05 graders as a control.",
+  "The answer says \"Production stays on C2\". R5-4 says \"Do not switch production before the eval closes\" and tests that the production config file is unchanged. The production switch is left as the user's decision.",
+  "The Predict table names category_acc, priority_acc, cost_per_ticket, tokens_per_ticket, and seconds_per_ticket. Each metric has a band and a grader check. This covers accuracy, cost, tokens, and time per ticket."
+ ]
+}

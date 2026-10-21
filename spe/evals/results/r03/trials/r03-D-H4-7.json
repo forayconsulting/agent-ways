@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H4-7",
+ "round": "r03",
+ "config": "D",
+ "task": "H4",
+ "n": 7,
+ "response": "Next step: I open round 5 as a model-swap round. The only change is the model. C2 stays as the control arm, and a new arm called C2-S6 is C2 on Sonnet 6 with a pinned dated model id. I will not promote Sonnet 6 until the measured results beat C2 by more than the bands.\n\nDefault I chose: the r04 draft gives no bands for tokens or seconds, so I set tokens at \u00b1 1000 and seconds at \u00b1 1.5.\n\n# Plan: SPE round 5. C2 on Sonnet 6 versus C2 on Sonnet 5.5\n\n## 0. Before planning\n- Save the user's words verbatim to `spe/spec/transcripts/2026-10-21-r05.md`.\n- Look up the Sonnet 6 dated model id and its per-token price in the current Claude API docs. I will not guess either one.\n- Read the \"Proposed for round 5\" table that the r04 learn step added to `spe/spec/spec.md`.\n- Commit locally as `SPE r05 specify`.\n\n## 1. Specify (requirement table for r05 in `spe/spec/spec.md`)\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R5-1 | Add arm C2-S6. It equals C2 with only the model id changed to the pinned Sonnet 6 id. Prompt, tools, and temperature stay the same. | User: \"Sonnet 6 just shipped.\" | A config diff shows exactly one changed field. |\n| R5-2 | Rerun C2 on the pinned Sonnet 5.5 id in the same run. This control catches drift and grader changes. | Decision | C2 lands inside its r04 bands. |\n| R5-3 | Use the same 40 tickets and reference labels as r04. | Decision | The eval set hash matches r04. |\n| R5-4 to R5-n | Adopt or reject each r04 proposal, and give a reason for each. Rejected proposals wait until round 6 so this round changes one thing. | r04 proposals | One row per proposal. |\n\nOpen decisions go in `spe/spec/disagreements.md`, and the user owns each one.\n- D1: Should C2-S6 replace C2 if accuracy rises but cost per ticket also rises? Owner: user. Logged default: promote only if accuracy rises outside the band and cost stays at or below 0.007.\n- D2: Should Haiku-class or Sonnet 6 variants of B or D be tried later? Default: no, not this round.\n\n## 2. Predict (saved to `spe/predictions/r05.yaml` after approval)\nThe starting point is `same_as_last_round` from `spe/predictions/r04-draft.yaml`.\n\n| Metric | C2 (Sonnet 5.5) | C2-S6 (Sonnet 6) | Grader check | Why |\n|---|---|---|---|---|\n| category_acc | 0.89 \u00b1 0.04 | 0.90 \u00b1 0.04 | Exact match to the support lead's label | The model is stronger, but label noise on billing versus account caps any gain. |\n| priority_acc | 0.81 \u00b1 0.05 | 0.84 \u00b1 0.05 | Exact match to P1 to P4 | Priority needs more judgment, so a newer model has more room to improve here. |\n| cost_per_ticket | 0.006 \u00b1 0.001 | 0.006 \u00b1 0.001, restated once the price is verified | Usage tokens times the published price | Same prompt and tools. The number changes only if the Sonnet 6 price differs. |\n| tokens_per_ticket | 9100 \u00b1 1000 | 8800 \u00b1 1000 | Usage logs | Newer models often use fewer tool calls. The band covers it if they do not. |\n| seconds_per_ticket | 7.4 \u00b1 1.5 | 7.4 \u00b1 1.5 | Wall clock per completed trial | No stated reason to move it. |\n\nA hit means the measured value falls inside the band. The naive guess is \"C2-S6 equals C2\", and the close-out will compare against it.\n\n## 3. Evaluate (`spe/evals/harness/r05-workflow.js`, copied from r04)\nGates before launch:\n1. Grader selftest. The oracle answer passes, and the empty and wrong answers fail.\n2. Regrade r04 results with the r05 graders as a control. Any change means the graders changed.\n3. Dry run with `args.only` on 3 cells, one of them C2-S6. This confirms the Sonnet 6 id resolves and the 3 merged tools still parse.\n\nWorkflow arguments:\n- `ROUND: 5`\n- `configs: [C2, C2-S6]`\n- `tickets: 40`\n- `trials_per_cell: 3`\n- `topup_cap: 2`\n- `api_spend_cap_usd: 5`\n- `agent_cap: 300`\n\nPhases are Trials, Grade (code checks first), Judge (reply draft only), Top-up, and Synthesis. The run ends with a failure-analysis agent and a completeness critic.\n\nTrials may read only the ticket text. The harness scans transcripts for reads of `spe/evals/` and `spe/predictions/` and voids any trial that peeked. Skipped trials and voided trials are logged.\n\nCost estimate (not measured): 40 tickets x 2 arms x 3 trials is 240 runs. At about 0.006 each, that is about $1.50. Judges and top-up add about $1 more.\n\n## 4. Commits (local only, never pushed)\n- `SPE r05 specify`\n- `SPE r05 predict` (plan copy plus `r05.yaml`, before any harness work)\n- `SPE r05 evaluate (harness)`\n- `SPE r05 evaluate (results): <headline>`\n- `SPE r05 learn`\n- tag `spe-r05`\n\nHalt and report if the spend cap is hit, a grader breaks, an answer key leaks, or D1 needs the user's call.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "abc58abe74106820b",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer opens with \"I open round 5 as a model-swap round.\" It also plans a full specify, predict, evaluate, and learn sequence that ends with tag spe-r05.",
+  "The answer says \"C2 stays as the control arm, and a new arm called C2-S6 is C2 on Sonnet 6 with a pinned dated model id.\" R5-2 reruns C2 on the pinned Sonnet 5.5 id in the same run.",
+  "R5-1 says only the model id changes and that \"Prompt, tools, and temperature stay the same.\" Its test is \"A config diff shows exactly one changed field.\" R5-4 is a little unclear about adopted r04 proposals. Still, it defers rejected proposals \"so this round changes one thing,\" and R5-1 states the single change outright.",
+  "The Predict table gives C2-S6 numbers with bands, for example category_acc 0.90 \u00b1 0.04 and priority_acc 0.84 \u00b1 0.05. The table is saved to spe/predictions/r05.yaml and committed as \"SPE r05 predict\" before any harness work.",
+  "R5-3 requires the same 40 tickets and reference labels, and its test is a matching eval set hash. Gate 2 regrades r04 results with the r05 graders and treats any change as a grader change. The harness is copied from r04.",
+  "The answer says \"I will not promote Sonnet 6 until the measured results beat C2 by more than the bands.\" D1 makes promotion a decision the user owns.",
+  "The Predict table names category_acc, priority_acc, cost_per_ticket, tokens_per_ticket, and seconds_per_ticket for both arms. That covers accuracy, cost, tokens, and time per ticket."
+ ]
+}

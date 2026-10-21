@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H4p-4",
+ "round": "r03",
+ "config": "D",
+ "task": "H4p",
+ "n": 4,
+ "response": "I would not switch yet. I will run Opus 6 as round 7 first and compare it with Q on the same 60 invoices. We switch only if the measured numbers justify it.\n\n**What I do next**\n\nI open round 7 in plan mode. The spec starts from `spe/predictions/r06-draft.yaml`. I commit after each SPE step, and I do not push.\n\n**Plan for round 7**\n\n1. **Specify** (commit `SPE r07 specify`)\n   - Save your question verbatim to `spe/spec/transcripts/2026-10-21-r07.md`.\n   - Add round 7 rows to `spe/spec/spec.md`:\n     - R7-1: compare Opus 6 with Q on field accuracy, cost per invoice, and seconds per invoice. Source is your words.\n     - R7-2: keep the 60 invoices, the AP lead's reference fields, and the graders unchanged. Source is a decision.\n   - Adopt or reject each row of r06's \"Proposed for round 7\" table, with a reason for each.\n   - Log one open decision in `spe/spec/disagreements.md`, with you as the owner. The decision is how much accuracy gain justifies the extra cost and latency. My default rule: switch only if S beats Q outside Q's band and the cost stays under a ceiling you set.\n\n2. **Configurations** (one change only)\n   - Q: control. Schema-first prompt on `claude-sonnet-5-5`, pinned to its dated id.\n   - S: Q with the model changed to Opus 6, pinned to its dated id. The prompt, tools, and OCR settings stay the same.\n   - I will look up the Opus 6 dated id and its current pricing in the docs before writing any numbers.\n\n3. **Predict** (commit `SPE r07 predict`, before any harness work)\n   - Copy the approved plan to `spe/plans/r07.md`.\n   - Write `spe/predictions/r07.yaml` with the \"Saved before the eval ran\" header and `same_as_last_round` filled in.\n   - Q stays the same as last round: 0.93 accuracy, $0.011 per invoice, and 14 s per invoice, with r06's bands.\n   - S starts as estimates with bands:\n     - Accuracy 0.95 \u00b1 0.03. Why: a stronger model should fix some line-item and total errors. 0.93 leaves little room above it.\n     - Cost: Q's $0.011 scaled by the published Opus 6 to Sonnet 5.5 price ratio, with a \u00b1 20% band. Why: tokens stay about the same and only the price changes.\n     - Latency 18 \u00b1 4 s. Why: larger models are usually slower per token.\n   - Each number names its grader check. Accuracy uses the per-field code match against the reference fields. Cost uses API usage times the price. Latency uses the wall clock per invoice.\n   - I also add PO-mismatch flag precision and recall, because a field gain only matters to AP if the flags improve too.\n\n4. **Evaluate** (commits `SPE r07 evaluate (harness)` and `SPE r07 evaluate (results): <headline>`)\n   - Copy `r06-workflow.js` to `spe/evals/harness/r07-workflow.js` and set one `ROUND` constant.\n   - Run the gates before launch:\n     - The grader selftest. The oracle answer must pass, and the empty and wrong answers must fail.\n     - A regrade of r06 Q as the control.\n     - A dry run on 3 invoices with `args.only`.\n   - Run all 60 invoices under Q and S. Trials can read only the invoice PDFs and the PO data. I scan the transcripts for reads of `spe/evals/` or `spe/predictions/`, and I void any trial that read them.\n   - Cap API spend and agent count in the Workflow arguments. I skip any trial that would cross a cap and log the skip. I give an unmeasured cost estimate before launch.\n   - Code checks run first. A judge runs only for line-item matching that code cannot settle.\n\n5. **Learn** (commit `SPE r07 learn`, tag `spe-r07`)\n   - Fill in `spe/prediction-log.md` and `spe/failures.md`, and update `spe/README.md`.\n   - Give you a short recommendation: switch, stay on Q, or use S only for invoices where Q fails. The decision is yours.\n\nI halt and report if a cap is hit, a grader breaks, or an answer key leaks.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "aec9d2d593fae395e",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I will run Opus 6 as round 7 first\" and opens round 7 in plan mode, with all the SPE steps. The release clearly starts a new round.",
+  "Q is kept as \"control. Schema-first prompt on claude-sonnet-5-5, pinned to its dated id\". S is a separate Opus 6 config that runs next to it on the same invoices.",
+  "The configs section says \"one change only\". S is \"Q with the model changed to Opus 6... The prompt, tools, and OCR settings stay the same.\"",
+  "spe/predictions/r07.yaml is committed \"before any harness work\". It gives S an accuracy of 0.95 \u00b1 0.03 and a latency of 18 \u00b1 4 s. Cost is Q's $0.011 times the published price ratio with a \u00b1 20% band, and the ratio gets looked up before any numbers are written.",
+  "Row R7-2 says \"keep the 60 invoices, the AP lead's reference fields, and the graders unchanged\". The plan also regrades r06 Q as the control.",
+  "The answer opens with \"I would not switch yet\". It says the switch happens only if measured numbers justify it, and the final decision goes to the user after Learn.",
+  "The plan names field accuracy, cost per invoice, and seconds per invoice, and it adds PO-flag precision and recall. Tokens appear only inside the cost reasoning (\"tokens stay about the same\"). The plan never lists tokens as a metric to measure and compare, so this required metric is missing."
+ ]
+}

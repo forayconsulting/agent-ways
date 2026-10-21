@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-H4p-4",
+ "round": "r03",
+ "config": "E",
+ "task": "H4p",
+ "n": 4,
+ "response": "Not yet. I would keep Q on the pinned claude-sonnet-5-5 as the reference config. I would test Opus 6 in round 7 as a new config that changes only the model, and production stays on Q until that eval closes.\n\n**What I do next.** I ask you to enter plan mode for round 7. Your prompt there becomes the spec. Before I draft the plan, I look up Opus 6's dated model id and its per-token price in the current Claude docs. I pin the dated id and do not use an alias.\n\n**Round 7 plan outline**\n\n1. **Specify** (spe/spec/spec.md, round 7 table)\n   - R7-1: Add config S, which is Q with the model set to Opus 6's dated id. The prompt, schema, tools, tasks and graders all stay the same. Source: your question, plus the new-model rule.\n   - R7-2: Keep Q as the reference config, and re-run it in this round as well. Source: the new-model rule.\n   - I adopt or reject each row of the r06 \"Proposed for round 7\" table, with a reason for each.\n   - Default, logged in spe/spec/disagreements.md: I drop P and R this round to save budget, because Q already beat them both.\n   - Your decision, logged with you as owner: what gain would justify a higher cost per invoice.\n\n2. **Predict** (spe/predictions/r07.yaml, starting from spe/predictions/r06-draft.yaml)\n\n| Metric | Q (same as last round) | S (Opus 6) | Why |\n|---|---|---|---|\n| Field accuracy | 0.93 \u00b1 0.03 | 0.94 \u00b1 0.03 | Q is unchanged. Opus 6 might fix some line-item misses, but 0.93 leaves little room to improve. |\n| Cost per invoice | $0.011 \u00b1 $0.002 | $0.020 \u00b1 $0.008 | Q is unchanged. For S, I assume Opus costs more per token. I will replace this estimate with the real price before I save the file. |\n| Seconds per invoice | 14 \u00b1 3 | 18 \u00b1 6 | Q is unchanged. I assume the larger model runs slower. |\n\n   A result counts as a hit when it lands inside the band. The grader checks are the same as in r06. Field accuracy is scored by the code field comparison against the AP lead's reference fields. Cost comes from token usage times price. Time comes from the trial timer.\n\n3. **Evaluate** (spe/evals/harness/r07-workflow.js, copied from r06 with ROUND = 7)\n   - The gates run in this order. First the grader selftest, where the oracle must pass and the empty and wrong answers must fail. Next the r06 results regraded as a control. Last a dry run on 2 or 3 invoices with args.only.\n   - The run covers all 60 invoices under Q and S. Code checks run first. Trials may not read spe/evals/ or spe/predictions/. I scan the transcripts and void any trial that peeked.\n   - Caps: an API spend cap and an agent cap go in the arguments. I will estimate the spend once I have the price, and that estimate will be labeled as unmeasured. Skipped trials go in the log.\n   - Split cells get top-up trials up to a cap. The run ends with failure analysis and a completeness critic.\n\n4. **Learn**\n   - I fill in spe/prediction-log.md and spe/failures.md and write the round 8 proposals.\n   - I recommend switching only if S beats Q on accuracy by more than the bands overlap, at a cost you accept. You make the production call.\n\n**Commits.** These are all local and nothing gets pushed:\n- the plan copy and r07.yaml after approval, before any trial runs\n- the harness\n- the close-out, with the tag spe-r07",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "af4da6db4b7d9fdd7",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I would test Opus 6 in round 7\" and lays out a round 7 plan that runs through all four steps. It also asks the user to enter plan mode for round 7.",
+  "The answer says \"I would keep Q on the pinned claude-sonnet-5-5 as the reference config\". R7-1 adds config S as a new config, and R7-2 keeps Q as the reference and re-runs it.",
+  "R7-1 defines S as \"Q with the model set to Opus 6's dated id. The prompt, schema, tools, tasks and graders all stay the same.\" Only one variable changes.",
+  "The Predict table gives S numbers with bands: 0.94 \u00b1 0.03, $0.020 \u00b1 $0.008, and 18 \u00b1 6. It saves them in spe/predictions/r07.yaml, and a commit lands \"before any trial runs\". The cost figure is labeled as an estimate that gets replaced with the real price before the file is saved.",
+  "The run covers \"all 60 invoices under Q and S\". The answer also says \"The grader checks are the same as in r06\", including the code field comparison against the AP lead's reference fields.",
+  "The answer says \"production stays on Q until that eval closes\" and \"You make the production call.\" It recommends a switch only if S beats Q.",
+  "The table names field accuracy, cost per invoice, and seconds per invoice. Tokens appear only as an input to cost (\"token usage times price\"). Tokens per invoice is not named as a metric to compare."
+ ]
+}

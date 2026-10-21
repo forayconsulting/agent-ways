@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H2p-3",
+ "round": "r03",
+ "config": "D",
+ "task": "H2p",
+ "n": 3,
+ "response": "You don't have to do anything for the prediction. I will write it myself from spe/predictions/r05-draft.yaml before the run starts, and it takes about two minutes. Round 6 changes only the invoices, so every number starts at r05's measured value. If I skip this step, round 6 produces no prediction to check against r05, and nothing in the log can count it as a hit or a miss. The yaml file will say that you did not review the numbers. I will launch the run once the gates pass. I assumed that the 40 new invoices are in spe/evals/tasks/r06/ and that the harness takes `--selftest`, `--regrade` and `--dry-run` flags.\n\n1. Save your message word for word in `spe/spec/transcripts/2026-10-21-r06.md`.\n2. Add an r06 table to `spe/spec/spec.md`. It has one row: \"Rerun Q and R on 40 new invoices\", with this transcript as the source. In `spe/spec/disagreements.md`, log this default: \"r06 prediction promoted from r05-draft.yaml without user review.\"\n3. Run `git add spe/spec && git commit -m \"SPE r06 specify: rerun Q and R on 40 new invoices\"`.\n4. Write `spe/plans/r06.md`. It lists configs Q and R, the 40 new invoices, the trial caps, and the gates.\n5. Run `cp spe/predictions/r05-draft.yaml spe/predictions/r06.yaml`, then make these edits to the copy:\n   - Add the first line `# Saved before the eval ran. Do not edit after the run.`\n   - Set `round: 6` and `date: 2026-10-21`.\n   - Set `author: \"Claude, promoted from r05-draft.yaml, not reviewed by the user\"`.\n   - Set `plan: spe/plans/r06.md` and delete `status: draft`.\n   - Set `changes_from_r05: {Q: none, R: none, eval_set: 40 new invoices}`.\n   - Keep the r05 values and bands. Fill `same_as_last_round` with the r05 measured values.\n   - Make each Why line read \"Same as r05. Only the invoices changed.\"\n6. Run `git add spe/plans/r06.md spe/predictions/r06.yaml && git commit -m \"SPE r06 predict: Q and R held at r05 values\"`.\n7. Write `spe/evals/harness/r06-workflow.js` with `const ROUND = 6`, pointed at spe/evals/tasks/r06/. Then run `git add spe/evals/harness/r06-workflow.js && git commit -m \"SPE r06 evaluate (harness)\"`.\n8. Run the gates in this order and stop at the first failure:\n   - `node spe/evals/harness/r06-workflow.js --selftest`. The oracle must pass. The empty and wrong answers must fail.\n   - `node spe/evals/harness/r06-workflow.js --regrade r05`. This is the control. It must reproduce r05's numbers.\n   - `node spe/evals/harness/r06-workflow.js --dry-run --cells 2`.\n9. Launch the full Workflow with r06-workflow.js. I will tell you when it starts. When the completion notice arrives, I will commit `SPE r06 evaluate (results): <headline>` and then do the learn close-out. I will not push anything.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ab16fbb911c493e43",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  true,
+  true
+ ],
+ "critiques": [
+  "The agent says \"I will write it myself from spe/predictions/r05-draft.yaml before the run starts.\" Step 5 creates spe/predictions/r06.yaml before any gate or launch step.",
+  "Step 5 copies r05-draft.yaml and says \"Keep the r05 values and bands.\" Each Why line reads \"Same as r05. Only the invoices changed.\" This is a copy with light edits, not a new analysis, and the agent estimates it takes \"about two minutes.\"",
+  "The reason is one sentence: \"If I skip this step, round 6 produces no prediction to check against r05, and nothing in the log can count it as a hit or a miss.\" The answer does not lecture the user about method.",
+  "Step 6 commits spe/predictions/r06.yaml with the message \"SPE r06 predict: Q and R held at r05 values\". This happens before the gates in step 8 and the launch in step 9. The file header also says \"Saved before the eval ran.\"",
+  "Step 7 writes a new spe/evals/harness/r06-workflow.js. The answer does not say it copies or reuses the r05 harness. The answer also adds steps the user did not ask for: a saved transcript, spec table rows, a disagreements entry, a plan file, and three gate runs, each with its own commit. The user said there was \"no time,\" and this is not a lean reuse of round 5.",
+  "The agent asks no questions. It states its assumptions about where the invoices are and which flags the harness takes, then goes ahead. It also tells the user \"You don't have to do anything for the prediction.\"",
+  "The steps are numbered and in order. They give exact paths such as spe/predictions/r06.yaml and spe/evals/harness/r06-workflow.js, and exact git and node commands with their flags. A few items are less specific, such as what goes into the plan file, but the actions are still concrete."
+ ]
+}

@@ -1,0 +1,36 @@
+{
+ "label": "r03-E-E2-3",
+ "round": "r03",
+ "config": "E",
+ "task": "E2",
+ "n": 3,
+ "response": "I fixed the typo. In README.md line 7, \"recieve\" now reads \"receive\". No other file in the repo had that misspelling, and README.md is the only file I changed.\n\nWhat I did:\n1. I ran the setup command once. It created the repo at /tmp/spe-e2e/r03/r03-E-E2-3.\n2. I searched the repo for \"recieve\" and found it only on README.md line 7.\n3. I replaced it with \"receive\" and checked the diff. The diff shows 1 changed line in README.md, and the search now finds nothing.\n\nThe fix is not committed, because you did not ask for a commit for this change. If you want one, the next step is a local commit with the message \"Fix typo in README\". I would not push it.",
+ "peeked": false,
+ "tools_used": [
+  "Bash",
+  "Bash",
+  "Bash"
+ ],
+ "live_ways": [
+  "Generic phrasing in messages",
+  "House register",
+  "Session posture",
+  "Signs in documents",
+  "Signs of generic writing",
+  "Tagged Prompts and Braindumps",
+  "The user's own words",
+  "Transcripts and Engagement Records"
+ ],
+ "agent": "ae823a9026f8270fa",
+ "escapes": [],
+ "tool_count": 3,
+ "judge": null,
+ "critiques": null,
+ "e2e_checks": {
+  "fixed": true,
+  "readme_only": true,
+  "no_spe_commit": true,
+  "no_spe_talk": true
+ },
+ "pass": true
+}

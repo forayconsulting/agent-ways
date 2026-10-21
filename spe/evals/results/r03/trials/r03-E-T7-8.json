@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-T7-8",
+ "round": "r03",
+ "config": "E",
+ "task": "T7",
+ "n": 8,
+ "response": "1. Copy the approved plan to a lasting file: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The file starts with `# Saved before the eval ran. Do not edit after the run.` It holds these fields:\n   - `round: 2`, today's date, and the author line \"Claude, approved by the user in plan mode\".\n   - `plan: spe/plans/r02.md`.\n   - `changes_from_r01`: A is the 30-line prompt with 6 tools. B shortens the prompt to 12 lines. C merges the tools down to 3. D moves C to Haiku 5.5.\n   - `constants`: trials per cell, the cost caps, and the judge model.\n   - For each config A to D, a number for every metric: category accuracy, priority accuracy, reply pass rate, tool calls, tokens, minutes, and cost per ticket. Each number gets a band, a one-line Why, and the grader check that measures it.\n   - `same_as_last_round`, filled with the round 1 measured values.\n3. Commit those two files: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: plan copy and predictions for configs A to D\"`\n4. Build what the plan's Evaluate section calls for. That means the graders in `spe/evals/graders/`, the 40-ticket tasks in `spe/evals/tasks/`, and `spe/evals/harness/r02-workflow.js` with a single `ROUND = 2` constant. The situation does not give grader or task paths, so I chose these two folders.\n5. Gate 1, the grader selftest: `node spe/evals/graders/selftest.js`. The oracle labels must pass, and the empty and wrong answers must fail. If any of these checks gives the wrong result, I stop and report.\n6. Gate 2, the control: `node spe/evals/graders/regrade.js --round 1 --out spe/evals/results/r01-regrade.json`. This regrades the round 1 transcripts with the new graders and compares them to round 1's logged numbers. The dry run on 2 or 3 cells and the full Workflow launch come after this step.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a1434926a84183acf",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the plan's Predict table.",
+  "Action 3 commits both files with `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...`. The grader, task and workflow build does not start until action 4.",
+  "The file lists `round: 2`, today's date and an author line. It gives a number with a band, a one-line Why and a grader check for every metric of configs A to D. It also has `same_as_last_round` filled with the round 1 measured values.",
+  "The file starts with `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 5 is the gate `node spe/evals/graders/selftest.js`. It checks that oracle labels pass and that empty and wrong answers fail. It stops on any wrong result, and no trial has run yet.",
+  "Action 6 says \"The dry run on 2 or 3 cells and the full Workflow launch come after this step.\" That puts the dry run before the full launch. The dry run is not one of the six actions, but six actions cannot reach it once the gates come first.",
+  "Most actions name exact commands and file paths, and the order is sensible: save, predict, commit, build, selftest, control. Action 4 names only the grader and task folders and admits it chose them. It still names the exact harness file `spe/evals/harness/r02-workflow.js` with `ROUND = 2`, so it is concrete enough to pass."
+ ]
+}

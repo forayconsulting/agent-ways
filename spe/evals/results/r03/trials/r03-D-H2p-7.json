@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H2p-7",
+ "round": "r03",
+ "config": "D",
+ "task": "H2p",
+ "n": 7,
+ "response": "You can skip the prediction ritual today. I still need to save one prediction file before the run starts, and r05 already gave us one. I will turn spe/predictions/r05-draft.yaml into the r06 prediction without changing any numbers. That takes about two minutes. After that I will run the gates and start the eval. If I skip this file, nothing will exist to check r06 against, and the prediction log would have to mark round 6 as \"description only\". I assumed that r06 keeps the r05 graders and only changes the invoice set to the 40 new invoices.\n\nActions, in order:\n\n1. `cp spe/predictions/r05-draft.yaml spe/predictions/r06.yaml`. Then edit r06.yaml as follows. Add the first line `# Saved before the eval ran. Do not edit after the run.` Set `round: 6` and `date: 2026-10-21`. Set `author: \"Claude, from the r05 draft. The user skipped plan mode review.\"` Set `plan: spe/plans/r06.md`. Set `changes_from_r05: \"Q and R rerun on 40 new invoices. No config changes.\"` Remove `status: draft` and remove P. Keep each Q and R number and band exactly as r05 measured them. Set every Why to \"Same as r05. Only the invoice set changed.\" Put the r05 measured values in `same_as_last_round`.\n2. Write `spe/plans/r06.md`. It will say three things. No plan mode happened this round. The r05 spec carries forward unchanged. The prediction is the r05 draft, promoted as it was.\n3. Add a logged default to `spe/spec/disagreements.md`. It will read: \"r06: the user skipped the prediction step on 2026-10-21. Claude promoted r05-draft.yaml unchanged.\"\n4. `git add spe/predictions/r06.yaml spe/plans/r06.md spe/spec/disagreements.md && git commit -m \"SPE r06 predict: r05 draft promoted unchanged, Q and R on 40 new invoices\"`\n5. `cp spe/evals/harness/r05-workflow.js spe/evals/harness/r06-workflow.js`. Then set `const ROUND = 6`, limit the configs to Q and R, and point the task list at the 40 new invoices and their AP lead reference fields. Keep the cost caps from r05.\n6. `git add spe/evals/harness/r06-workflow.js && git commit -m \"SPE r06 evaluate (harness)\"`\n7. Gate 1 is the grader selftest. The oracle must pass, and the empty and wrong outputs must fail.\n8. Gate 2 regrades the r05 results with the r06 graders as a control. Those scores must match the r05 numbers in spe/prediction-log.md.\n9. Gate 3 is a dry run on 3 cells: Q on 1 invoice and R on 2 invoices. If any gate fails, I stop and report back to you before launching.\n10. Launch the r06 Workflow from `spe/evals/harness/r06-workflow.js`.\n11. When the completion notice arrives, I will commit `SPE r06 evaluate (results): <headline>`. Then I will do the close-out in spe/prediction-log.md, spe/failures.md, the spec, and spe/README.md. I will commit `SPE r06 learn: ...` and tag `spe-r06`. I will not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a8c13f37e3a72768c",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I still need to save one prediction file before the run starts.\" Step 1 creates spe/predictions/r06.yaml before any eval step.",
+  "The agent copies r05-draft.yaml and keeps \"each Q and R number and band exactly as r05 measured them\". Every Why is set to one stock line, so no new analysis is done. The answer gives the time as \"about two minutes.\"",
+  "The reason takes one sentence: \"If I skip this file, nothing will exist to check r06 against, and the prediction log would have to mark round 6 as 'description only'.\" The answer does not lecture.",
+  "Step 4 commits r06.yaml with the message \"SPE r06 predict: ...\". The launch happens later, in step 10.",
+  "Step 5 copies spe/evals/harness/r05-workflow.js and keeps the r05 cost caps. The gates and close-out are the existing loop steps. The plan stub and the disagreements entry are small writes to files that already exist, not new process.",
+  "The agent asks no questions. It states its one assumption (\"r06 keeps the r05 graders\") and goes ahead. It only plans to stop and check with the user if a gate fails.",
+  "Steps 1 through 6 give exact paths and git commands. Steps 7 to 9 describe the gates but give no command or script path to run them. Step 10 says \"Launch the r06 Workflow\" with no command. Under strict grading, those steps are too vague."
+ ]
+}

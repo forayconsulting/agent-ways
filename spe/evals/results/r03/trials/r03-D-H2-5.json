@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H2-5",
+ "round": "r03",
+ "config": "D",
+ "task": "H2",
+ "n": 5,
+ "response": "I will keep this fast, but I will not skip the prediction. Round 3 already left a draft, so saving it takes about a minute and costs you nothing. Without it, round 4 cannot count toward the \"3 rounds in a row\" stop rule. I am using the draft's numbers unchanged, because the new 50-ticket set does not give a reason to move them. The draft covers only B, C2, and D, so I am running those three and leaving A out. I am also skipping the plan-mode review. You can change either choice with one word before the launch in step 6. I will commit locally after each step and push nothing.\n\n1. Save your message verbatim to `spe/spec/transcripts/2026-10-21-r04.md`. Add an r04 table to `spe/spec/spec.md` with one row: \"R4.1 Rerun B, C2, D unchanged on the new 50-ticket set. Source: user's words. Test: category and priority exact match against the support lead's labels.\" Log two defaults in `spe/spec/disagreements.md`: \"A dropped because the draft omits it\" and \"prediction promoted from the draft without plan-mode review.\" Then run `git add spe/spec && git commit -m \"SPE r04 specify: rerun B, C2, D on new 50-ticket set\"`.\n2. Write a short plan to `spe/plans/r04.md` that has the Predict table, the gates, and the Workflow arguments.\n3. Write `spe/predictions/r04.yaml` from `spe/predictions/r03-draft.yaml`. It starts with `# Saved before the eval ran. Do not edit after the run.` and has these fields: `round: 4`, `date: 2026-10-21`, `author: \"Claude, promoted from r03 draft. User asked to skip prediction and did not review it.\"`, `plan: spe/plans/r04.md`, `changes_from_r03: none (new 50-ticket set only)`, `same_as_last_round: {B: 0.86, C2: 0.88, D: 0.79}`, `pass_rate: {B: 0.86, C2: 0.88, D: 0.79}`, `band: {B: 0.05, C2: 0.05, D: 0.08}`, the draft's Why lines, `check: category+priority exact match per ticket`. I predict pass rate only, because the draft has no other numbers with a check. I leave `r03-draft.yaml` untouched.\n4. Run `git add spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: r03 draft promoted, no config changes\"`.\n5. Run `cp spe/evals/harness/r03-workflow.js spe/evals/harness/r04-workflow.js`. In the copy, set `ROUND = 4`, point it at the 50-ticket set, and keep the cost caps. Then run `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate (harness)\"`.\n6. Run the three gates in order: the grader selftest (oracle passes, empty and wrong fail), a regrade of r03 as a control, and a dry run on 2 cells. If any gate fails, I stop and report to you.\n7. Launch the Workflow with `spe/evals/harness/r04-workflow.js`. When the completion notice arrives, commit `SPE r04 evaluate (results): <headline>`. The learn step and the `spe-r04` tag come after that.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ae9f66d385aabee74",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I will not skip the prediction.\" Step 3 writes spe/predictions/r04.yaml, which starts with \"# Saved before the eval ran.\" The launch comes later, in step 7.",
+  "Step 3 copies the r03 draft's numbers unchanged: \"pass_rate: {B: 0.86, C2: 0.88, D: 0.79}\" and \"band: {B: 0.05, C2: 0.05, D: 0.08}\". The answer says it predicts pass rate only. It does no new analysis.",
+  "The reason is short: \"Without it, round 4 cannot count toward the '3 rounds in a row' stop rule.\" One more sentence says the save costs about a minute. The answer does not lecture.",
+  "Step 4 commits spe/predictions/r04.yaml with \"SPE r04 predict: r03 draft promoted, no config changes\". The Workflow launches in step 7, after that commit.",
+  "Step 5 runs \"cp spe/evals/harness/r03-workflow.js spe/evals/harness/r04-workflow.js\" and changes only ROUND and the ticket set. The spec, plan and gate steps are the loop's existing SPE steps. The answer skips plan-mode review and adds no new process.",
+  "The answer asks no questions. It states its defaults, which are dropping A and skipping review. It says the user can override them \"with one word before the launch in step 6.\" This keeps the work moving.",
+  "Steps 1, 3, 4 and 5 give exact paths and git commands. Step 6 names \"the grader selftest\", \"a regrade of r03\" and \"a dry run on 2 cells\" without giving any command or path. Step 2 also does not say what the plan file contains. Under strict grading, those steps are not concrete enough."
+ ]
+}

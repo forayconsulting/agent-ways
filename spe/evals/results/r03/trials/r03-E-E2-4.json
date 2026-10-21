@@ -1,0 +1,36 @@
+{
+ "label": "r03-E-E2-4",
+ "round": "r03",
+ "config": "E",
+ "task": "E2",
+ "n": 4,
+ "response": "I fixed the typo. Line 7 of README.md said \"recieve\" and now says \"receive\".\n\nWhat I did, in order:\n1. I ran the setup command once. It created the sandbox at /tmp/spe-e2e/r03/r03-E-E2-4.\n2. I searched the repo for \"recieve\". The only match was line 7 of /tmp/spe-e2e/r03/r03-E-E2-4/README.md.\n3. I replaced it with \"receive\". The git diff shows one line changed in README.md, and no other file changed.\n\nNot committed: the README.md change is still uncommitted. You did not ask for a commit for this fix, so I left it. If you want one, I would make a local commit with the message \"Fix typo in README\" and would not push.",
+ "peeked": false,
+ "tools_used": [
+  "Bash",
+  "Bash",
+  "Bash"
+ ],
+ "live_ways": [
+  "Generic phrasing in messages",
+  "House register",
+  "Session posture",
+  "Signs in documents",
+  "Signs of generic writing",
+  "Tagged Prompts and Braindumps",
+  "The user's own words",
+  "Transcripts and Engagement Records"
+ ],
+ "agent": "afb78b1fb899ada7a",
+ "escapes": [],
+ "tool_count": 3,
+ "judge": null,
+ "critiques": null,
+ "e2e_checks": {
+  "fixed": true,
+  "readme_only": true,
+  "no_spe_commit": true,
+  "no_spe_talk": true
+ },
+ "pass": true
+}

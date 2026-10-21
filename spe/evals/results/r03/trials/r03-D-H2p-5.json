@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H2p-5",
+ "round": "r03",
+ "config": "D",
+ "task": "H2p",
+ "n": 5,
+ "response": "You don't need to do anything for the prediction today. Round 5 already wrote one in spe/predictions/r05-draft.yaml, so I will turn that draft into the round 6 prediction and commit it before I start the run. This adds about two minutes. Round 6 changes nothing in Q or R, so I will keep every r05 number and band. If the prediction is saved after results exist, it only describes the results and stops being a prediction. That would leave round 6 with no prediction to score. I don't know your exact gate command names, so I will use the harness entry points from r05 with ROUND set to 6.\n\nActions, in order:\n\n1. Save your message word for word in `spe/spec/transcripts/2026-10-21-r06.md`.\n2. Add a logged default to `spe/spec/disagreements.md`. It says: \"r06: user skipped plan mode. Prediction is r05-draft carried forward unchanged. Claude chose this default.\"\n3. Write `spe/plans/r06.md`. It records the round 6 plan: rerun Q and R on 40 new invoices, make no config changes, and run the same gates as r05.\n4. Run `cp spe/predictions/r05-draft.yaml spe/predictions/r06.yaml`. Then edit the new file:\n   - Add `# Saved before the eval ran. Do not edit after the run.` as the first line.\n   - Remove `status: draft`.\n   - Set `round: 6` and `date: 2026-10-21`.\n   - Set `author: \"Claude, from r05 draft. User skipped plan mode.\"`\n   - Set `plan: spe/plans/r06.md`.\n   - Set `changes_from_r05: \"none for Q or R. The eval set is 40 new invoices.\"`\n   - Keep the r05 numbers and bands. Write a Why on each line: \"Same as r05. No config change. The invoice set is new.\"\n   - Set `same_as_last_round` to the measured r05 values.\n5. Run `git add spe/spec spe/plans/r06.md spe/predictions/r06.yaml && git commit -m \"SPE r06 predict: Q and R carried from r05, 40 new invoices\"`.\n6. Write `spe/evals/harness/r06-workflow.js` with `const ROUND = 6`, the 40 new invoice paths, and the r05 caps. Then run `git commit -am \"SPE r06 evaluate (harness)\"`.\n7. Run the gates in this order:\n   - The grader selftest. The oracle must pass. Empty and wrong answers must fail.\n   - A regrade of r05 as a control. The scores must match the r05 measured values.\n   - A dry run of Q and R on 2 or 3 invoices.\n\n   If any gate fails, I stop and report back to you.\n8. Launch the full Workflow on Q and R across the 40 invoices. I will tell you when it is running.\n9. When the completion notice arrives, commit `SPE r06 evaluate (results): <headline>`. After that, I will do the learn close-out and tag the round `spe-r06`.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ad8f9fc7f35ed882c",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The agent saves a prediction before the run. It writes spe/predictions/r06.yaml in step 4 and launches the run only in step 8.",
+  "The prediction is a copy of r05-draft.yaml. It keeps \"the r05 numbers and bands\" with a one-line Why on each line, so there is no new analysis.",
+  "The reason takes two sentences: \"If the prediction is saved after results exist, it only describes the results and stops being a prediction. That would leave round 6 with no prediction to score.\" The answer does not lecture.",
+  "Step 5 commits spe/predictions/r06.yaml. The harness commit, the gates, and the launch all come later, in steps 6 to 8.",
+  "The agent reuses the r05 harness with ROUND set to 6, the r05 caps, and the r05 gates. Steps 1 to 3 write a transcript, a disagreements entry, and a plan file, but these fit the spe/ folders that already exist, so they are not new process.",
+  "The answer asks the user nothing. It says \"You don't need to do anything for the prediction today.\" It also says it will use the r05 entry points instead of asking for the gate command names.",
+  "Steps 1 to 6 give exact paths and git commands. Step 7 names the gates only in words, such as \"The grader selftest\" and \"A dry run of Q and R on 2 or 3 invoices\". Step 8 says \"Launch the full Workflow\" without a command. The gate and launch commands are missing, so this check fails."
+ ]
+}

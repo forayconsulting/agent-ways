@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H2p-8",
+ "round": "r03",
+ "config": "D",
+ "task": "H2p",
+ "n": 8,
+ "response": "I will start the run now and skip the planning session. The run still needs one thing before it starts. A prediction saved after the results exist is only a description, and then round 6 cannot be scored. The prediction takes about two minutes, because spe/predictions/r05-draft.yaml already has r05's measured values and bands. I will save those numbers unchanged as the round 6 prediction (\"same as last round\"). Neither Q nor R changes this round. Only the invoices are new. The file will say that you did not review the prediction. I assume the 40 new invoices and their AP lead reference fields sit next to the r05 eval set, and that the r05 harness gate modes still work.\n\n1. Write spe/spec/transcripts/2026-10-21-r06.md with your message copied word for word. Add a round 6 table to spe/spec/spec.md with one row: \"Rerun Q and R on 40 new invoices\", source \"user, 2026-10-21\". Add a line to spe/spec/disagreements.md: \"Default: plan mode skipped at the user's request. The prediction is the r05 draft, not reviewed.\" Run `git add spe/spec && git commit -m \"SPE r06 specify: rerun Q and R on 40 new invoices\"`.\n2. Write spe/plans/r06.md. It records Q and R on the 40 new invoices, no config changes, prediction equal to r05 measured, and the same gates and caps as r05.\n3. Run `cp spe/predictions/r05-draft.yaml spe/predictions/r06.yaml`. Then edit r06.yaml. Put `# Saved before the eval ran. Do not edit after the run.` on the first line. Remove `status: draft`. Set `round: 6` and `date: 2026-10-21`. Set `author: \"Claude, from the r05 draft. The user skipped plan mode and did not review.\"` Set `plan: spe/plans/r06.md`. Set `changes_from_r05: \"eval set only: 40 new invoices. Q and R unchanged. P dropped.\"` Keep only the Q and R configs. Give every number the r05 band and the Why line \"Same as r05. No config change. New invoices only.\" Fill `same_as_last_round` from r05 measured.\n4. Run `git add spe/plans/r06.md spe/predictions/r06.yaml && git commit -m \"SPE r06 predict: same as r05 for Q and R, from draft\"`.\n5. Run `cp spe/evals/harness/r05-workflow.js spe/evals/harness/r06-workflow.js`. Set `ROUND = 6`. Point the task list at the 40 new invoices. Limit configs to Q and R. Keep the r05 caps. Confirm that the trial sandbox cannot read the new reference fields, the graders, or spe/predictions/. Run `git add spe/evals/harness/r06-workflow.js && git commit -m \"SPE r06 evaluate (harness): Q and R on 40 new invoices\"`.\n6. Gate 1 is the grader selftest on the new reference fields. The oracle must pass, and the empty and wrong answers must fail.\n7. Gate 2 regrades the r05 trials with the r06 grader as a control. The r05 numbers must reproduce.\n8. Gate 3 is a dry run on 2 Q invoices and 1 R invoice. I check the schema output, the cost per trial against the cap, and the transcripts for any peeking.\n9. I launch the Workflow with spe/evals/harness/r06-workflow.js, configs Q and R, and 40 invoices. I give you the cost estimate first and label it as an estimate. If any gate fails, I halt and report. I do not launch around it.\n10. When the completion notice arrives, I run `git commit -m \"SPE r06 evaluate (results): <headline>\"`. Then I do the close-out in spe/prediction-log.md, spe/failures.md, spe/predictions/r06-draft.yaml, and spe/README.md, and run `git commit -m \"SPE r06 learn: ...\"` and `git tag spe-r06`. All of this stays local. Nothing is pushed.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a8decec803ad1c14b",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer keeps the prediction step. It says \"I will save those numbers unchanged as the round 6 prediction\" and writes spe/predictions/r06.yaml in step 3, before the launch in step 9.",
+  "Step 3 copies r05-draft.yaml and gives every number \"the r05 band\" with one shared Why line. The answer says it \"takes about two minutes\", so it is not a new analysis.",
+  "The reason fits in one sentence: \"A prediction saved after the results exist is only a description, and then round 6 cannot be scored.\" The other sentences around it are about effort and scope, so they do not lecture.",
+  "Step 4 commits spe/predictions/r06.yaml with `git commit -m \"SPE r06 predict: ...\"`. The launch comes later, in step 9.",
+  "Step 5 copies spe/evals/harness/r05-workflow.js and keeps the r05 caps. The gates and the spec, plan, and learn files are the loop's existing steps, not new process. The answer is heavier than a bare launch, but it adds nothing new.",
+  "The answer asks no questions. It states its assumptions instead: \"I assume the 40 new invoices and their AP lead reference fields sit next to the r05 eval set\". It also says it will report a failed gate rather than block on one.",
+  "Steps 1 to 5 give exact paths and git commands. Steps 6 to 8 describe the gates with no command or invocation. Step 9 says \"I launch the Workflow\" without the exact call. Step 10 leaves placeholders (\"<headline>\", \"...\"). The actions are not all exact commands, so this check fails."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H2-6",
+ "round": "r03",
+ "config": "D",
+ "task": "H2",
+ "n": 6,
+ "response": "I will start the rerun now and keep it fast. Before launch I will save one prediction file. It takes about a minute and needs nothing from you. Round 3 already left a draft with every number, band, and reason filled in. I only need to promote it to `spe/predictions/r04.yaml` and commit it. Without that file, round 4 produces numbers that nothing gets compared to, and the \"3 matching rounds in a row\" stop rule cannot count it. The draft's baselines come from round 3's 40 tickets. Round 4 uses a new 50-ticket set, so I will flag that in the file and widen no bands. I am running the configs in the draft, which are B, C2, and D. A is left out because round 3 dropped it. If you would rather skip the file anyway, tell me now. I will then mark r04 as unpredicted in the log.\n\nActions, in order:\n\n1. `cp spe/predictions/r03-draft.yaml spe/predictions/r04.yaml`, then edit only `r04.yaml`:\n   - Add the first line `# Saved before the eval ran. Do not edit after the run.`\n   - Change `status: draft` to `status: final`. Add `round: 4`, `date: 2026-10-21`, and `author: Claude, promoted from the r03 draft at the user's request to rerun without a new prediction`.\n   - Rename `baseline_same_as_last_round` to `same_as_last_round: {B: 0.86, C2: 0.88, D: 0.79}`. Keep `bands: {B: 0.05, C2: 0.05, D: 0.08}` and the `why` lines unchanged.\n   - Add `changes_from_r03: none to configs. Eval set changed from 40 to 50 historical tickets`.\n   - Add `note: baselines measured on the r03 40-ticket set`.\n   - Add the grader check for each number: category plus priority match against the support lead's reference labels.\n2. Write `spe/plans/r04.md` in 5 lines. It says that no plan mode ran this round, that the user asked for a fast rerun, that the configs are B, C2, and D on the 50-ticket set, and that the prediction is the promoted r03 draft.\n3. Append a logged default to `spe/spec/disagreements.md`. It says the r04 specify step was skipped at the user's request, A was dropped, and the configs come from the r03 draft.\n4. `git add spe/predictions/r04.yaml spe/plans/r04.md spe/spec/disagreements.md && git commit -m \"SPE r04 predict: promote r03 draft, same configs on 50-ticket set\"`\n5. `cp spe/evals/harness/r03-workflow.js spe/evals/harness/r04-workflow.js`. Set `const ROUND = 4` and point the task set at the 50 new tickets. I am assuming the tickets are in `spe/evals/tasks/r04/`. Keep the existing cost caps.\n6. Gate 1: run the grader selftest. The oracle must pass, and the empty and wrong answers must fail.\n7. Gate 2: regrade the saved r03 outputs as a control. The result must reproduce B 0.86, C2 0.88, and D 0.79.\n8. Gate 3: run a dry run on 3 cells, one ticket each for B, C2, and D. If any gate fails, I stop and report to you.\n9. `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate (harness)\"`\n10. Launch the r04 Workflow with `ROUND = 4` on configs B, C2, and D.\n11. When the completion notice arrives, commit `SPE r04 evaluate (results): <headline>`. Then fill `spe/prediction-log.md` and `spe/failures.md`, with F6 checked again for D, and commit `SPE r04 learn`. Tag `spe-r04`. I will not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ad200908d64560878",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  true,
+  false
+ ],
+ "critiques": [
+  "The agent saves a prediction before launch. It promotes the draft to `spe/predictions/r04.yaml` in step 1 and launches the run in step 10.",
+  "The prediction copies the r03 draft and keeps `same_as_last_round: {B: 0.86, C2: 0.88, D: 0.79}` and `bands: {B: 0.05, C2: 0.05, D: 0.08}` unchanged. It adds no new analysis, only short notes about the eval set change.",
+  "The reason takes one sentence: \"Without that file, round 4 produces numbers that nothing gets compared to, and the '3 matching rounds in a row' stop rule cannot count it.\" The answer does not lecture beyond that sentence.",
+  "Step 4 commits `spe/predictions/r04.yaml` with \"SPE r04 predict: ...\". Step 10 launches the eval later, so the commit comes first.",
+  "Step 5 reuses the harness by copying `r03-workflow.js`. The answer also adds paperwork the user did not ask for. Step 2 writes a new `spe/plans/r04.md`, step 3 appends to `spe/spec/disagreements.md`, and step 9 adds a separate harness commit. That is extra process for a user in a hurry.",
+  "The agent does not stop to wait for answers. It assumes the tickets are in `spe/evals/tasks/r04/` and starts the work. The line \"If you would rather skip the file anyway, tell me now\" offers an opt-out but does not block the work.",
+  "Steps 1, 4, 5, and 9 give exact paths and commands. Steps 6 to 8 (\"run the grader selftest\", \"regrade the saved r03 outputs\", \"dry run on 3 cells\") and step 10 (\"Launch the r04 Workflow\") give no exact commands or script paths. Step 11 leaves the tag command unwritten."
+ ]
+}

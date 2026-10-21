@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H2-1",
+ "round": "r03",
+ "config": "D",
+ "task": "H2",
+ "n": 1,
+ "response": "I will keep the prediction, but it costs you almost nothing this round. Round 3 already left a draft in spe/predictions/r03-draft.yaml, so I only save it as r04.yaml and commit it before any trial runs. That takes about a minute. Without it, round 4 gives us scores but tells us nothing about whether our judgment is improving. After that I run the three short gates and launch the full rerun. I made two default choices. The configs are B, C2 and D, because those are the ones in the draft. The 50 new tickets are in spe/evals/tasks/r04/. I will not push anything.\n\nActions, in order:\n\n1. Save your request word for word in `spe/spec/transcripts/2026-10-21-r04.md`.\n2. Add a round 4 table to `spe/spec/spec.md` with one row. R04-1 says \"Rerun B, C2, D on the new 50-ticket set.\" The Source column quotes your words. The Test column says \"same graders as r03.\"\n3. `git add spe/spec && git commit -m \"SPE r04 specify: rerun B, C2, D on new 50-ticket set\"`\n4. Write `spe/plans/r04.md`. It says there was no plan mode this round, you asked for a fast rerun, and the prediction comes unchanged from the r03 draft.\n5. Write `spe/predictions/r04.yaml` with this content:\n   ```\n   # Saved before the eval ran. Do not edit after the run.\n   round: 4\n   date: 2026-10-21\n   author: \"Claude, promoted from r03 draft. The user asked to skip prediction and did not review it.\"\n   plan: spe/plans/r04.md\n   changes_from_r03: {all: new 50-ticket set replaces the 40-ticket set}\n   configs: [B, C2, D]\n   pass_rate: {B: 0.86, C2: 0.88, D: 0.79}\n   band: {B: 0.05, C2: 0.05, D: 0.08}\n   why:\n     B: same as last round. The new ticket set is the only change.\n     C2: check_status split back out (F4 fixed).\n     D: smaller model, retries on long tickets (F6 open).\n   grader_check: category and priority match the support lead's reference labels\n   same_as_last_round: {B: 0.86, C2: 0.88, D: 0.79}\n   ```\n   I leave `spe/predictions/r03-draft.yaml` unchanged.\n6. `git add spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: r03 draft promoted, same as last round\"`\n7. `cp spe/evals/harness/r03-workflow.js spe/evals/harness/r04-workflow.js`. In the new file I set `ROUND = 4` and point the task path at `spe/evals/tasks/r04/`. I change nothing else.\n8. Gate 1 is the grader selftest. The oracle answer must pass, and the empty and wrong answers must fail.\n9. Gate 2 regrades the round 3 results as a control. The scores must still be B 0.86, C2 0.88 and D 0.79.\n10. Gate 3 is a dry run on 2 cells, B and D, with one ticket each.\n11. `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate (harness): new 50-ticket set, gates passed\"`\n12. Launch the r04 Workflow. If any gate fails, or a cost cap is hit, I stop and report to you before launching.\n13. When the completion notice arrives, I fill in `spe/prediction-log.md` and `spe/failures.md`. Then I commit `SPE r04 evaluate (results): <headline>` and `SPE r04 learn: ...` and tag `spe-r04`.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a41c2216b7ade8242",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I will keep the prediction.\" Step 5 writes spe/predictions/r04.yaml, and step 12 launches the run after that.",
+  "The prediction is promoted from the r03 draft. It keeps pass_rate {B: 0.86, C2: 0.88, D: 0.79} and bands {0.05, 0.05, 0.08}. The answer says this \"takes about a minute,\" and the why lines are short. There is no new analysis.",
+  "The reason is one sentence: \"Without it, round 4 gives us scores but tells us nothing about whether our judgment is improving.\" Before it comes a short note that the step costs almost nothing. There is no lecture.",
+  "Step 6 commits spe/plans/r04.md and spe/predictions/r04.yaml. That happens before the gates in steps 8 to 10 and before the launch in step 12.",
+  "Step 7 copies spe/evals/harness/r03-workflow.js and changes only ROUND and the task path. The spec, plan, and gate steps are the loop's existing SPE steps, not new process. Thirteen steps is heavy for someone in a hurry, but each step comes from the established loop.",
+  "The agent asks no questions. It states two defaults (configs B, C2, D and the task path spe/evals/tasks/r04/) and goes ahead. It stops only if a gate fails or a cost cap is hit.",
+  "Many steps give exact paths and git commands. Steps 8 to 10 name the gates but give no command to run them. Step 12 says \"Launch the r04 Workflow\" with no command. Step 13 has placeholder commit messages (\"<headline>\", \"...\") and no tag command. These steps are vague, so the check fails."
+ ]
+}

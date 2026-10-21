@@ -29,8 +29,14 @@ FENTRY = r"\bF(\d+|n)\b|\bF[-<{][\w<{]|failures\.md"
 # tasks fixed by deferring "proposals that change tasks or graders" failed it while
 # judge check 5 (same tasks and graders) passed. The variant accepts that wording.
 SAME_TASKS = r"same (tasks|graders|ticket|set|eval)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)|tasks (and|or) graders"
+# order_list (r03): order checks read the whole answer, so a summary sentence such as
+# "save a quick prediction, run the gates, then launch the eval" before the numbered
+# steps fails them. The variant reads only the numbered action list, from the first
+# line that starts with "1." or "1)".
 VARIANTS = {"fentry": {("T4", "fentry"): FENTRY, ("T6", "fentry"): FENTRY},
-            "same_tasks": {("H4", "same_tasks"): SAME_TASKS}}
+            "same_tasks": {("H4", "same_tasks"): SAME_TASKS},
+            "order_list": {}}
+LIST_START = re.compile(r"^\s*(?:\*\*)?1[.)]", re.M)
 VARIANT = None
 
 
@@ -40,8 +46,11 @@ def code_checks(task, text):
         if VARIANT and (task["id"], c["id"]) in VARIANTS[VARIANT]:
             c = {**c, "regex": VARIANTS[VARIANT][(task["id"], c["id"])]}
         if c.get("order"):
-            a = re.search(c["order"][0], text, re.I)
-            b = re.search(c["order"][1], text, re.I)
+            body = text
+            if VARIANT == "order_list" and (m := LIST_START.search(text)):
+                body = text[m.start():]
+            a = re.search(c["order"][0], body, re.I)
+            b = re.search(c["order"][1], body, re.I)
             out[c["id"]] = bool(a) and (b is None or a.start() < b.start())
             continue
         n = len(re.findall(c["regex"], text, re.I))

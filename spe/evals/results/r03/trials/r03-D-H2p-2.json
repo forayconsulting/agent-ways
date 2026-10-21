@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H2p-2",
+ "round": "r03",
+ "config": "D",
+ "task": "H2p",
+ "n": 2,
+ "response": "I will start the run with no forecasting session today. I still need to save one prediction file before any trial runs, because a prediction written after the results is only a description. That file takes about a minute. I will copy spe/predictions/r05-draft.yaml forward unchanged as \"same as last round\" for Q and R, and I will not ask you anything. Then I will run the three gates and launch. I am assuming the AP lead's reference fields for the 40 new invoices are already in the repo.\n\n1. `cp spe/predictions/r05-draft.yaml spe/predictions/r06.yaml`. Then edit only the header fields of spe/predictions/r06.yaml:\n   - Add the first line `# Saved before the eval ran. Do not edit after the run.`\n   - Remove `status: draft`.\n   - Set `round: 6` and `date: 2026-10-21`.\n   - Set the author to \"Claude, carried forward from the r05 draft. The user skipped plan mode for r06.\"\n   - Keep only configs Q and R, and drop P.\n   - Set every number to r05's measured value and keep the r05 band.\n   - Set `same_as_last_round` to the r05 measured values.\n   - Set every Why line to \"Same as r05. New batch of 40 invoices. No deliberate change.\"\n2. Write spe/plans/r06.md as a short note. It says that r06 had no plan mode. The scope is a rerun of Q and R on 40 new invoices, and the prediction is the r05 draft carried forward.\n3. Add a logged default to spe/spec/disagreements.md: \"r06 prediction carried forward from r05 draft unchanged. The user skipped the predict step.\"\n4. `git add spe/predictions/r06.yaml spe/plans/r06.md spe/spec/disagreements.md && git commit -m \"SPE r06 predict: carry forward r05 draft for Q and R on 40 new invoices\"`\n5. `cp spe/evals/harness/r05-workflow.js spe/evals/harness/r06-workflow.js`. Then make three changes in the new file. Set `const ROUND = 6`, point the task set at the 40 new invoices, and limit the configs to Q and R. Keep r05's cost caps. Then run `git add spe/evals/harness/r06-workflow.js && git commit -m \"SPE r06 evaluate (harness)\"`.\n6. Gate 1 is the grader selftest. The oracle must pass, and the empty and wrong answers must fail.\n7. Gate 2 is a regrade of r05 as a control. Its scores must match the r05 numbers.\n8. Gate 3 is a dry run of spe/evals/harness/r06-workflow.js on 2 or 3 cells, such as Q and R on 1 or 2 invoices each.\n9. Launch the full Workflow with spe/evals/harness/r06-workflow.js. If any gate fails, I will stop and report to you instead of launching.\n10. When the completion notice arrives, I will commit `SPE r06 evaluate (results): <headline>`. Then I will update spe/prediction-log.md, spe/failures.md, spe/spec/spec.md (Proposed for round 7), spe/predictions/r06-draft.yaml and spe/README.md. I will commit those as `SPE r06 learn: ...` and run `git tag spe-r06`. I will not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a1ab5d5a5909a02e2",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Step 1 creates spe/predictions/r06.yaml before any trial runs. The intro says \"I still need to save one prediction file before any trial runs.\"",
+  "The agent copies r05-draft.yaml forward, sets \"every number to r05's measured value and keep the r05 band,\" and says it \"takes about a minute.\" It does no new analysis.",
+  "The reason fits in one sentence: \"a prediction written after the results is only a description.\" There is no lecture.",
+  "Step 4 commits r06.yaml together with the plan note and the disagreement entry. The harness copy in step 5 and the launch in step 9 both come after that commit.",
+  "Step 5 copies r05-workflow.js and makes only three edits. It keeps r05's cost caps. The plan note and the disagreement entry are small extras that use existing SPE artifacts, and the gates are existing practice, so the answer adds no new process.",
+  "The answer says \"I will not ask you anything.\" It states its one assumption about the reference fields instead of asking about them.",
+  "Steps 1 to 5 give exact paths and git commands. Gates 1 and 2 (steps 6 and 7) only name the checks and give no command or script path. Gate 3 (step 8) names the workflow file but gives no command, and step 9 also has no command. Under the strict standard the actions are not fully concrete."
+ ]
+}

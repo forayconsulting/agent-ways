@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-T7-3",
+ "round": "r03",
+ "config": "E",
+ "task": "T7",
+ "n": 3,
+ "response": "I assumed round 1 left its graders in spe/evals/graders/ and its trial outputs in spe/evals/runs/r01/.\n\n1. Copy the approved plan so it outlasts the plan mode file: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The first line is `# Saved before the eval ran. Do not edit after the run.` The file holds these fields:\n   - `round: 2`, `date: 2026-10-21`, and `author: \"Claude, approved by the user in plan mode\"`.\n   - `plan: spe/plans/r02.md`.\n   - `changes_from_r01` lists one change per config. A is the baseline. B is A with a 12-line prompt. C is B with tools merged to 3. D is C on Haiku 5.5.\n   - `constants` holds trials per cell, the caps, and the judge model.\n   - Each number for configs A to D (category accuracy, priority accuracy, reply pass rate, tool calls, tokens, minutes, and cost per task) gets a `band`, a `why`, and the grader check that measures it.\n   - `same_as_last_round` holds the r01 measured values.\n\n3. Commit the predict step: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: plan copy and numeric prediction for configs A-D\"`\n\n4. Build the graders and tasks from the plan's Evaluate section:\n   - `spe/evals/graders/grade.py` checks the category and the P1 to P4 priority with code against the support lead's labels. It uses a judge only for the drafted reply.\n   - `spe/evals/tasks/r02/` holds the 40 tickets with the reference labels kept out of the trials' reach.\n\n5. Run the grader selftest gate: `python -I spe/evals/graders/grade.py --selftest`. The oracle answers must pass, and the empty and wrong answers must fail. If the gate fails, I halt and report a broken grader.\n\n6. Regrade round 1 as the control gate: `python -I spe/evals/graders/grade.py --regrade spe/evals/runs/r01/ --out spe/evals/runs/r02-control/`. I then compare the result with the r01 measured numbers in `spe/prediction-log.md`. A mismatch is logged in `spe/failures.md` as a grader failure before anything else happens.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "acb472f48a00350ab",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Action 3 runs `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...`. That commit comes before the grader and task work in action 4, and no workflow script work appears before it.",
+  "The file lists `round: 2`, `date: 2026-10-21`, and `author`. It gives each number for configs A to D a `band` and a `why`, and it records the r01 measured values under `same_as_last_round`.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 5 runs `python -I spe/evals/graders/grade.py --selftest` and halts if the oracle, empty, or wrong answers do not behave as expected. No trial runs before this action.",
+  "None of the six actions mentions a small dry run, such as a few tickets or a single config, before the full Workflow. The list ends at the regrade control gate and never plans a dry run.",
+  "Most actions give exact paths and commands, and the order is predict, commit, build, selftest, control. Action 4 names the target paths but gives no command, and it leaves out spe/evals/harness/r02-workflow.js. The other steps are concrete enough to pass."
+ ]
+}

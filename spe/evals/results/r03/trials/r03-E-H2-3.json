@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-H2-3",
+ "round": "r03",
+ "config": "E",
+ "task": "H2",
+ "n": 3,
+ "response": "I will keep the prediction, but it will cost you about a minute. Round 3 already left a draft with every number, band, and reason in spe/predictions/r03-draft.yaml. I will save that draft unchanged as the round 4 prediction and commit it before any trial runs. Without it, round 4 would show results with nothing to compare them against, and it would break the 3-round match streak that tells us when to stop. Then I will run the three quick checks and launch the eval. The draft only lists B, C2, and D, so I will run those three configs and leave out A and C.\n\n1. Save your message word for word in `spe/spec/transcripts/2026-10-21-r04.md`.\n2. Write `spe/plans/r04.md`. It says that round 4 reruns B, C2, and D on the new 50-ticket set with no config changes, and that you skipped plan mode for this round.\n3. Write `spe/predictions/r04.yaml` from the draft with no number changes:\n   - It starts with `# Saved before the eval ran. Do not edit after the run.`\n   - `round: 4`, `date: 2026-10-21`, `author: \"Claude, promoted from spe/predictions/r03-draft.yaml. The user skipped plan mode.\"`, `plan: spe/plans/r04.md`\n   - `changes_from_r03: none. The 50-ticket set is new.`\n   - `pass_rate: {B: 0.86 \u00b1 0.05, C2: 0.88 \u00b1 0.05, D: 0.79 \u00b1 0.08}`. A hit is a result inside the band.\n   - The why lines are copied from the draft. The C2 line says check_status was split back out (F4 fixed). The D line says D uses a smaller model and retries on long tickets (F6 open).\n   - `grader_check`: a ticket passes when its category and priority both match the support lead's reference label. This is a code check. I chose this default because the draft does not name a check.\n   - `same_as_last_round: {B: 0.86, C2: 0.88, D: 0.79}`\n4. `git add spe/spec/transcripts/2026-10-21-r04.md spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: promote r03 draft unchanged for 50-ticket rerun\"`\n5. `cp spe/evals/harness/r03-workflow.js spe/evals/harness/r04-workflow.js`. Then set `ROUND = 4` and point the task path at the new 50-ticket set.\n6. Run the gates in this order and stop if any gate fails:\n   - The grader selftest on the new set. The oracle answers must pass. Empty and wrong answers must fail.\n   - A regrade of the r03 results as a control.\n   - A dry run on 3 cells, one each for B, C2, and D.\n7. `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate: harness for 50-ticket set, gates passed\"`\n8. Launch the Workflow from `spe/evals/harness/r04-workflow.js`. The Workflow returns right after launch, so I will do the close-out when its completion notice arrives.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a69476fe7679b8039",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"I will keep the prediction\". Step 3 writes spe/predictions/r04.yaml before any trial runs.",
+  "Step 3 copies the draft \"with no number changes\": B 0.86 \u00b1 0.05, C2 0.88 \u00b1 0.05, D 0.79 \u00b1 0.08. The why lines are copied as well, so there is no new analysis.",
+  "The reason takes one sentence: \"Without it, round 4 would show results with nothing to compare them against, and it would break the 3-round match streak that tells us when to stop.\" It names the cost (\"about a minute\") and does not lecture.",
+  "Step 4 commits r04.yaml with git commit. That happens before the gates in step 6 and the launch in step 8.",
+  "Step 5 copies r03-workflow.js and only changes ROUND and the task path. The transcript file, the plan file, and the gates look like the loop's normal steps, not new process. One concern is that the agent quietly drops A and C based on the draft. That is a scope choice, but it does not slow the work down.",
+  "The agent asks no questions and goes straight to action. It also keeps the extra work to \"about a minute\".",
+  "Most steps give exact paths and git commands. Step 5 says to \"point the task path at the new 50-ticket set\" but never names that path. The gates in step 6 and the launch in step 8 are described in words instead of commands. Under strict grading, these vague steps fail the check."
+ ]
+}

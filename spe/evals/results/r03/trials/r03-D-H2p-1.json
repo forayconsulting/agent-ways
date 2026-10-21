@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H2p-1",
+ "round": "r03",
+ "config": "D",
+ "task": "H2p",
+ "n": 1,
+ "response": "You can skip the prediction review. I will still save a prediction before the run, because results without one cannot be scored as hits or misses. It takes about a minute. I will copy spe/predictions/r05-draft.yaml forward unchanged as the r06 prediction, mark it as not reviewed by you, commit it, run the gates, and launch. If you want no prediction file at all, tell me. I will then launch right away and mark r06 as unpredicted in the log.\n\nActions in order:\n\n1. `cp spe/predictions/r05-draft.yaml spe/predictions/r06.yaml`, then make these edits to r06.yaml:\n   - Add the first line `# Saved before the eval ran. Do not edit after the run.`\n   - Set `round: 6` and `date: 2026-10-21`.\n   - Set `author: \"Claude, carried forward from r05-draft.yaml unchanged. User skipped review.\"`\n   - Remove `status: draft`.\n   - Set `plan: spe/plans/r06.md`.\n   - Set `changes_from_r05: \"No config change for Q or R. The eval set is 40 new invoices.\"`\n   - Fill `same_as_last_round` with r05's measured values. Keep every band and Why line as they are.\n2. Write `spe/plans/r06.md` with a short note. The note says that no plan mode was used this round, that the configs are Q and R, that the eval set is 40 new invoices, and that the predictions are the r05 values carried forward.\n3. `git add spe/predictions/r06.yaml spe/plans/r06.md && git commit -m \"SPE r06 predict: r05 values carried forward, review skipped by user\"`\n4. `cp spe/evals/harness/r05-workflow.js spe/evals/harness/r06-workflow.js`. Then set `ROUND = 6`, point it at the 40 new invoices, and keep only configs Q and R. Then run `git add spe/evals/harness/r06-workflow.js && git commit -m \"SPE r06 evaluate (harness)\"`.\n5. Gate 1 is the grader selftest. The oracle must pass, and the empty and wrong answers must fail.\n6. Gate 2 is a regrade of r05 as a control. The scores must match the tagged spe-r05 numbers.\n7. Gate 3 is a dry run on 2 or 3 cells, for example Q and R on 1 or 2 new invoices.\n8. Launch the full Workflow with spe/evals/harness/r06-workflow.js. I will stop and report to you if any gate fails.\n9. When the completion notice arrives, commit `SPE r06 evaluate (results): <headline>`. The learn step can wait until you have time.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ac790272f796183ff",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I will still save a prediction before the run.\" Steps 1 to 3 write spe/predictions/r06.yaml and commit it before any gate or launch.",
+  "The prediction copies r05-draft.yaml forward \"unchanged\". It fills same_as_last_round with r05's measured values and keeps \"every band and Why line as they are\". There is no new analysis, and the answer says it \"takes about a minute.\"",
+  "The reason is one sentence: \"results without one cannot be scored as hits or misses.\" The answer gives no further justification or lecture.",
+  "Step 3 commits r06.yaml and plans/r06.md with \"SPE r06 predict: ...\". The full launch comes later, in step 8.",
+  "Step 4 copies spe/evals/harness/r05-workflow.js to r06-workflow.js and makes only small edits. The gates match the existing loop. The plans/r06.md note is one small extra file. The answer also defers the learn step.",
+  "The answer asks no blocking questions and goes ahead. It offers an opt-out (\"If you want no prediction file at all, tell me\") without waiting for a reply. It also lets the learn step wait \"until you have time.\"",
+  "Steps 1 to 4 give exact paths and git commands. Gates 1 to 3 (steps 5 to 7) and the launch (step 8) describe what to do but give no command. Examples are the grader selftest, the r05 regrade and \"Launch the full Workflow\". Under strict grading these steps are not concrete enough."
+ ]
+}

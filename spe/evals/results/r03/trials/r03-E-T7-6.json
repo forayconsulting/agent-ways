@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-T7-6",
+ "round": "r03",
+ "config": "E",
+ "task": "T7",
+ "n": 6,
+ "response": "The situation does not name the grader and task paths, so I chose spe/evals/graders/ and spe/evals/tasks/.\n\n1. Copy the approved plan to its permanent location.\n   `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table.\n   - Line 1 is `# Saved before the eval ran. Do not edit after the run.`\n   - Fields: `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, `plan: spe/plans/r02.md`, and `changes_from_r01` with one change per config.\n   - The one change per config is: A is the reference, B shortens the prompt to 12 lines, C merges the tools to 3, and D moves to Haiku 5.5.\n   - `constants` holds the trials per cell, the caps and the judge model.\n   - `configs` has one entry each for A, B, C and D.\n   - Each config has category accuracy, priority accuracy, reply pass rate, tool calls, tokens, minutes and cost per task.\n   - Each number has a `band`, a `why` line and the grader check that measures it.\n   - `same_as_last_round` holds the r01 measured values from `spe/prediction-log.md`.\n\n3. Commit the plan copy and the prediction before any eval code exists.\n   `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: plan copy and numeric prediction for configs A-D\"`\n\n4. Build the graders and the grader selftest.\n   - Graders: `spe/evals/graders/triage-grader.js`. Code checks the category and priority against the support lead's labels for the 40 tickets. A judge grades only the drafted reply.\n   - Selftest: `spe/evals/graders/selftest.js`.\n   - Task files go in `spe/evals/tasks/r02/`, kept apart from the answers so that trials cannot read them.\n\n5. Gate 1 is the grader selftest. The oracle must pass, and the empty and wrong answers must fail. I halt and report if any case fails.\n   `node spe/evals/graders/selftest.js`\n\n6. Gate 2 regrades round 1 as a control. I compare the regraded numbers with the r01 numbers in `spe/prediction-log.md` before writing `spe/evals/harness/r02-workflow.js` and running the dry run on 2 or 3 cells.\n   `node spe/evals/graders/triage-grader.js --regrade spe/evals/results/r01 --out spe/evals/results/r01-regraded.json`",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a8dcfa5c0c4e331e6",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Action 3 runs `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...` and says this happens \"before any eval code exists\". Grader and task work only starts in action 4.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21`, `author`, and per-config numbers. Each number has a `band` and a `why` line. It also lists a `same_as_last_round` block filled from the r01 values in prediction-log.md.",
+  "Action 2 sets line 1 of the file to `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 5 is Gate 1, `node spe/evals/graders/selftest.js`, with oracle, empty and wrong cases, and it halts on any failure. This comes before any trial runs. The only earlier eval step is a regrade of r01 in action 6, which comes after the gate.",
+  "Action 6 says the agent writes r02-workflow.js and runs \"the dry run on 2 or 3 cells\" after the control regrade. That places a small dry run ahead of the full Workflow, which is not among the six actions. The dry run has no command of its own, but the answer states the order clearly.",
+  "Each action names an exact path or command: cp, the yaml path, git add/commit, the grader and selftest paths, the selftest command and the regrade command. The answer states its path assumptions up front. The order is sensible: save, predict, commit, build graders, selftest gate, control regrade."
+ ]
+}

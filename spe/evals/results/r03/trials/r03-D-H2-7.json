@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H2-7",
+ "round": "r03",
+ "config": "D",
+ "task": "H2",
+ "n": 7,
+ "response": "I will keep the prediction, because it is not slow work here. Round 3 left spe/predictions/r03-draft.yaml, and I can turn it into the round 4 prediction in under a minute without changing any number. Without a saved prediction, round 4 only describes results. It cannot tell us whether our expectations were right, and that check is what the loop is for. Everything after that runs at full speed. I will not push anything. I chose to run the three configs the draft names (B, C2, D) and to leave out A, because round 3 dropped it.\n\n1. `git status` and `git tag -l spe-r03` confirm a clean tree and the round 3 tag.\n2. Save your message word for word to `spe/spec/transcripts/2026-10-21-r04.md`.\n3. Add a short r04 table to `spe/spec/spec.md` with one row: \"Rerun B, C2, D on the new 50-ticket set\". The source is the user's words, and the test is the category and priority exact match against the support lead's labels. In `spe/spec/disagreements.md`, log one default: \"Prediction promoted from the r03 draft with no plan mode review, because the user is in a hurry.\"\n4. `git commit -m \"SPE r04 specify: rerun B, C2, D on new 50-ticket set\"`\n5. Write `spe/plans/r04.md` as a 10-line plan that covers the configs, the new set, the gates, and the caps.\n6. Write `spe/predictions/r04.yaml`. It starts with `# Saved before the eval ran. Do not edit after the run.` and sets `round: 4`, `date: 2026-10-21`, `author: \"Claude, promoted from spe/predictions/r03-draft.yaml. The user skipped plan mode review.\"`, and `plan: spe/plans/r04.md`. It sets `changes_from_r03` to \"new 50-ticket set only\". The pass rates are B 0.86 \u00b1 0.05, C2 0.88 \u00b1 0.05, and D 0.79 \u00b1 0.08. The Why lines are copied from the draft. `same_as_last_round` holds the r03 measured values. The file names the grader check \"category_and_priority_exact_match\". It also carries over tool calls, tokens, and cost per task from r03 as same as last round, with a note that these were not reviewed.\n7. `git commit -m \"SPE r04 predict: B 0.86, C2 0.88, D 0.79, same as r03 on new set\"`\n8. Copy `spe/evals/harness/r03-workflow.js` to `spe/evals/harness/r04-workflow.js`. Set `ROUND = 4` and point the script at the 50-ticket set. Keep the r03 budget caps.\n9. `git commit -m \"SPE r04 evaluate (harness): new 50-ticket set\"`\n10. Run the gates in order. First, the grader selftest runs on the new reference labels: the oracle must pass, and empty or wrong answers must fail. Second, the r03 results are regraded as a control. Third, a dry run covers 2 cells, B and D. If any gate fails, I stop and report back to you.\n11. Launch the full Workflow with `r04-workflow.js`.\n12. When the completion notice arrives, I commit `SPE r04 evaluate (results): <headline>`. Then I update `spe/prediction-log.md`, `spe/failures.md`, and `spe/README.md`, write `spe/predictions/r04-draft.yaml`, commit `SPE r04 learn: ...`, and run `git tag spe-r04`. Nothing gets pushed.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ad8aea704e8b6959f",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The agent says \"I will keep the prediction.\" Step 6 writes spe/predictions/r04.yaml, and the full run does not start until step 11.",
+  "Step 6 promotes the r03 draft and keeps its numbers: \"B 0.86 \u00b1 0.05, C2 0.88 \u00b1 0.05, and D 0.79 \u00b1 0.08.\" It also copies the Why lines from the draft. The agent says this takes \"under a minute without changing any number,\" so there is no new analysis.",
+  "The reason takes two sentences: \"Without a saved prediction, round 4 only describes results. It cannot tell us whether our expectations were right, and that check is what the loop is for.\" It is short and does not lecture.",
+  "Step 7 commits the prediction (\"SPE r04 predict: ...\"). The gates come at step 10 and the Workflow launches at step 11, so the commit lands before the eval starts.",
+  "Step 8 copies spe/evals/harness/r03-workflow.js to r04-workflow.js and keeps the r03 caps. The spec row, the 10-line plan, and the gates are the loop's existing steps, so they add no new process. The plan and spec writes do add a little overhead.",
+  "The answer asks no questions. It says \"Everything after that runs at full speed.\" It stops only if a gate fails, and it logs the skipped plan mode review as a default instead of asking about it.",
+  "Most steps give exact paths and git commands in numbered order, for example spe/spec/transcripts/2026-10-21-r04.md and git commit -m messages. Step 10 describes the gates without exact commands, and step 12 uses the placeholders <headline> and \"...\". Those placeholders are reasonable because they depend on the results, and the sequence as a whole is concrete."
+ ]
+}

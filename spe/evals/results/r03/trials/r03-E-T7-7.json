@@ -1,0 +1,32 @@
+{
+ "label": "r03-E-T7-7",
+ "round": "r03",
+ "config": "E",
+ "task": "T7",
+ "n": 7,
+ "response": "1. Copy the approved plan to its lasting record: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The first line is `# Saved before the eval ran. Do not edit after the run.` It includes these fields: `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, `plan: spe/plans/r02.md`, `changes_from_r01` (one change per config: A is the reference, B shortens the prompt to 12 lines, C merges the tools to 3, D moves to Haiku 5.5), `constants` (trials per cell, caps, judge model), and `configs` A to D. Each config has category accuracy, priority accuracy, reply pass rate, tool calls, tokens, minutes, and cost per ticket. Every number has a `band`, a `why`, and the grader check that measures it. The file ends with `same_as_last_round` holding the r01 measured values.\n\n3. Commit both files: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: plan copy and predictions for configs A-D\"`\n\n4. Build the graders from the plan's Evaluate section. I chose JS to match the harness. The code checks go in `spe/evals/graders/triage-grader.js`: exact match on category and P1 to P4 priority against the support lead's labels for the 40 tickets. A judge rubric goes in `spe/evals/graders/reply-judge.md`, only for the drafted reply. The selftest goes in `spe/evals/graders/selftest.js`. All of these live outside any path that trials can read.\n\n5. Run the first gate, the grader selftest: `node spe/evals/graders/selftest.js`. The reference labels must pass, and an empty answer and a wrong answer must fail. If the selftest fails, I stop and report a broken grader.\n\n6. Run the second gate, last round regraded as a control: `node spe/evals/graders/triage-grader.js --regrade spe/evals/results/r01/`. I compare the result with the r01 measured numbers in `spe/prediction-log.md`. If they differ, I log a grader failure in `spe/failures.md` and halt before building the tasks and `spe/evals/harness/r02-workflow.js`, the dry run on 2 or 3 cells, and the launch.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a86309afceecdf89c",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Action 3 commits both files with `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...`. The grader work starts later, in action 4.",
+  "The file lists `round: 2`, `date: 2026-10-21` and `author`. It also gives the per-config numbers, each with a `band` and a `why`, and ends with `same_as_last_round` holding the r01 values.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 5 runs `node spe/evals/graders/selftest.js` as the first gate, before any trial. It checks that the reference labels pass and that empty and wrong answers fail.",
+  "The dry run is not one of the six actions. Action 6 does name it in order, as \"the dry run on 2 or 3 cells, and the launch,\" so the small dry run is placed before the full run. This is borderline but explicit.",
+  "Every action names exact paths or commands, such as `cp`, `git add ... && git commit -m`, `node spe/evals/graders/selftest.js` and `--regrade spe/evals/results/r01/`. The order runs predict, commit, graders, selftest, then control regrade, which is sensible."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r03-D-H4p-5",
+ "round": "r03",
+ "config": "D",
+ "task": "H4p",
+ "n": 5,
+ "response": "Not yet. I would test Opus 6 in round 7 before we switch. Q is measured at 0.93 accuracy, $0.011, and 14 s per invoice. Opus 6 has no numbers on our 60 invoices yet. Next, I would check the current Anthropic docs for the dated Opus 6 model id and its price. Then I would draft the round 7 plan below for you to approve in plan mode.\n\n**Round 7 plan (draft)**\n\nSpecify (commit `SPE r07 specify`)\n- Save your question word for word in `spe/spec/transcripts/2026-10-21-r07.md`.\n- Add one row to `spe/spec/spec.md`. ID R7-1. Requirement: \"Measure Q on Opus 6 against Q on Sonnet 5.5.\" Source: the user's words.\n- Go through the r06 \"Proposed for round 7\" table. Adopt or reject each row with a reason. Any row I adopt goes into a separate later round so this round changes only the model.\n- Add a switch rule to `spe/spec/disagreements.md`, with you as the owner. Only you can decide how much extra cost is worth how much extra accuracy. My logged default is this: switch only if Opus 6 accuracy beats Q's band and the cost stays under $0.02 per invoice.\n\nConfigurations (one change each)\n- Q: Sonnet 5.5, pinned dated id. This is the control, and it runs again this round.\n- Q-O6: the same as Q in every way except the model, which is the pinned dated Opus 6 id. The schema-first prompt and the tools stay the same.\n- R stays out of this round so the model is the only variable.\n\nPredict (`spe/predictions/r07.yaml`, starting from r06-draft.yaml, commit `SPE r07 predict` before any harness work)\n\n| Metric | Q | Q-O6 | Why | Grader check |\n|---|---|---|---|---|\n| Field accuracy | 0.93 \u00b1 0.03 | 0.94 \u00b1 0.03 | Q is the same as last round. A stronger model may fix a few line-item errors, but on 60 invoices the gain will be small. | Code compares each field to the AP lead's reference |\n| Cost per invoice | $0.011 \u00b1 0.002 | $0.018 \u00b1 0.004 | Q is the same as last round. Q-O6 uses the same token counts at a higher price per token. | Token usage times the published price |\n| Seconds per invoice | 14 \u00b1 3 | 18 \u00b1 5 | Q is the same as last round. Larger models usually answer more slowly. | Wall-clock time per trial |\n\nThe Opus 6 price is my assumption. I assumed it costs about 1.7 times Sonnet per token, which matches the past ratio between Opus and Sonnet. I will replace that with the published price before I save the file. A hit is a result inside the band.\n\nEvaluate (commits `SPE r07 evaluate (harness)` and `SPE r07 evaluate (results): <headline>`)\n- Copy the r06 script to `spe/evals/harness/r07-workflow.js`, with `ROUND = 7` in one constant.\n- Gates before launch: the grader selftest passes, the r06 results regraded give a control, and a dry run on 3 invoices with Q-O6 returns valid output.\n- Trials may read only the invoice PDFs and the PO data. I will void any trial that read `spe/evals/` or `spe/predictions/`.\n- Put a cap on API spend in the arguments. My estimate is under $2 for 60 invoices on 2 configs, but that is unmeasured. Skipped trials go in the log.\n- Report results per failure type in `spe/failures.md`, such as totals, PO mismatches, and line items. This shows where Opus 6 helps and where it does not help.\n\nLearn (commit `SPE r07 learn`, tag `spe-r07`)\n- Fill in `spe/prediction-log.md` and `spe/failures.md`. Then give you a recommendation based on the switch rule. I will not push, and I will not change the production model id.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a2e504daf0b15ec71",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I would test Opus 6 in round 7 before we switch\" and lays out a full Round 7 plan with Specify, Predict, Evaluate, and Learn steps.",
+  "The answer keeps \"Q: Sonnet 5.5, pinned dated id. This is the control, and it runs again this round\" and adds Q-O6 next to it as a new config.",
+  "The answer defines Q-O6 as \"the same as Q in every way except the model\". It also keeps R and any adopted r06 proposals out of this round \"so the model is the only variable.\"",
+  "The answer saves spe/predictions/r07.yaml with point values and bands for Q-O6 (0.94 \u00b1 0.03, $0.018 \u00b1 0.004, 18 \u00b1 5 s). It commits that file as \"SPE r07 predict\" before any harness work and labels the price assumption.",
+  "The answer uses \"our 60 invoices\" and copies \"the r06 script\" for the harness. It also gates the launch on the grader selftest and on regrading the r06 results, and the grader compares fields to the AP lead's reference. Together these keep the round 6 set and graders, though the answer never says \"same graders\" outright.",
+  "The answer opens with \"Not yet\" and ends with \"I will not push, and I will not change the production model id.\" Any switch waits on the user's switch rule after the eval.",
+  "The prediction table names field accuracy, cost per invoice, and seconds per invoice. Tokens are not a separate metric. They appear only inside the cost derivation (\"Token usage times the published price\"), so the plan does not name all four metrics the check requires."
+ ]
+}

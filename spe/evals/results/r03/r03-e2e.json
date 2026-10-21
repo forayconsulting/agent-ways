@@ -1,0 +1,50 @@
+{
+ "A-E1": {
+  "done": 6,
+  "pass": 1,
+  "incomplete": 0,
+  "fails": {
+   "pred_band": 5
+  },
+  "rate": 0.17
+ },
+ "A-E2": {
+  "done": 6,
+  "pass": 5,
+  "incomplete": 0,
+  "fails": {
+   "no_spe_talk": 1
+  },
+  "rate": 0.83
+ },
+ "D-E1": {
+  "done": 6,
+  "pass": 6,
+  "incomplete": 0,
+  "fails": {},
+  "rate": 1.0
+ },
+ "D-E2": {
+  "done": 6,
+  "pass": 0,
+  "incomplete": 0,
+  "fails": {
+   "no_spe_talk": 6
+  },
+  "rate": 0.0
+ },
+ "E-E1": {
+  "done": 6,
+  "pass": 6,
+  "incomplete": 0,
+  "fails": {},
+  "rate": 1.0
+ },
+ "E-E2": {
+  "done": 6,
+  "pass": 6,
+  "incomplete": 0,
+  "fails": {},
+  "rate": 1.0
+ }
+}

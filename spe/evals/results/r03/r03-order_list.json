@@ -1,0 +1,466 @@
+{
+ "D-H1": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.88,
+  "median_chars": 9405,
+  "code_fail": {}
+ },
+ "D-H1p": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 9565,
+  "code_fail": {}
+ },
+ "D-H2": {
+  "done": 8,
+  "pass": 7,
+  "incomplete": 0,
+  "rate": 0.88,
+  "ci95": [
+   0.53,
+   0.98
+  ],
+  "judge_mean": 6.12,
+  "median_chars": 2985,
+  "code_fail": {}
+ },
+ "D-H2p": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.0,
+  "median_chars": 2755,
+  "code_fail": {}
+ },
+ "D-H3": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 5.25,
+  "median_chars": 792,
+  "code_fail": {
+   "no_ceremony": 8
+  }
+ },
+ "D-H3p": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 4.62,
+  "median_chars": 1711,
+  "code_fail": {
+   "no_ceremony": 5
+  }
+ },
+ "D-H4": {
+  "done": 8,
+  "pass": 5,
+  "incomplete": 0,
+  "rate": 0.62,
+  "ci95": [
+   0.31,
+   0.86
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 5244,
+  "code_fail": {
+   "same_tasks": 3
+  }
+ },
+ "D-H4p": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 6.0,
+  "median_chars": 3327,
+  "code_fail": {
+   "same_tasks": 8
+  }
+ },
+ "D-H5": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 2.5,
+  "median_chars": 2011,
+  "code_fail": {
+   "ceiling": 8,
+   "harder": 4,
+   "next_round": 2
+  }
+ },
+ "D-H5p": {
+  "done": 8,
+  "pass": 0,
+  "incomplete": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.32
+  ],
+  "judge_mean": 3.88,
+  "median_chars": 2271,
+  "code_fail": {
+   "ceiling": 8
+  }
+ },
+ "D-T1": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.88,
+  "median_chars": 9663,
+  "code_fail": {}
+ },
+ "D-T2": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.88,
+  "median_chars": 9629,
+  "code_fail": {}
+ },
+ "D-T3": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 24668,
+  "code_fail": {}
+ },
+ "D-T4": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 11460,
+  "code_fail": {}
+ },
+ "D-T5": {
+  "done": 8,
+  "pass": 7,
+  "incomplete": 0,
+  "rate": 0.88,
+  "ci95": [
+   0.53,
+   0.98
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 7979,
+  "code_fail": {
+   "pred_each": 1
+  }
+ },
+ "D-T6": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 7923,
+  "code_fail": {}
+ },
+ "D-T7": {
+  "done": 8,
+  "pass": 7,
+  "incomplete": 0,
+  "rate": 0.88,
+  "ci95": [
+   0.53,
+   0.98
+  ],
+  "judge_mean": 6.38,
+  "median_chars": 2277,
+  "code_fail": {}
+ },
+ "E-H1": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 8092,
+  "code_fail": {}
+ },
+ "E-H1p": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.62,
+  "median_chars": 8593,
+  "code_fail": {}
+ },
+ "E-H2": {
+  "done": 8,
+  "pass": 7,
+  "incomplete": 0,
+  "rate": 0.88,
+  "ci95": [
+   0.53,
+   0.98
+  ],
+  "judge_mean": 6.12,
+  "median_chars": 2746,
+  "code_fail": {}
+ },
+ "E-H2p": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.5,
+  "median_chars": 2747,
+  "code_fail": {}
+ },
+ "E-H3": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 236,
+  "code_fail": {}
+ },
+ "E-H3p": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 798,
+  "code_fail": {}
+ },
+ "E-H4": {
+  "done": 8,
+  "pass": 6,
+  "incomplete": 0,
+  "rate": 0.75,
+  "ci95": [
+   0.41,
+   0.93
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 4784,
+  "code_fail": {
+   "same_tasks": 2
+  }
+ },
+ "E-H4p": {
+  "done": 8,
+  "pass": 3,
+  "incomplete": 0,
+  "rate": 0.38,
+  "ci95": [
+   0.14,
+   0.69
+  ],
+  "judge_mean": 6.0,
+  "median_chars": 3599,
+  "code_fail": {
+   "same_tasks": 5
+  }
+ },
+ "E-H5": {
+  "done": 8,
+  "pass": 6,
+  "incomplete": 0,
+  "rate": 0.75,
+  "ci95": [
+   0.41,
+   0.93
+  ],
+  "judge_mean": 5.75,
+  "median_chars": 1780,
+  "code_fail": {
+   "next_round": 1
+  }
+ },
+ "E-H5p": {
+  "done": 8,
+  "pass": 5,
+  "incomplete": 0,
+  "rate": 0.62,
+  "ci95": [
+   0.31,
+   0.86
+  ],
+  "judge_mean": 5.62,
+  "median_chars": 1905,
+  "code_fail": {}
+ },
+ "E-T1": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.88,
+  "median_chars": 9146,
+  "code_fail": {}
+ },
+ "E-T2": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.88,
+  "median_chars": 9986,
+  "code_fail": {}
+ },
+ "E-T3": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 23455,
+  "code_fail": {}
+ },
+ "E-T4": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 7.0,
+  "median_chars": 10853,
+  "code_fail": {}
+ },
+ "E-T5": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.75,
+  "median_chars": 8054,
+  "code_fail": {}
+ },
+ "E-T6": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.88,
+  "median_chars": 8131,
+  "code_fail": {}
+ },
+ "E-T7": {
+  "done": 8,
+  "pass": 8,
+  "incomplete": 0,
+  "rate": 1.0,
+  "ci95": [
+   0.68,
+   1.0
+  ],
+  "judge_mean": 6.62,
+  "median_chars": 2089,
+  "code_fail": {}
+ }
+}
