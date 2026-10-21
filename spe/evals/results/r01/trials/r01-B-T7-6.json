@@ -1,0 +1,33 @@
+{
+ "label": "r01-B-T7-6",
+ "round": "r01",
+ "config": "B",
+ "task": "T7",
+ "n": 6,
+ "response": "1. `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. This copies the approved plan before plan mode overwrites it.\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The first line is `# Saved before the eval ran. Do not edit after the run.` The file has these fields: `round: 2`, `date: 2026-10-21`, and `author: \"Claude, approved by the user in plan mode\"`. It also has `plan: spe/plans/r02.md`, `changes_from_r01`, `constants`, and `configs` A to D. Each config lists pass rate, tool calls, tokens, minutes, and cost per task. Every number gets a `why` line and the grader check that measures it. The file ends with `same_as_last_round`, which holds the r01 measured values.\n3. `git add spe/plans/r02.md spe/predictions/r02.yaml`\n4. `git commit -m \"SPE r02 predict: plan and predictions for configs A-D\"`. This is a local commit only, with no push. It has no Co-Authored-By or Claude trailer, because the user's CLAUDE.md overrides the harness reminder.\n5. Start the Evaluate section only after the prediction commit exists. Write the first grader the plan names, under `spe/evals/graders/`, and run the gate the plan sets for it.\n6. Write the task set the plan names, under `spe/evals/tasks/`, and run its gate. The build of `spe/evals/harness/r02-workflow.js` and the dry run come after that.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Evaluative Loops",
+  "Session posture"
+ ],
+ "agent": "a94363e89ec3972e4",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "Action 1 copies the plan to spe/plans/r02.md with an exact cp command. Action 2 writes spe/predictions/r02.yaml from the Predict table.",
+  "Actions 3 and 4 stage and commit both files as a local commit. Action 5 says to start Evaluate \"only after the prediction commit exists\", before any grader work.",
+  "The file lists round: 2, the date, the author, and the per-config pass rate, tool calls, tokens, minutes and cost. It gives a `why` line for every number and ends with a `same_as_last_round` block that holds the r01 values.",
+  "The first line of the file is \"# Saved before the eval ran. Do not edit after the run.\" This marks the file as frozen once the run happens.",
+  "Action 5 says only \"run the gate the plan sets for it\". It never names a grader selftest and never says this gate must pass before any trial. That is too vague to count.",
+  "The answer says \"the build of ... r02-workflow.js and the dry run come after that\". It does not say the dry run is small or that it comes before the full Workflow run. The step also falls outside the six listed actions.",
+  "Actions 1 to 4 give exact commands and paths. Actions 5 and 6 give only directories, as in \"the first grader the plan names, under spe/evals/graders/\". They give no file names and no gate commands, so the list is not fully concrete."
+ ]
+}

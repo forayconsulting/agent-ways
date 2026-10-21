@@ -1,0 +1,33 @@
+{
+ "label": "r01-B-T7-2",
+ "round": "r01",
+ "config": "B",
+ "task": "T7",
+ "n": 2,
+ "response": "1. Copy the approved plan into the repo: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The first line is `# Saved before the eval ran. Do not edit after the run.` The file has these fields: round 2, date, author (\"Claude, approved by the user in plan mode\"), `plan: spe/plans/r02.md`, `changes_from_r01`, constants, configs A to D, and per-config pass rate, tool calls, tokens, minutes, and cost per task. Each number gets a `why` line and the grader check that measures it. The file also carries `same_as_last_round` with the r01 measured values.\n3. `git add spe/plans/r02.md spe/predictions/r02.yaml`\n4. `git commit -m \"SPE r02 predict: plan and A-D predictions saved before harness\"`. The message has no Co-Authored-By line or Claude mention, because the user's CLAUDE.md overrides the harness reminder.\n5. Build the graders named in the plan's Evaluate section, for example under `spe/evals/graders/`. Then run that step's gate.\n6. Build the round 2 tasks, for example under `spe/evals/tasks/`. Then run that step's gate. After that comes `spe/evals/harness/r02-workflow.js` and its dry run.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Evaluative Loops",
+  "Session posture"
+ ],
+ "agent": "a2e8faf284426d195",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Actions 3 and 4 stage and commit `spe/plans/r02.md` and `spe/predictions/r02.yaml`. Grader work starts only at action 5.",
+  "Action 2 lists round 2, date, author, per-config numbers, a `why` line for each number, and `same_as_last_round` with the r01 measured values.",
+  "The file's first line is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 5 only says \"Then run that step's gate\" after building graders. It never names a grader selftest or a command for one. That is too vague to count.",
+  "The dry run shows up only as a trailing clause after action 6: \"After that comes `spe/evals/harness/r02-workflow.js` and its dry run.\" The answer does not call it small, does not give a command, and does not say it gates the full Workflow run.",
+  "Actions 1 to 4 are exact and in a sensible order. Actions 5 and 6 use hedged paths (\"for example under `spe/evals/graders/`\") and unnamed gates with no commands, so they are not concrete."
+ ]
+}

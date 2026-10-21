@@ -17,10 +17,22 @@ ROOT = pathlib.Path(__file__).resolve().parents[3]
 TASKS = {f"T{i}": json.loads((ROOT / f"spe/evals/tasks/T{i}.json").read_text()) for i in range(1, 8)}
 FIX = pathlib.Path(__file__).parent / "fixtures"
 
+# Disclosed regrades. The pre-registered checks stay the headline. Each variant
+# rewrites named checks and writes rNN-<variant>.json beside the original.
+# fentry: T4 and T6 never show the last failure number, so careful trials wrote a
+# placeholder ("F-next", "F-r02-1", "F<next number>", "Fn") instead of inventing one.
+# The variant accepts a placeholder or a named failures.md entry. Judge check 3
+# (T6) and check 4 (T4) still grade the entry's fields.
+FENTRY = r"\bF(\d+|n)\b|\bF[-<{][\w<{]|failures\.md"
+VARIANTS = {"fentry": {("T4", "fentry"): FENTRY, ("T6", "fentry"): FENTRY}}
+VARIANT = None
+
 
 def code_checks(task, text):
     out = {}
     for c in task["code"]:
+        if VARIANT and (task["id"], c["id"]) in VARIANTS[VARIANT]:
+            c = {**c, "regex": VARIANTS[VARIANT][(task["id"], c["id"])]}
         if c.get("order"):
             a = re.search(c["order"][0], text, re.I)
             b = re.search(c["order"][1], text, re.I)
@@ -93,7 +105,7 @@ def grade(results_dir):
             "judge_mean": round(sum(c["judge"]) / n, 2) if n else None,
             "median_chars": sorted(c["chars"])[n // 2] if n else None, "code_fail": c["code_fail"],
         }
-    rnd = rd.name
+    rnd = rd.name + (f"-{VARIANT}" if VARIANT else "")
     (rd / f"{rnd}.json").write_text(json.dumps(out, indent=1) + "\n")
     lines = [f"# {rnd} scorecard", "", "Pass = every code check and at least 6 of 7 judge checks. 95% Wilson intervals.", "",
              "| Task | " + " | ".join(f"{c} rate (CI)" for c in "ABC") + " |", "|---|---|---|---|"]
@@ -116,4 +128,6 @@ def grade(results_dir):
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(0 if selftest() else 1)
+    if "--variant" in sys.argv:
+        VARIANT = sys.argv[sys.argv.index("--variant") + 1]
     grade(sys.argv[1])

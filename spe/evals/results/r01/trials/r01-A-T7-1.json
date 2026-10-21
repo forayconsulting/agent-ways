@@ -1,0 +1,34 @@
+{
+ "label": "r01-A-T7-1",
+ "round": "r01",
+ "config": "A",
+ "task": "T7",
+ "n": 1,
+ "response": "1. Run `git status --short` in /Users/claytonchancey/Desktop/praecipio_agent_ways. This confirms the branch and shows what is already in the tree before I add round 2 files.\n2. Copy the approved plan into the repo with `cp ~/.claude/plans/quiet-river.md spe/plans/r02-plan.md`. The plan is then stored in the repo instead of only under ~/.claude.\n3. Write `spe/predictions/r02.md`. It holds the Predict table for configs A to D exactly as the approved plan states it. I write it before I build or run any eval.\n4. Append a round 2 entry to `spe/prediction-log.md`. The entry links to spe/predictions/r02.md and spe/plans/r02-plan.md.\n5. Commit the Predict step locally with `git add spe/plans/r02-plan.md spe/predictions/r02.md spe/prediction-log.md && git commit -m \"spe(r02): record plan and predictions for configs A-D\"`. I add no Co-Authored-By line and do not push. This commit locks the predictions before any results exist.\n6. Start the Evaluate step by writing the round 2 graders under `spe/evals/graders/` (for example `spe/evals/graders/r02-graders.js`). Next come the tasks under `spe/evals/tasks/` and then `spe/evals/harness/r02-workflow.js`. I run the Workflow only after all three exist.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Commit",
+  "Evals Over Intuition",
+  "Session posture"
+ ],
+ "agent": "a761bfd30add145e9",
+ "judge": [
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "The answer saves the plan to spe/plans/r02-plan.md in step 2. It then writes \"spe/predictions/r02.md\" in step 3, but the check asks for r02.yaml. The file format is wrong, so the check is not fully met.",
+  "Step 5 commits spe/plans/r02-plan.md, spe/predictions/r02.md and spe/prediction-log.md. Step 6 is where grader, task and workflow work begins, so the order is right.",
+  "Step 3 says the file \"holds the Predict table for configs A to D\". It does not mention round, date, author, a Why for each number, or a same-as-last-round baseline.",
+  "Step 5 says the commit \"locks the predictions\". The answer never marks the file itself as not to be edited after the run.",
+  "The answer does not mention any grader selftest. Step 6 only says graders are written before tasks and the harness.",
+  "Step 6 says \"I run the Workflow only after all three exist\". It does not mention a small dry run before the full run.",
+  "Most steps give exact paths and commands, such as the cp and git commit commands. Step 6 hedges with \"for example spe/evals/graders/r02-graders.js\" and squeezes several actions into one step. The order is sensible, but the answer skips the selftest and dry run, so it does not fully meet the bar."
+ ]
+}

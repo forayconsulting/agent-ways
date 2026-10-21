@@ -1,0 +1,34 @@
+{
+ "label": "r01-A-T7-3",
+ "round": "r01",
+ "config": "A",
+ "task": "T7",
+ "n": 3,
+ "response": "1. Copy the approved plan into the repo with `cp ~/.claude/plans/quiet-river.md spe/plans/r02-plan.md`.\n2. Write `spe/predictions/r02.md`. It holds the Predict table for configs A to D, copied word for word from the plan. I lock it in before any eval runs.\n3. Add a round 2 entry to `spe/prediction-log.md` that links to `spe/predictions/r02.md` and lists the predicted result for each config.\n4. Make a local commit for the Predict step with `git add spe/plans/r02-plan.md spe/predictions/r02.md spe/prediction-log.md && git commit -m \"spe(r02): record plan and predictions for configs A-D\"`. I do not push, and I add no Claude attribution line.\n5. Load the `workflow-authoring` skill before I write any Workflow script.\n6. Write the round 2 graders and tasks to `spe/evals/graders/r02-graders.js` and `spe/evals/tasks/r02-tasks.json`. After that I write `spe/evals/harness/r02-workflow.js`, make a local commit, and then run the Workflow.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Commit",
+  "Evals Over Intuition",
+  "Session posture"
+ ],
+ "agent": "a5c24b297462452a4",
+ "judge": [
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 saves the plan to spe/plans/r02-plan.md, so that part passes. Action 2 writes spe/predictions/r02.md, not spe/predictions/r02.yaml as the check requires.",
+  "Action 4 commits the plan, the prediction file and the prediction log. Grader, task and workflow work starts later, in actions 5 and 6.",
+  "Action 2 says only that the file holds the Predict table \"copied word for word from the plan.\" It does not mention round, date, author, a Why for each number, or a same-as-last-round baseline.",
+  "The answer says \"I lock it in before any eval runs.\" It never marks the file as not to be edited after the run.",
+  "None of the six actions includes a grader selftest. Action 6 goes from writing graders straight to writing the workflow, committing, and running it.",
+  "The answer has no small dry run. Action 6 ends with \"then run the Workflow\" and does no smaller run first.",
+  "Most actions give exact paths and commands, such as the cp command and the git add/commit command, and the order makes sense. Action 6 packs several steps into one item, but each step still names a concrete path."
+ ]
+}

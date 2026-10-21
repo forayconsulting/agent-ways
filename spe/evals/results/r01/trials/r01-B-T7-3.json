@@ -1,0 +1,33 @@
+{
+ "label": "r01-B-T7-3",
+ "round": "r01",
+ "config": "B",
+ "task": "T7",
+ "n": 3,
+ "response": "1. Copy the approved plan to its lasting record: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. The plan mode file gets overwritten each round, so this copy is the only record that lasts.\n\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The first line is `# Saved before the eval ran. Do not edit after the run.` The file holds these fields: `round: 2`, `date: 2026-10-21`, `author: Claude, approved by the user in plan mode`, `plan: spe/plans/r02.md`, `changes_from_r01` (one change per config), `constants` (trials per cell, caps, judge model), and `configs` A, B, C and D. For each config it gives the pass rate, tool calls, tokens, minutes and cost per task. Each number has a `why` line and names the grader check that will measure it. `same_as_last_round` holds the values measured in r01.\n\n3. Stage only the two prediction files: `git add spe/plans/r02.md spe/predictions/r02.yaml`.\n\n4. Commit the prediction locally before any harness work or trial: `git commit -m \"SPE r02 predict: configs A-D predictions saved before harness build\"`. The message has no Co-Authored-By line or Claude mention. I do not push.\n\n5. Confirm that the predict commit is on record and that the prediction files are not left uncommitted: `git log --oneline -3 && git status --short spe/`.\n\n6. Start the Evaluate section by building the first harness piece, the graders under `spe/evals/` as the plan lays out. I check each grader's gate before I write the tasks and `spe/evals/harness/r02-workflow.js`. From this point on, `spe/predictions/r02.yaml` is never edited.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Evaluative Loops",
+  "Session posture"
+ ],
+ "agent": "a60b4faede52e24f2",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Actions 3 and 4 stage and commit `spe/plans/r02.md` and `spe/predictions/r02.yaml` \"before any harness work or trial\". Grader work starts only in action 6.",
+  "Action 2 lists `round: 2`, `date`, `author`, and per-config numbers. It also gives a `why` line for each number and a `same_as_last_round` field with the r01 values.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.` Action 6 repeats that the file is never edited.",
+  "Action 6 says \"I check each grader's gate before I write the tasks and spe/evals/harness/r02-workflow.js\". That places a grader gate before any trial. The answer does not call it a selftest by name, but the gate and its order are both stated.",
+  "The answer never mentions a small dry run or smoke run before the full Workflow run.",
+  "Actions 1 to 5 give exact paths and commands in a sensible order. Action 6 is vague. It says \"the graders under `spe/evals/` as the plan lays out\" and gives no exact file path or selftest command."
+ ]
+}

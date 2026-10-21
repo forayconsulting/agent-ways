@@ -1,0 +1,34 @@
+{
+ "label": "r01-C-T7-1",
+ "round": "r01",
+ "config": "C",
+ "task": "T7",
+ "n": 1,
+ "response": "1. Copy the approved plan into the repo: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml`. Its first line is `# Saved before the eval ran. Do not edit after the run.` It records round: 2, date: 2026-10-21, author: \"Claude, approved by the user in plan mode\", configs A to D, every number from the Predict table, a Why for each number, and `same_as_last_round`.\n3. Commit the prediction before any harness work: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D saved before the eval\"`. The message gets no Claude attribution line.\n4. Write the round 2 spec files. Save the user's prompt and planning answers verbatim to `spe/spec/transcripts/2026-10-21-r02.md`. Add the round 2 requirement table (ID, Requirement, Source, Test) to `spe/spec/spec.md`. Log open decisions and defaults in `spe/spec/disagreements.md`.\n5. Commit the spec: `git add spe/spec/ && git commit -m \"SPE r02 specify: round 2 requirements and transcript\"`\n6. Start the Evaluate gates. Build the r02 graders and run the grader selftest at the path the plan names under `spe/evals/`. The oracle must pass, and the empty and wrong answers must fail. This happens before I write `spe/evals/harness/r02-workflow.js`. The r01 regrade control and a 2 or 3 cell dry run follow before the Workflow launches.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Evals Over Intuition",
+  "Session posture",
+  "Transcripts and Engagement Records"
+ ],
+ "agent": "af86a6564448f2f97",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml`. These are the first two actions.",
+  "Action 3 commits both files with `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...`. It says this happens \"before any harness work\". Grader work does not start until action 6.",
+  "Action 2 lists round: 2, date: 2026-10-21, an author, every number from the Predict table, a Why for each number, and `same_as_last_round`.",
+  "Action 2 says the first line of the file is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 6 runs the grader selftest, with the oracle passing and the empty and wrong answers failing. It does this before writing `r02-workflow.js` and before any trial.",
+  "Action 6 says \"a 2 or 3 cell dry run follow before the Workflow launches.\" The dry run is folded into action 6 and is not its own action, but the order is clear.",
+  "Action 6 gives no exact path or command. It only says \"at the path the plan names under `spe/evals/`\". Action 6 also packs several steps into one item: the selftest, the r01 regrade, and the dry run. The spec is written after the prediction, which is an odd order. The task asked for exact paths, so this check fails."
+ ]
+}

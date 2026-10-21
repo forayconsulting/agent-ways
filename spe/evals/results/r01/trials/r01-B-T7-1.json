@@ -1,0 +1,33 @@
+{
+ "label": "r01-B-T7-1",
+ "round": "r01",
+ "config": "B",
+ "task": "T7",
+ "n": 1,
+ "response": "1. `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Plan mode overwrites its plan file each round, so this copy is the only lasting record of the approved plan.\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table.\n   - The first line is `# Saved before the eval ran. Do not edit after the run.`\n   - The file has these fields: `round: 2`, `date: 2026-10-21`, `author: Claude, approved by the user in plan mode`, `plan: spe/plans/r02.md`, `changes_from_r01`, `constants`, and `configs` A to D.\n   - Each config gets its pass rate, tool calls, tokens, minutes, and cost per task, as numbers.\n   - Each number gets a `why` line and the grader check that will measure it.\n   - The file ends with `same_as_last_round`, which holds the values measured in round 1.\n3. `git add spe/plans/r02.md spe/predictions/r02.yaml`\n4. `git commit -m \"SPE r02 predict: plan and predictions for configs A-D\"`. The message has no Co-Authored-By line and does not mention Claude. This commit lands before any grader, task, or trial exists.\n5. Write the round 2 graders in `spe/evals/graders/`, as the plan's Evaluate section lists them. Each grader must pass its gate before I move on.\n6. Write the round 2 tasks in `spe/evals/tasks/r02/`, with each task's gate. After that I write `spe/evals/harness/r02-workflow.js` and do a dry run.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Evaluative Loops",
+  "Session posture"
+ ],
+ "agent": "a90e1ff2aac53d013",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan to spe/plans/r02.md and says this is the only lasting record. Action 2 writes spe/predictions/r02.yaml from the Predict table.",
+  "Actions 3 and 4 stage and commit spe/plans/r02.md and spe/predictions/r02.yaml. Action 4 states that \"This commit lands before any grader, task, or trial exists.\" Grader work does not start until action 5.",
+  "The file lists round: 2, date: 2026-10-21, and an author line. It gives numeric pass rate, tool calls, tokens, minutes, and cost for each config. It adds \"a `why` line\" for each number and ends with same_as_last_round, which holds the round 1 values.",
+  "The first line of the file is \"# Saved before the eval ran. Do not edit after the run.\"",
+  "Action 5 says \"Each grader must pass its gate before I move on.\" That comes before tasks, the harness, and any trial. The answer says \"gate\" rather than \"selftest\", but it clearly makes graders pass a check before trials run.",
+  "Action 6 ends with writing spe/evals/harness/r02-workflow.js and doing \"a dry run\" before the full Workflow is launched. The answer does not say the dry run is small, but it clearly comes first.",
+  "Actions 1, 3, and 4 give exact commands. Action 2 gives an exact file path. Actions 5 and 6 name only directories, and action 6 combines several steps, so they are less precise. The order of save, predict, commit, graders, tasks, harness, then dry run makes sense, and the paths are concrete enough to pass."
+ ]
+}

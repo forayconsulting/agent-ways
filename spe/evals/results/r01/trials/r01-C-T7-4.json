@@ -1,0 +1,34 @@
+{
+ "label": "r01-C-T7-4",
+ "round": "r01",
+ "config": "C",
+ "task": "T7",
+ "n": 4,
+ "response": "1. Copy the approved plan into the repo: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml`. Its first line is `# Saved before the eval ran. Do not edit after the run.` It holds `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, configs A to D, every metric number from the Predict table with a Why for each number, and a `same_as_last_round` value for each number.\n3. Commit those two files before any harness work: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: A-D predictions for round 2\"`. The commit has no Claude attribution and no push.\n4. Build the graders and tasks under `spe/evals/`. Then write `spe/evals/harness/r02-workflow.js` with a single `const ROUND = 2` constant, a trial schema, code checks before judges, a peek scan that voids trials, and caps on paid resources that log skipped trials.\n5. Run the grader selftest gate. For example: `node spe/evals/harness/r02-workflow.js --selftest`. The oracle must pass, and the empty and wrong answers must fail.\n6. Run the control gate, which regrades round 1 with the new graders. For example: `node spe/evals/harness/r02-workflow.js --regrade r01`. Compare the result to the r01 numbers in `spe/prediction-log.md`. A dry run on 2 or 3 cells comes next, then the `SPE r02 evaluate (harness)` commit, then the Workflow launch.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Evals Over Intuition",
+  "Session posture",
+  "Transcripts and Engagement Records"
+ ],
+ "agent": "a03a324388fed1725",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Step 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Step 2 writes `spe/predictions/r02.yaml`.",
+  "Step 3 commits both files with `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...` and says this happens \"before any harness work\". Grader, task and workflow work does not start until step 4.",
+  "Step 2 lists `round: 2`, `date: 2026-10-21`, `author`, \"every metric number from the Predict table with a Why for each number\" and \"a `same_as_last_round` value for each number\".",
+  "Step 2 makes the first line \"# Saved before the eval ran. Do not edit after the run.\"",
+  "Step 5 runs the grader selftest gate. The oracle must pass, and the empty and wrong answers must fail. This comes before the control gate, the dry run and any Workflow trials.",
+  "Step 6 says \"A dry run on 2 or 3 cells comes next, then the ... commit, then the Workflow launch.\" The dry run comes before the full run, but it is only a trailing clause inside step 6 and is not its own action.",
+  "The order is sensible. Step 4 is vague, though. It says \"Build the graders and tasks under `spe/evals/`\" with no exact file paths, and it bundles several actions into one. The commands in steps 5 and 6 are marked \"For example\", so they are not exact commands. Step 6 also packs several actions into one. Under strict grading, the concreteness requirement is not met."
+ ]
+}

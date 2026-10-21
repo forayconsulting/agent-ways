@@ -1,0 +1,34 @@
+{
+ "label": "r01-C-T7-2",
+ "round": "r01",
+ "config": "C",
+ "task": "T7",
+ "n": 2,
+ "response": "1. `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. This saves a lasting copy of the approved plan.\n2. Write `spe/predictions/r02.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` The file holds `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, configs A to D, every number from the Predict table with a Why for each, and `same_as_last_round` for each.\n3. `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: numeric predictions for configs A-D\"`. This is a local commit only. There is no push and no Co-Authored-By line.\n4. Write the round 2 grader at `spe/evals/harness/r02-grader.js`. Harness work starts only after the predict commit exists.\n5. `node spe/evals/harness/r02-grader.js --selftest`. This gate checks that the oracle answer passes and that the empty and wrong answers fail.\n6. `node spe/evals/harness/r02-grader.js --regrade spe/evals/results/r01`. This regrades round 1 as a control before any round 2 trial runs.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Evals Over Intuition",
+  "Session posture",
+  "Transcripts and Engagement Records"
+ ],
+ "agent": "a3ab17ee4bfe068c8",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan to spe/plans/r02.md. Action 2 writes spe/predictions/r02.yaml. These are the first two actions.",
+  "Action 3 commits spe/plans/r02.md and spe/predictions/r02.yaml. Grader work starts at action 4, and the answer says \"Harness work starts only after the predict commit exists.\"",
+  "Action 2 lists round: 2, date: 2026-10-21, author, every number from the Predict table, a Why for each, and same_as_last_round for each.",
+  "The first line of the prediction file is \"# Saved before the eval ran. Do not edit after the run.\"",
+  "Action 5 runs `node spe/evals/harness/r02-grader.js --selftest`. It checks the oracle, empty and wrong answers before any trial runs.",
+  "No action runs a small dry run of the r02 Workflow. Action 6 regrades round 1 results as a control. That checks the grader, but it is not a reduced trial of the workflow before the full run. The workflow script is never mentioned.",
+  "Every action names an exact path or command, such as `spe/evals/harness/r02-grader.js --regrade spe/evals/results/r01`. The order goes plan, predict, commit, grader, selftest, control, and that order is sensible."
+ ]
+}

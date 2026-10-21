@@ -1,0 +1,34 @@
+{
+ "label": "r01-C-T7-5",
+ "round": "r01",
+ "config": "C",
+ "task": "T7",
+ "n": 5,
+ "response": "1. `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md` saves a lasting copy of the approved plan.\n\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The file's first line is `# Saved before the eval ran. Do not edit after the run.` It lists round 2, date 2026-10-21, author \"Claude, approved by the user in plan mode\", configs A to D, every metric number, a Why for each number, and `same_as_last_round` for each row.\n\n3. `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D\"` makes a local commit only, with no push. The message has no Co-Authored-By line or Claude mention, because the user's CLAUDE.md overrides the harness reminder.\n\n4. Build the round 2 graders and tasks under `spe/evals/` at the paths the plan names. Then write `spe/evals/harness/r02-workflow.js`. The script holds the round in one constant, `const ROUND = 2`, and no prompt text hard-codes the round number.\n\n5. Run the grader selftest on the round 2 graders. The oracle answer must pass, and the empty and wrong answers must fail. If any check fails, I stop and report a broken grader.\n\n6. Regrade the saved round 1 trial outputs with the round 2 graders as a control. I compare the new scores with the round 1 numbers in `spe/prediction-log.md`. After this gate comes a 2 or 3 cell dry run, then the `SPE r02 evaluate (harness)` commit, then the Workflow launch.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Evals Over Intuition",
+  "Session posture",
+  "Transcripts and Engagement Records"
+ ],
+ "agent": "ac297cafc0b922d71",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Step 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Step 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Step 3 commits both files with `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...`. Grader, task and workflow script work does not begin until step 4.",
+  "Step 2 lists round 2, the date 2026-10-21, an author, every metric number, a Why for each number, and `same_as_last_round` for each row. All the required fields are there.",
+  "Step 2 sets the file's first line to `# Saved before the eval ran. Do not edit after the run.` This marks the file as not to be edited after the run.",
+  "Step 5 runs the grader selftest with oracle, empty and wrong answers, and it stops on any failure. This happens before the dry run and the Workflow launch in step 6.",
+  "Step 6 says 'After this gate comes a 2 or 3 cell dry run, then the ... commit, then the Workflow launch.' So a small dry run comes before the full run, even though it is folded into another step.",
+  "The order is sensible. Steps 1 to 3 give exact commands. Step 4 only says 'at the paths the plan names' and gives no paths for the graders and tasks. Steps 5 and 6 give no command for the selftest or the regrade, so the answer is not concrete throughout."
+ ]
+}

@@ -1,0 +1,34 @@
+{
+ "label": "r01-C-T7-3",
+ "round": "r01",
+ "config": "C",
+ "task": "T7",
+ "n": 3,
+ "response": "1. Copy the approved plan to a lasting file: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n\n2. Write `spe/predictions/r02.yaml`. The first line is `# Saved before the eval ran. Do not edit after the run.` The file holds these fields: `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, `configs: [A, B, C, D]`, one number per metric per config, a Why for each number, the grader check that each number depends on, and `same_as_last_round` for each row.\n\n3. Commit the prediction before any harness work: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: A-D predictions saved before the eval\"`. The commit has no Co-Authored-By line and does not mention Claude. I do not push.\n\n4. Save the spec artifacts that plan mode did not let me write. These are `spe/spec/transcripts/2026-10-21-r02.md`, which holds the user's prompt and planning answers verbatim. The r02 requirement table goes into `spe/spec/spec.md`, with an adopt or reject decision and a reason for each \"Proposed for round 2\" row from r01. Open decisions and logged defaults go into `spe/spec/disagreements.md`.\n\n5. Commit the spec: `git add spe/spec/transcripts/2026-10-21-r02.md spe/spec/spec.md spe/spec/disagreements.md && git commit -m \"SPE r02 specify: r02 requirement table, transcript, decisions\"`. I do not push.\n\n6. Start the harness by building the graders first. I write them under `spe/evals/graders/` at the path the plan's Evaluate section names. Then I run the grader selftest gate, for example `node spe/evals/graders/selftest.js`. The oracle must pass, and the empty answer and the wrong answer must both fail. This comes before the r01 control regrade, the 2 or 3 cell dry run, and `spe/evals/harness/r02-workflow.js` with its single `ROUND = 2` constant.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Evals Over Intuition",
+  "Session posture",
+  "Transcripts and Engagement Records"
+ ],
+ "agent": "a2ab59f7085734d86",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Action 1 runs `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml`.",
+  "Action 3 commits spe/plans/r02.md and spe/predictions/r02.yaml \"before any harness work\". Grader work starts only in action 6. The spec commit in between involves no grader, task or workflow work.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21`, `author`, one number per metric per config, \"a Why for each number\" and `same_as_last_round` for each row.",
+  "The first line of the file is \"# Saved before the eval ran. Do not edit after the run.\"",
+  "Action 6 runs a grader selftest gate. It requires the oracle to pass and the empty and wrong answers to fail. The answer says this comes before the control regrade, the dry run and the workflow.",
+  "Action 6 places \"the 2 or 3 cell dry run\" before `spe/evals/harness/r02-workflow.js` in the stated order. The dry run falls after the first six actions, but its place before the full run is clear.",
+  "Actions 1 to 5 give exact paths and commands. Action 6 is vague. It names the grader location only as \"the path the plan's Evaluate section names\" and gives the selftest command only \"for example\". That fails the exact-path-and-command bar."
+ ]
+}

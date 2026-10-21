@@ -1,0 +1,33 @@
+{
+ "label": "r01-B-T7-7",
+ "round": "r01",
+ "config": "B",
+ "task": "T7",
+ "n": 7,
+ "response": "1. Copy the approved plan so it lasts past this round: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The first line is `# Saved before the eval ran. Do not edit after the run.` The file has these fields: `round: 2`, `date: 2026-10-21`, `author: Claude, approved by the user in plan mode`, `plan: spe/plans/r02.md`, `changes_from_r01`, `constants`, `configs` A to D, and pass rate, tool calls, tokens, minutes, and cost per task for each config. Each number gets a `why` line and the grader check that will measure it. The `same_as_last_round` values come from the plan's r01 column.\n3. Stage only those two files: `git add spe/plans/r02.md spe/predictions/r02.yaml`\n4. Commit them locally before any harness work or trial: `git commit -m \"SPE r02 predict: plan and predictions for configs A-D\"`. The message has no Claude attribution and nothing is pushed.\n5. Start the Evaluate section by writing the graders the plan names under `spe/evals/harness/` (for example `spe/evals/harness/r02-graders.js`). Then run the gate for each grader against a known-pass case and a known-fail case.\n6. Write the round 2 tasks the plan names under `spe/evals/harness/` (for example `spe/evals/harness/r02-tasks/`). Then check that no task file or trial input contains an answer key. After that I would write `spe/evals/harness/r02-workflow.js`.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Evaluative Loops",
+  "Session posture"
+ ],
+ "agent": "a4f1af72ef443702a",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml`. These are the first two actions.",
+  "Actions 3 and 4 stage and commit only the plan and the prediction \"before any harness work or trial\". Grader work starts at action 5, which comes after the commit.",
+  "Action 2 lists `round: 2`, `date`, `author`, and the per-config numbers. It also says \"Each number gets a `why` line\" and has `same_as_last_round` values taken from the r01 column.",
+  "The first line of the prediction file is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 5 runs \"the gate for each grader against a known-pass case and a known-fail case\". No trial happens in the six actions, so the gate comes before any trial.",
+  "The answer never mentions a small dry run or smoke run before the full Workflow run. It ends with writing `r02-workflow.js` and says nothing more.",
+  "Actions 1 to 4 give exact paths and commands. Actions 5 and 6 hedge with \"for example `spe/evals/harness/r02-graders.js`\" and \"for example ... `r02-tasks/`\" instead of naming exact paths. Action 6 also adds a seventh step at the end, so the list does not fully meet the bar for concrete actions."
+ ]
+}

@@ -1,0 +1,34 @@
+{
+ "label": "r01-A-T7-4",
+ "round": "r01",
+ "config": "A",
+ "task": "T7",
+ "n": 4,
+ "response": "1. Copy the approved plan into the repo so it is versioned: `cp ~/.claude/plans/quiet-river.md spe/plans/r02-plan.md`\n2. Commit the plan step locally (no push): `git add spe/plans/r02-plan.md && git commit -m \"spe(r02): add approved round 2 plan\"`\n3. Write the Predict table for configs A to D, with expected outcomes and reasons, to `spe/predictions/r02.md`. This happens before any grader or task exists.\n4. Append the round 2 predictions entry, linked to `spe/predictions/r02.md`, to `spe/prediction-log.md`.\n5. Commit the predict step locally so the predictions are frozen before evaluation: `git add spe/predictions/r02.md spe/prediction-log.md && git commit -m \"spe(r02): record predictions for configs A-D\"`\n6. Start the Evaluate step by writing the round 2 graders to `spe/evals/graders/r02/`. The tasks in `spe/evals/tasks/r02/` come next, then `spe/evals/harness/r02-workflow.js`, then a commit, then the Workflow run.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Commit",
+  "Evals Over Intuition",
+  "Session posture"
+ ],
+ "agent": "a28103d90e1b09f7a",
+ "judge": [
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan to `spe/plans/r02-plan.md`, so that half passes. Action 3 writes `spe/predictions/r02.md`. The check asks for `spe/predictions/r02.yaml`, so the prediction file has the wrong format and name.",
+  "Action 2 commits the plan. Action 5 commits `spe/predictions/r02.md` and `spe/prediction-log.md`. Both commits happen before action 6, which starts the graders.",
+  "Action 3 only says the file holds \"expected outcomes and reasons\" for configs A to D. It does not mention round, date, author, or a same-as-last-round baseline.",
+  "The file itself is never marked as not to be edited after the run. The word \"frozen\" appears only in the description of the commit in action 5.",
+  "No action runs a grader selftest. Action 6 goes from writing graders to tasks, the harness, a commit and the Workflow run, with no gate in between.",
+  "Action 6 goes straight from the commit to \"then the Workflow run\". There is no small dry run first.",
+  "Each action names an exact path, and the commit actions give full git commands. The order (plan, commit, predict, log, commit, graders) makes sense. Action 6 bundles several later steps into one, but it still names their paths."
+ ]
+}

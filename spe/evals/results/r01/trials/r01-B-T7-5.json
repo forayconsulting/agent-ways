@@ -1,0 +1,33 @@
+{
+ "label": "r01-B-T7-5",
+ "round": "r01",
+ "config": "B",
+ "task": "T7",
+ "n": 5,
+ "response": "1. `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. This copies the approved plan before plan mode overwrites it.\n\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The first line is `# Saved before the eval ran. Do not edit after the run.` The file has these fields:\n   - `round: 2`, `date: 2026-10-21`, and `author: Claude, approved by the user in plan mode`\n   - `plan: spe/plans/r02.md`\n   - `changes_from_r01`, with one change per config\n   - `constants`, which holds trials per cell, caps, and the judge model\n   - `configs` A, B, C, and D, each with pass rate, tool calls, tokens, minutes, and cost per task\n   - a `why` line and a grader check for every number\n   - `same_as_last_round`, which holds the r01 measured values\n\n3. `git add spe/plans/r02.md spe/predictions/r02.yaml`\n\n4. `git commit -m \"SPE r02 predict: plan and predictions for configs A-D\"`. The message has no Co-Authored-By line and does not mention Claude. I do not push.\n\n5. `git log -1 --format='%h %cI'`. This confirms that the prediction commit exists and comes before any harness file or trial.\n\n6. Start the first build step in the plan's Evaluate section. I write the graders under `spe/evals/` and run that step's gate. Tasks and `spe/evals/harness/r02-workflow.js` come after that gate passes. The Workflow runs only after every gate passes and the dry run is clean.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Evaluative Loops",
+  "Session posture"
+ ],
+ "agent": "a3b8df93f739c3666",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  true,
+  false
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Actions 3 and 4 stage and commit both files. Action 5 confirms the commit exists \"before any harness file or trial\". Grader work only starts in action 6.",
+  "Action 2 lists `round: 2`, `date`, `author`, per-config numbers, \"a `why` line and a grader check for every number\", and `same_as_last_round` with the r01 measured values.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 6 says only \"run that step's gate\" after writing graders. It never says the gate is a grader selftest, so this is too vague to pass a strict check.",
+  "Action 6 says \"The Workflow runs only after every gate passes and the dry run is clean.\" This puts a dry run before the full Workflow run, even though it does not say the dry run is small.",
+  "Actions 1 to 5 give exact commands and paths in a sensible order. Action 6 names only the `spe/evals/` directory and an unnamed gate, with no grader file paths and no gate command. The answer does not fully meet the exactness requirement."
+ ]
+}

@@ -1,0 +1,34 @@
+{
+ "label": "r01-A-T7-2",
+ "round": "r01",
+ "config": "A",
+ "task": "T7",
+ "n": 2,
+ "response": "1. Run `git -C /Users/claytonchancey/Desktop/praecipio_agent_ways status --short && git -C /Users/claytonchancey/Desktop/praecipio_agent_ways branch --show-current`. This confirms the repo and branch. It also shows which unrelated changes I must leave out of the commit.\n2. Write `spe/plans/r02-plan.md`. It is a copy of the approved plan at `~/.claude/plans/quiet-river.md`, so the plan is saved in the repo.\n3. Write `spe/predictions/r02-predictions.md` with the Predict table for configs A to D, copied word for word from the plan. Then append a round 2 entry to `spe/prediction-log.md`. This locks the predictions before any eval runs.\n4. Run `git add spe/plans/r02-plan.md spe/predictions/r02-predictions.md spe/prediction-log.md && git commit -m \"spe(r02): record plan and predictions for configs A to D\"`. This is a local commit only. It has no push and no Claude attribution lines.\n5. Invoke the `workflow-authoring` skill. It loads the Workflow script API before I write the harness.\n6. Write the round 2 graders and tasks under `spe/evals/graders/` and `spe/evals/tasks/` (for example `spe/evals/graders/r02-*.js` and `spe/evals/tasks/r02-*.json`). The next step after that is `spe/evals/harness/r02-workflow.js`.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Commit",
+  "Evals Over Intuition",
+  "Session posture"
+ ],
+ "agent": "a9acd1ba3b1ef6f28",
+ "judge": [
+  false,
+  true,
+  false,
+  false,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "Action 2 saves the plan to `spe/plans/r02-plan.md`, which meets the first half. Action 3 writes `spe/predictions/r02-predictions.md` and not `spe/predictions/r02.yaml`, so the required prediction file is never created.",
+  "Action 4 commits the plan, the predictions and the prediction log. Grader and task work starts at action 6, so the commit comes before it.",
+  "Action 3 says only that it copies the Predict table word for word. It does not mention round, date, author, a Why for each number, or a same-as-last-round baseline.",
+  "Action 3 says the predictions are 'locked' because they are committed. Nothing says the file carries a marker that it must not be edited after the run.",
+  "None of the six actions runs a grader selftest. No gate before trials is mentioned.",
+  "The answer never mentions a small dry run before the full Workflow run. The list stops before any run happens.",
+  "Actions 1 to 5 have exact paths and commands in a sensible order. Action 6 gives only example globs ('for example `spe/evals/graders/r02-*.js`'), not exact files. Under strict grading that does not count as exact."
+ ]
+}

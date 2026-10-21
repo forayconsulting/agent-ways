@@ -1,0 +1,33 @@
+{
+ "label": "r01-B-T7-4",
+ "round": "r01",
+ "config": "B",
+ "task": "T7",
+ "n": 4,
+ "response": "1. Run `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md` to save the approved plan. The plan mode file gets overwritten each round, so this copy is the only lasting record.\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The first line is `# Saved before the eval ran. Do not edit after the run.` The file has these fields: `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, `plan: spe/plans/r02.md`, `changes_from_r01`, `constants`, and `configs` A to D. Each config gets a number for pass rate, tool calls, tokens, minutes, and cost per task. Each number gets a `why` line and the grader check that will measure it. The file also has `same_as_last_round` with the measured r01 values.\n3. Run `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D, <headline predicted numbers>\"`. This is a local commit with no push and no Claude attribution line.\n4. Build the graders from Evaluate step 1 under `spe/evals/graders/`, then run the gate for that step.\n5. Build the round 2 tasks from Evaluate step 2 under `spe/evals/tasks/`, then run the gate for that step. The gate includes a check that no answer key can reach a trial.\n6. Write `spe/evals/harness/r02-workflow.js` with the Workflow arguments from the plan and do a dry run. Run the real Workflow only after the dry run is clean and the `SPE r02 evaluate (harness): ...` commit is made.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Evaluative Loops",
+  "Session posture"
+ ],
+ "agent": "a825944420fa06532",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  true,
+  false
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Action 3 runs `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...`. Grader work starts only at action 4.",
+  "Action 2 lists `round: 2`, `date`, `author`, numbers for each config, a `why` line for each number, and `same_as_last_round` with the measured r01 values.",
+  "Action 2 says the first line is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 4 says to \"run the gate for that step\" after building graders. It never says that the gate is a grader selftest or what the gate checks. This is too vague to pass a strict reading.",
+  "Action 6 says to \"do a dry run\" and to run the real Workflow \"only after the dry run is clean\". The order is clear even though the answer does not say how small the dry run is.",
+  "Actions 1 to 3 give exact commands, but the commit message still holds the placeholder `<headline predicted numbers>`. Actions 4 to 6 name only directories and say \"run the gate\" or \"do a dry run\" without any command. The order is sensible, but the actions are not concrete enough."
+ ]
+}
