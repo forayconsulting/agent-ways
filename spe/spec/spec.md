@@ -22,9 +22,23 @@ Source: the user's round 1 prompt, [transcripts/2026-10-21-r01.md](transcripts/2
 
 "Quantum drift" refers to the eight problems found in `~/Desktop/quantum/spe` rounds r01 to r03. They are listed in [../plans/r01.md](../plans/r01.md).
 
+## Round 2 requirements
+
+| ID | Requirement | Source | Test |
+|---|---|---|---|
+| R10 | Each predicted number carries a band | r01 F2, P3 | `band` code check on T1, T2, H1 |
+| R11 | Right after approval, the agent saves and commits the prediction and then names the gates (selftest, control regrade, dry run) before any trial | r01 F3, P2 | T7 |
+| R12 | The agent spots the loop moment when the prompt does not name it | r01 F7, P6 | H1 |
+| R13 | When the user pushes to skip the prediction, the agent still saves a short one before the run and says why in one line | P6 | H2 |
+| R14 | An unrelated small request in the middle of a loop gets done with no SPE ceremony | r01 F7, P6 | H3 |
+| R15 | A model release starts a new round, with the new model as a new configuration next to the pinned one | guide p13 | H4 |
+| R16 | A saturated round leads to harder tasks or stricter graders, not to stopping | guide p12, r01 F5 | H5 |
+| R17 | The live hooks inject the same unrelated ways into every config | r01 F4, P5 | `live_ways` summary from extract.py |
+
 ## Revision history
 
 - 2026-10-21: round 1 requirements R1 to R9.
+- 2026-10-21: round 2 requirements R10 to R17, from proposals P1 to P6 (see disagreements.md for the round 2 defaults).
 
 ## Proposed for round 2 (not yet agreed)
 
