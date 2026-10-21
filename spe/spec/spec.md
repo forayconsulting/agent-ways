@@ -35,10 +35,22 @@ Source: the user's round 1 prompt, [transcripts/2026-10-21-r01.md](transcripts/2
 | R16 | A saturated round leads to harder tasks or stricter graders, not to stopping | guide p12, r01 F5 | H5 |
 | R17 | The live hooks inject the same unrelated ways into every config | r01 F4, P5 | `live_ways` summary from extract.py |
 
+## Round 3 requirements
+
+| ID | Requirement | Source | Test |
+|---|---|---|---|
+| R18 | Outside an SPE step, the agent does the request plainly, with no SPE talk, files, or commit names | r02 F11, Q1 | H3, H3p, E2 |
+| R19 | At a ceiling, predictions are logged as "not scorable", the stop streak stays, the agent checks once for a leak, and the decision goes back to the user in a short reply | r02 F12, Q2 | H5, H5p |
+| R20 | After the save and commit, the agent's next step is the gate order | r02 F13, Q3 | T7, E1 |
+| R21 | A new model becomes a new config next to the pinned one | r02 H4, Q4 | H4, H4p |
+| R22 | On disk, the plan copy and the prediction exist and are committed before any harness file | r01 F9, Q6 | E1 git log order |
+| R23 | The behavior holds on reworded scenarios | Q7 | H1p to H5p |
+
 ## Revision history
 
 - 2026-10-21: round 1 requirements R1 to R9.
 - 2026-10-21: round 2 requirements R10 to R17, from proposals P1 to P6 (see disagreements.md for the round 2 defaults).
+- 2026-10-21: round 3 requirements R18 to R23, from proposals Q1 to Q7.
 
 ## Proposed for round 2 (not yet agreed)
 

@@ -29,3 +29,16 @@
 | P8 live tools: lane | Deferred | The user chose to wait for an upstream update |
 | Config B | Dropped, D replaces it | r01 result |
 | Engine live | Not in round 2 | The repair would replace the whole live ways corpus and install the attend plugin |
+
+## Round 3 defaults (autonomous respec)
+
+| Item | Default | Why |
+|---|---|---|
+| Q1 scope rule, commit names move to children | Adopted in config E | r02 F11 |
+| Q2 ceiling rule and short handback | Adopted in E | r02 F12 |
+| Q3 gate line in the root | Adopted in E | r02 F13 |
+| Q4 pinning for a new model | Adopted in E | r02 H4 |
+| Q5 widen same_tasks, draft in H2 and H4, H5 judges | Adopted. H5 judges unchanged, since a reply can close out and hand back in a few lines | r02 F14 |
+| Q6 real tool trials | Adopted as the E2E suite (fixtures in /tmp). Live tools: lane stays deferred | r01 F9 |
+| Q7 paraphrases | One paraphrase per H task. Cross-family or human judge check deferred | Workflows run Claude models only |
+| Configs | D (anchor, frozen copy) and E (D plus Q1 to Q4). A only in E2E. C and C2 retired | r02 result |
