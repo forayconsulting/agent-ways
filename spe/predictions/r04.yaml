@@ -1,0 +1,62 @@
+# Saved before the eval ran. Do not edit after the run.
+round: r04
+date: 2026-10-21
+author: Claude (Opus 5.5), approved by the user in plan mode
+plan: spe/plans/r04.md
+method: start from r03 E measured. Grader fixes (order_list default, wider same_tasks) apply to both configs and move E where r03 showed the check was wrong. F moves only where its edits target. A hit is inside the band.
+
+changes_from_r03:
+  configs: E frozen as the anchor. F = E with a root of 3,500 characters or less (Files table to specify, eval bullets to evaluate), a saturation failure entry in learn, and named release metrics in evaluate
+  graders: order_list default for order checks. same_tasks widened
+  tasks: E3 (ceiling close-out with real tools) added
+
+constants:
+  trials_per_cell: 8
+  e2e_trials_per_cell: 6
+  topup: none
+  worker_model: opus
+  judge_model: opus
+
+same_as_last_round:   # r03 E measured, pre-registered checks
+  {T1: 1.00, T2: 1.00, T3: 1.00, T4: 1.00, T5: 1.00, T6: 1.00, T7: 1.00, H1: 1.00, H2: 0.38, H3: 1.00, H4: 0.75, H5: 0.75, H1p: 1.00, H2p: 0.75, H3p: 1.00, H4p: 0.38, H5p: 0.62, E1: 1.00, E2: 1.00}
+
+pass_rates:   # value, band
+  T1: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  T2: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  T3: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  T4: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  T5: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  T6: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  T7: {E: [1.00, 0.10], F: [0.95, 0.10]}
+  H1: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  H2: {E: [0.88, 0.12], F: [0.88, 0.12]}
+  H3: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  H4: {E: [0.88, 0.12], F: [0.95, 0.10]}
+  H5: {E: [0.75, 0.20], F: [0.85, 0.15]}
+  H1p: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  H2p: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  H3p: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  H4p: {E: [0.60, 0.20], F: [0.80, 0.20]}
+  H5p: {E: [0.62, 0.20], F: [0.80, 0.20]}
+  E1: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  E2: {E: [1.00, 0.10], F: [1.00, 0.10]}
+  E3: {E: [0.50, 0.25], F: [0.70, 0.25]}
+
+why:
+  T1_T6_H1_H1p_H3_H3p: same as r03
+  T7: F keeps the gate step. A shorter root may trim a gate in a few trials
+  H2_H2p: the order_list default (r03 order_list values)
+  H4: the widened check. F names the metrics
+  H4p: the widened check lifts both. S4 adds tokens and time for judge 7
+  H5_H5p: S3 adds the failure entry for judge 5
+  E1_E2: same as r03
+  E3: new. S3 targets the failure entry. Both may run long in the reply
+
+summary:
+  text_mean: {E: [0.93, 0.04], F: [0.96, 0.04]}
+  f_minus_e: [0.03, 0.04]
+  f_root_chars: "3,500 or less"
+  live_trigger_after_install: "20 of 20, 0 of 15, 0 context_cap misses"
+  peeks_escapes: 0
+  cost_estimate: about 582 agents, 13M tokens, 30 to 45 minutes (unmeasured)
+naive_guess: E and F equal to r03 E on every shared task
