@@ -1,0 +1,32 @@
+{
+ "label": "r04-E-T7-7",
+ "round": "r04",
+ "config": "E",
+ "task": "T7",
+ "n": 7,
+ "response": "1. Copy the approved plan to its lasting record: `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table:\n   - Line 1 is `# Saved before the eval ran. Do not edit after the run.`\n   - The fields are `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"` and `plan: spe/plans/r02.md`.\n   - `changes_from_r01` lists the one change per config. B shortens the prompt to 12 lines. C merges the tools to 3. D moves C to Haiku 5.5.\n   - `constants` holds the trials per cell, the caps and the judge model.\n   - `configs` has entries A to D. Each config gets numbers for category accuracy, priority accuracy, reply pass rate, tool calls, tokens, minutes and cost per ticket.\n   - Every number gets a `band`, a one-line `why` and its grader check.\n   - `same_as_last_round` holds the r01 measured values, copied from `spe/prediction-log.md`.\n3. Commit only those two files: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D on 40 triage tickets\"`. The message has no Claude attribution.\n4. Build the Evaluate pieces the plan names:\n   - Graders go in `spe/evals/graders/`. Code checks for category and priority come first. A judge grades only the drafted reply.\n   - The 40 tickets go in `spe/evals/tasks/`. They do not include the reference labels.\n   - The Workflow script goes in `spe/evals/harness/r02-workflow.js`. It sets the round once as `const ROUND = 2`, gives trials a schema and caps every paid resource.\n5. Run gate 1, the grader selftest: `node spe/evals/graders/selftest.js`. The oracle labels must pass. Empty output and wrong labels must fail. I stop at the first failure.\n6. Run gate 2, a regrade of round 1 as a control: `node spe/evals/graders/regrade.js --round 1 --runs spe/evals/runs/r01/`. The regraded numbers must match the r01 numbers in `spe/prediction-log.md`. If they differ, that is a grader bug and I halt and report it. Next come the dry run on 2 or 3 cells and then the Workflow launch.\n\nThe situation does not give script names, so I chose `selftest.js`, `regrade.js` and `spe/evals/runs/r01/` as defaults.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a6c2c27467b45e54d",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Action 3 commits only `spe/plans/r02.md` and `spe/predictions/r02.yaml`. The graders, tasks and workflow script are built later, in action 4.",
+  "The file has `round: 2`, `date: 2026-10-21` and an `author` field. Each config has numbers for each metric, and every number has a `band` and a one-line `why`. `same_as_last_round` holds the r01 values copied from `spe/prediction-log.md`.",
+  "Line 1 of the file is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 5 runs gate 1, `node spe/evals/graders/selftest.js`, before any trial. It checks that oracle labels pass and that empty or wrong labels fail, and it stops at the first failure.",
+  "Action 6 ends with \"Next come the dry run on 2 or 3 cells and then the Workflow launch.\" This puts the small dry run before the full run, though it is listed after the six numbered actions.",
+  "Each action names an exact path or command, and the order is plan, predict, commit, build, selftest, regrade. Action 4 names only directories for graders and tasks, but it gives the exact workflow script path. The answer also says the script names are its own defaults."
+ ]
+}

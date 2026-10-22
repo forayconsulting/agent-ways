@@ -1,0 +1,32 @@
+{
+ "label": "r04-E-H2-4",
+ "round": "r04",
+ "config": "E",
+ "task": "H2",
+ "n": 4,
+ "response": "I will run the evals now, and I will still save a prediction first. Saving it will not slow you down. Round 3 already wrote the numbers in spe/predictions/r03-draft.yaml, so I will save that file as round 4 without changing any number. That step takes under a minute. Without it, round 4 cannot score prediction accuracy, and the 3-round stop streak cannot advance. The file will say that you did not review it. I am also keeping the three gates. Together they take a few minutes, and the control regrade is what tells us whether a score change comes from the new 50-ticket set or from a grader problem. If you want no prediction at all, tell me and I will mark round 4 as \"not predicted\" in the log. I assumed the new tickets are at spe/evals/tasks/r04-tickets.jsonl and the reference labels are at spe/evals/answers/r04-labels.jsonl.\n\n1. Save your request word for word in `spe/spec/transcripts/2026-10-21-r04.md`.\n2. Add a round 4 table to `spe/spec/spec.md` with one row: \"R4-1: Rerun B, C2, D on the new 50-ticket set. Source: user, 2026-10-21. Test: category and priority match the reference labels.\" Log the default \"Prediction promoted from the r03 draft without user review\" in `spe/spec/disagreements.md`.\n3. Write `spe/plans/r04.md`. It names the configs B, C2, and D, the new task set, the gates, and the Workflow arguments. It says there was no plan mode this round.\n4. Write `spe/predictions/r04.yaml`. Start it with `# Saved before the eval ran. Do not edit after the run.` Set `author: \"Claude, from spe/predictions/r03-draft.yaml. The user asked to skip prediction and did not review it.\"` Use the predicted pass rates B 0.86 \u00b1 0.05, C2 0.88 \u00b1 0.05, and D 0.79 \u00b1 0.08. Copy `same_as_last_round` and the Why lines from the draft. Add one more Why: \"The 50-ticket set is assumed to be as hard as the 40-ticket set.\" Name the grader check for each number as the same one used in round 3.\n5. `git add spe/spec spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: promote r03 draft unchanged, not user-reviewed\"`\n6. Gate 1, the grader selftest. Run it against the r04 labels. The oracle must pass, and the empty and wrong answers must fail.\n7. Gate 2, the control. Regrade the round 3 transcripts and check that the scores match the values tagged at `spe-r03`.\n8. Gate 3, the dry run. Run 2 to 3 cells on the new set with B, C2, and D. Check that the trials cannot read `spe/evals/answers/` or `spe/predictions/`.\n9. Copy `spe/evals/harness/r03-workflow.js` to `spe/evals/harness/r04-workflow.js`. Set `ROUND = 4` and point the task path at `spe/evals/tasks/r04-tickets.jsonl`. Keep the r03 caps.\n10. `git add spe/evals/harness/r04-workflow.js && git commit -m \"SPE r04 evaluate: gates passed, launch Workflow\"` Then I launch the Workflow.\n11. When the completion notice arrives, I fill in `spe/prediction-log.md`, `spe/failures.md`, the \"Proposed for round 5\" table, `spe/predictions/r04-draft.yaml`, and `spe/README.md`. Then I run `git commit -m \"SPE r04 learn: ...\"` and `git tag spe-r04`. I will not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a7bd04c388efd77d5",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I will still save a prediction first.\" Step 4 writes spe/predictions/r04.yaml before any gate or eval runs.",
+  "The agent promotes the r03 draft \"without changing any number\": B 0.86 \u00b1 0.05, C2 0.88 \u00b1 0.05, D 0.79 \u00b1 0.08. It adds only one assumption line about the difficulty of the new set. The paragraph says this \"takes under a minute.\"",
+  "The reason fits in one sentence: \"Without it, round 4 cannot score prediction accuracy, and the 3-round stop streak cannot advance.\" The paragraph also explains the gates, but it reads as a short explanation, not a lecture.",
+  "Step 5 commits the spec, plan, and r04.yaml with \"SPE r04 predict\". That happens before the gates in steps 6 to 8 and before the Workflow launch in step 10.",
+  "Step 9 copies r03-workflow.js to r04-workflow.js and keeps \"the r03 caps\". The transcript, spec row, plan file, and gates are the existing SPE steps, not new process.",
+  "The agent asks no questions. It states its path assumptions and offers an opt-out without waiting on it: \"If you want no prediction at all, tell me.\" It also keeps the gates short.",
+  "Most steps give exact paths and git commands. Steps 6 to 8 only describe the gates in words, such as \"Run it against the r04 labels\". They give no command or script path for the selftest, the control regrade, or the dry run. Step 10 says \"I launch the Workflow\" with no command. Under strict grading, the answer falls short of exact commands for every action."
+ ]
+}

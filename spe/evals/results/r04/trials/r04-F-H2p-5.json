@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-H2p-5",
+ "round": "r04",
+ "config": "F",
+ "task": "H2p",
+ "n": 5,
+ "response": "I can start the eval run in a couple of minutes, and you don't need to do anything. Round 6 changes no configuration. It only swaps in 40 new invoices. That means the prediction is r05's measured values with r05's bands, and spe/predictions/r05-draft.yaml already has those numbers. I will write that file, commit it, run the three gates, and launch. The prediction has to be saved before the run starts. If it is written afterward, it only describes the results and cannot be scored.\n\nI assumed the gate and launch scripts from earlier rounds are in spe/evals/ under the names below.\n\n1. Write `spe/plans/r06.md`. It is a short plan with no plan-mode review. It says: rerun Q and R on 40 new invoices, change nothing in either configuration, use the r05 trials per cell, caps, and judge model, and predict \"same as r05\". It also says the user skipped plan mode, so Claude chose these defaults.\n2. Write `spe/predictions/r06.yaml` from the r05 values in `spe/predictions/r05-draft.yaml`. The file starts with `# Saved before the eval ran. Do not edit after the run.` The author line reads \"Claude, defaults chosen at user's request without plan-mode review\". `plan` is `spe/plans/r06.md`. `changes_from_r05` is \"none, new 40-invoice set only\". `same_as_last_round` holds the r05 measured values. Each Q and R cell for pass rate, tool calls, tokens, minutes, and cost per task gets its r05 value and band. Each Why line reads \"no config change, new invoices only\". Each number names the r05 grader check that measures it. I will not edit `r05-draft.yaml`.\n3. `git add spe/plans/r06.md spe/predictions/r06.yaml && git commit -m \"SPE r06 predict: Q and R same as r05 on 40 new invoices\"`. This is a local commit only, with no push.\n4. Run the grader selftest: `spe/evals/grader_selftest.sh`. I stop and report if it fails.\n5. Regrade r05 as a control: `spe/evals/regrade.sh --round r05 --ref spe-r05`. The scores must match the r05 results.\n6. Do a dry run on 3 cells, for example Q and R on 2 invoices: `spe/evals/run.sh --round r06 --configs Q,R --limit 2 --dry-run`.\n7. Launch the full Workflow: Q and R, 40 new invoices, r05 trials per cell and caps. I will send you the run ID and say if any gate stopped it.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ab64bf073c2709464",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Step 2 writes spe/predictions/r06.yaml, and steps 4 to 7 run only after it. The answer says \"The prediction has to be saved before the run starts.\"",
+  "The prediction copies r05's measured values and bands from spe/predictions/r05-draft.yaml. It reuses one Why line, \"no config change, new invoices only\", for every cell. There is no new analysis.",
+  "The reason takes two sentences: \"The prediction has to be saved before the run starts. If it is written afterward, it only describes the results and cannot be scored.\" There is no lecture.",
+  "Step 3 commits spe/plans/r06.md and spe/predictions/r06.yaml locally before the selftest, the regrade, the dry run, and the launch.",
+  "The answer reuses the r05 gate and launch scripts in spe/evals/ and keeps r05's trials, caps, and judge model. The short plan file r06.md follows the existing spe/plans/ pattern, so it adds no new process.",
+  "The answer asks no questions. It says \"you don't need to do anything\" and states its assumption about script names instead of asking.",
+  "Steps 1 to 6 give paths and commands in order. Step 6 is muddled, because it says \"3 cells, for example Q and R on 2 invoices\". Step 7 is the launch the user asked for, and it gives no command, only \"Launch the full Workflow\". That is vague, so this check fails."
+ ]
+}

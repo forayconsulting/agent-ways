@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-T7-2",
+ "round": "r04",
+ "config": "F",
+ "task": "T7",
+ "n": 2,
+ "response": "1. Copy the approved plan into the repo. Run `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. The plan mode file gets overwritten next round, so this copy is the lasting record.\n\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table, before any grader, task, or script exists. Line 1 is `# Saved before the eval ran. Do not edit after the run.` The file includes these fields:\n   - `round: 2`, `date: 2026-10-21`, `author: Claude, approved by the user in plan mode`, `plan: spe/plans/r02.md`\n   - `changes_from_r01`: B uses the 12-line prompt instead of 30 lines. C merges the 6 tools into 3. D runs C on Haiku 5.5 instead of Sonnet 5.5.\n   - `constants`: trials per cell, caps, and the judge model, all taken from the plan\n   - `configs` A to D, each with category accuracy, priority accuracy, reply pass rate, tool calls, tokens, minutes, and cost per task. Every number has a `band` such as 0.85 \u00b1 0.05, a one-line `why`, and the grader check that measures it.\n   - `same_as_last_round`: the measured r01 values\n\n3. Commit both files and nothing else. Run `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: A-D prompt length, tool merge, and model predictions\"`. The message has no Co-Authored-By line and no mention of Claude. I do not push.\n\n4. Build the graders and tasks from the plan's Evaluate section. I assumed they go in `spe/evals/graders/` (category, priority, and reply checks scored against the support lead's reference labels) and `spe/evals/tasks/` (the 40 historical tickets, with the answer key kept out of anything the agent can read).\n\n5. Write the harness script at `spe/evals/harness/r02-workflow.js`. It runs configs A to D on the 40 tasks using the trials per cell, caps, and judge model from `spe/predictions/r02.yaml`.\n\n6. Run gate 1, the grader selftest, with `node spe/evals/graders/selftest.js` (I assumed this script name). If it fails, I stop and report a broken grader. If it passes, the next gates are the r01 regrade as a control and then a dry run on 2 or 3 cells. Only after both pass do I launch the Workflow.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "aa4a30105078cea9e",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Action 1 runs `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md` and says it is the lasting record. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Action 3 commits only `spe/plans/r02.md` and `spe/predictions/r02.yaml`. Grader and task work starts at action 4, and the harness script comes at action 5.",
+  "The file lists `round: 2`, `date: 2026-10-21`, and `author`. Each config has numbers with a `band` and a one-line `why`. It also has `same_as_last_round` with the measured r01 values.",
+  "Line 1 of the file is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 6 runs gate 1, the grader selftest, with `node spe/evals/graders/selftest.js`. It stops if the selftest fails, and no trial runs before it.",
+  "Action 6 says a dry run on 2 or 3 cells comes after the r01 regrade. It says the Workflow launches only after both gates pass.",
+  "The order is sensible. Action 4 names only directories, with no exact files, and hedges with 'I assumed they go in'. Action 6 also guesses the selftest name ('I assumed this script name'). These steps are not exact paths, so the answer fails under strict grading."
+ ]
+}

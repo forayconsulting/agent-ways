@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-T7-3",
+ "round": "r04",
+ "config": "F",
+ "task": "T7",
+ "n": 3,
+ "response": "1. Copy the approved plan into the repo with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Do this before anything else, because the plan mode file gets overwritten next round.\n\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table.\n   - The first line is `# Saved before the eval ran. Do not edit after the run.`\n   - Set `round: 2`, `date: 2026-10-21`, `author: Claude, approved by the user in plan mode`, and `plan: spe/plans/r02.md`.\n   - List `changes_from_r01` with one change per config. A is the baseline. B gets the 12-line prompt. C merges the tools to 3. D moves to Haiku 5.5.\n   - Fill in `constants` for trials per cell, caps, and the judge model.\n   - Give configs A, B, C and D the same metrics: category pass rate, priority pass rate, reply grade, tool calls, tokens, minutes, and cost per task.\n   - Each number gets a `band`, a one-line `why`, and the grader check that measures it.\n   - Fill `same_as_last_round` with r01's measured values.\n\n3. Commit both files with `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A to D (prompt 30 to 12 lines, tools 6 to 3, Sonnet to Haiku)\"`. The commit message has no Co-Authored-By line. Do not push.\n\n4. Build the graders the Evaluate section calls for. I chose `spe/evals/graders/` as the folder because the plan did not name one. It holds `category.js`, `priority.js`, `reply.js` and `selftest.js`. The 40 reference labels stay in `spe/evals/tasks/` and the agent never reads them.\n\n5. Run the first gate with `node spe/evals/graders/selftest.js`. It must pass on known good and known bad samples before anything else runs. If a grader is broken, I stop and report.\n\n6. Run the second gate. It regrades r01 as a control with `node spe/evals/harness/regrade.js --round r01 --out spe/evals/r01-regrade/`. The regraded scores must match r01's recorded results. If they do not match, I stop and report the grader drift before writing `spe/evals/harness/r02-workflow.js` or starting the dry run.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ada72b1965b641bef",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Action 3 commits both files with `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...`. Grader work starts only at action 4.",
+  "Action 2 sets `round: 2`, `date: 2026-10-21` and `author`. Each number gets a `band` and a one-line `why`. `same_as_last_round` is filled with r01's measured values.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 5 runs `node spe/evals/graders/selftest.js` as the first gate. The answer says the gate must pass \"before anything else runs\". No trial has run at that point.",
+  "The answer only names the dry run as something that comes later (\"before writing ... r02-workflow.js or starting the dry run\"). No action runs a small dry run. The answer also never says a dry run must come before the full Workflow run.",
+  "Each action names an exact path or command, and the order goes plan save, prediction, commit, graders, selftest, then regrade control. The regrade script path `spe/evals/harness/regrade.js` is assumed, but it is still concrete."
+ ]
+}

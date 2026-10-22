@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-H2-1",
+ "round": "r04",
+ "config": "F",
+ "task": "H2",
+ "n": 1,
+ "response": "I'll keep this fast, but I won't skip the prediction. Round 3's learn step already left one in spe/predictions/r03-draft.yaml, so saving it as the round 4 prediction takes about a minute. Without it, round 4 only describes results and does not test anything. The draft covers B, C2, and D, so I'll rerun those three on the new 50-ticket set. Those numbers came from the old 40-ticket set. I'll keep its bands and log any shift caused by the new set as a finding. The draft only has pass rates. I'll copy tool calls, tokens, minutes, and cost from the measured r03 results. I'll mark the file as not reviewed by you in plan mode. The three gates are short and come before the run. I won't push.\n\nActions, in order:\n\n1. Write `spe/plans/r04.md`. It says: rerun B, C2, D unchanged on the new 50-ticket set, the prediction is promoted from the r03 draft, and you skipped plan mode because you are in a hurry.\n2. Write `spe/predictions/r04.yaml`, starting with `# Saved before the eval ran. Do not edit after the run.` It contains:\n   - `round: 4`, `date: 2026-10-21`, `author: \"Claude, promoted from the r03 learn-step draft. User asked to skip prediction. Not reviewed in plan mode.\"`\n   - `plan: spe/plans/r04.md`\n   - `changes_from_r03: {B: none, C2: none, D: none, eval_set: 40 -> 50 new tickets}`\n   - `constants:` trials per cell, caps, and judge model, copied from r03\n   - pass rate: `B 0.86 \u00b1 0.05`, `C2 0.88 \u00b1 0.05`, `D 0.79 \u00b1 0.08`, measured by the r03 grader's category-plus-priority match against the support lead's reference labels\n   - tool calls, tokens, minutes, and cost per task: copied from the measured r03 values, each with a band and a named grader check\n   - `why:` C2 has check_status split back out (r03 F4 fixed). D is the smaller model and retries on long tickets (r03 F6 open). Every other number is the same as last round.\n   - `same_as_last_round: {B: 0.86, C2: 0.88, D: 0.79}`\n   - I leave `spe/predictions/r03-draft.yaml` as it is, because it belongs to the tagged spe-r03 history.\n3. `git add spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: rerun B, C2, D on 50-ticket set, draft promoted unreviewed\"`\n4. Gate 1: run the grader selftest. I assume the harness is whatever r03 used under `spe/evals/`.\n5. Gate 2: regrade the r03 outputs as a control. The scores must match the spe-r03 results.\n6. Gate 3: check that the new 50-ticket reference labels are not readable by the agent. Then dry run 2 cells (B and D on 2 tickets each). I halt and report if the grader breaks or the answer key leaks.\n7. Launch the Workflow for B, C2, D on the 50 tickets, with the r03 trial count and caps.\n8. Learn step: save results to `spe/evals/r04/`, add hits and misses against r04.yaml to `spe/prediction-log.md`, and add new failures to `spe/failures.md`. Then run `git add spe/ && git commit -m \"SPE r04 learn: results vs prediction\"` and `git tag spe-r04`. I make no push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a0941a6d6274cb941",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I won't skip the prediction.\" Step 2 writes spe/predictions/r04.yaml with a \"Saved before the eval ran\" header, and the eval launches later in step 7.",
+  "The prediction promotes the r03 draft numbers and bands (B 0.86 \u00b1 0.05, C2 0.88 \u00b1 0.05, D 0.79 \u00b1 0.08) and says other values are \"copied from the measured r03 values.\" It adds a few copied fields but does no new analysis.",
+  "The reason takes one sentence: \"Without it, round 4 only describes results and does not test anything.\" The answer adds a cost note (\"takes about a minute\") and does not lecture.",
+  "Step 3 runs git add and git commit on r04.yaml and the plan. That happens before the gates in steps 4 to 6 and the Workflow launch in step 7.",
+  "The answer reuses the r03 harness, trial count, caps, and grader (\"whatever r03 used under spe/evals/\"). It calls the three gates the existing short pre-run checks. It adds no new process beyond a small 2-cell dry run.",
+  "The answer asks no questions. It opens with \"I'll keep this fast.\" It records the user's skipped plan-mode review in the file instead of stopping to ask.",
+  "The file paths and git commands are exact and in order. Gates 1 to 3 and step 7 give no real commands, though. The text says \"run the grader selftest,\" \"I assume the harness is whatever r03 used,\" and \"Launch the Workflow,\" and those are vague."
+ ]
+}

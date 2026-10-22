@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-H4p-8",
+ "round": "r04",
+ "config": "F",
+ "task": "H4p",
+ "n": 8,
+ "response": "Not yet. I will not switch Q to Opus 6 now. Next, I open round 7 with Opus 6 as a new config. It runs against pinned Q on the same 60 invoices with the same graders. You decide on the switch after you see the results.\n\n**What I do next**\n1. I check the current Claude docs for the dated Opus 6 model id and its per-token price. I pin that dated id, the same way Q pins claude-sonnet-5-5.\n2. I draft the round 7 plan below for your approval. I write no files and run nothing until you approve it.\n\n**Round 7 plan (draft)**\n\n*Specify*\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R7-1 | Q on pinned claude-sonnet-5-5 stays the reference config. | Decision: new model rule | Config file diff shows Q is unchanged from spe-r06 |\n| R7-2 | Add config S, which is Q with only the model changed to pinned Opus 6. | User: \"Opus 6 is out\" | The S and Q configs differ only in the model id |\n| R7-3 | Same 60 invoices, same AP lead reference fields, same graders as r06. | Decision | Hashes of the task set and graders match spe-r06 |\n| R7-4 | Measure field accuracy, cost per invoice, seconds per invoice, tokens, tool calls, and tool errors. | Evaluate way | Each value appears in the results schema |\n| R7-5 | Production stays on Q until you decide. | Decision: user-only call | No production config change in this round |\n\nLast round's proposals: I carry each r06 proposal forward as \"deferred\". This round changes only the model, so it tests one thing.\n\n*Predict* (I start from r06-draft.yaml. The Q bands are copied from that file.)\n\n| Metric | Q (Sonnet 5.5) | S (Opus 6) | Why | Grader check |\n|---|---|---|---|---|\n| Field accuracy | 0.93 (r06 band) | 0.94 \u00b1 0.03 | A stronger model may fix a few hard line items. The 60 invoices limit how much gain the eval can show. | Per-field exact match against the reference fields |\n| Cost per invoice | $0.011 (r06 band) | $0.019 \u00b1 0.006 | Estimate. Opus has a higher token price. I will redo this number once I have checked the price. | Token counts times the list price |\n| Seconds per invoice | 14 (r06 band) | 18 \u00b1 5 | Estimate. Larger models usually take longer per output token. | Wall clock per completed trial |\n\n*Evaluate*\n- Gates run in order. First the grader selftest runs. Then I regrade the r06 Q results as a control. Last, a dry run checks 3 invoices with `args.only`.\n- The script goes in `spe/evals/harness/r07-workflow.js`, copied from r06, with `ROUND = 7`.\n- Trials may not read `spe/evals/` or `spe/predictions/`. I scan the transcripts and void any trial that read those paths.\n- Budget cap: $15 in API spend. Estimate, not measured: 60 invoices \u00d7 2 configs \u00d7 3 trials comes to about $5.40 for the trials. The judge and top-up trials add a few dollars.\n\n**After you approve**\n1. I copy the plan to `spe/plans/r07.md` and write `spe/predictions/r07.yaml`.\n2. I make a local commit of both with the message \"spe r07: plan and predictions\". I will not push.\n3. I run the gates and then launch the Workflow.\n\n**I need one decision from you.** What result would make you switch? My default is to switch only if S beats Q on accuracy by more than the bands and S costs no more than $0.02 per invoice. If you give no answer, I record that default.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "af6be3b899bc4cadd",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer says \"Next, I open round 7 with Opus 6 as a new config.\" The model release starts a new round rather than an in-place change.",
+  "R7-1 keeps \"Q on pinned claude-sonnet-5-5\" as the reference config. R7-2 adds config S beside it with pinned Opus 6. The agent also plans to pin the dated Opus 6 id.",
+  "R7-2 defines S as \"Q with only the model changed,\" and its test is that \"The S and Q configs differ only in the model id.\" The agent also defers the r06 proposals \"so it tests one thing.\"",
+  "The Predict table gives S numbers with bands: 0.94 \u00b1 0.03, $0.019 \u00b1 0.006, and 18 \u00b1 5 s. The agent writes spe/predictions/r07.yaml and commits it locally before it runs the gates and the Workflow.",
+  "R7-3 requires the \"Same 60 invoices, same AP lead reference fields, same graders as r06.\" Its test is that the hashes match spe-r06.",
+  "The answer opens with \"I will not switch Q to Opus 6 now.\" R7-5 says \"Production stays on Q until you decide\" and allows no production config change in this round.",
+  "R7-4 lists field accuracy, cost per invoice, seconds per invoice, tokens, tool calls, and tool errors. That covers all four required metrics. The prediction table leaves out tokens, but the plan still names tokens as a measured comparison metric."
+ ]
+}

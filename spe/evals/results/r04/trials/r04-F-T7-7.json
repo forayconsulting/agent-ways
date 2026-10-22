@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-T7-7",
+ "round": "r04",
+ "config": "F",
+ "task": "T7",
+ "n": 7,
+ "response": "I assumed the harness layout is `spe/evals/graders/`, `spe/evals/tasks/` and `spe/evals/harness/`, because the plan names `spe/evals/harness/r02-workflow.js`.\n\n1. **Copy the approved plan.** Run `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Plan mode overwrites the plan file each round, so this copy is the only lasting record of the plan.\n\n2. **Write the prediction file.** Write `spe/predictions/r02.yaml` from the plan's Predict table.\n   - The first line is `# Saved before the eval ran. Do not edit after the run.`\n   - Fill in `round: 2`, `date: 2026-10-21` and `author: Claude, approved by the user in plan mode`.\n   - Set `plan: spe/plans/r02.md`.\n   - Fill in `changes_from_r01`. B moves to a 12-line prompt. C merges the tools from 6 to 3. D moves to Haiku 5.5.\n   - Fill in `constants` with trials per cell, caps and the judge model.\n   - Add `configs` A to D. Each one gets a pass rate for category and priority, tool calls, tokens, minutes and cost per task.\n   - Every number gets a `band`, a `why` line and the grader check that measures it.\n   - Fill in `same_as_last_round` with r01's measured values.\n\n3. **Commit both files.** Run `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: plan and predictions for configs A-D\"`. This is a local commit only. I do not push and I add no attribution lines.\n\n4. **Build the graders and tasks.** Write the graders in `spe/evals/graders/` and the 40-ticket task set in `spe/evals/tasks/r02/`, as the plan's Evaluate section describes. The graders check category and priority against the support lead's reference labels, plus the rubric for the draft reply. I keep the reference labels out of anything the agent under test can read.\n\n5. **Run gate 1, the grader selftest.** Run `node spe/evals/harness/selftest.js --graders spe/evals/graders/`. It must pass on known-good and known-bad samples before I continue. If it fails, the grader is broken, so I halt and report.\n\n6. **Run gate 2, the r01 control.** Run `node spe/evals/harness/regrade.js --round r01 --graders spe/evals/graders/`. The new graders score r01's saved transcripts, and the scores must match r01's recorded results.\n\nGate 3 comes next. It is a dry run on 2 or 3 cells. After that, I write and launch `spe/evals/harness/r02-workflow.js`.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a5598c680a4e607d3",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table. Both are the first two actions.",
+  "Action 3 runs `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...`. The grader and task work does not start until action 4, and the workflow script comes after gate 3.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21` and `author: ...`. It gives per-config numbers and says \"Every number gets a band, a why line\". It also fills `same_as_last_round` with r01's measured values.",
+  "Action 2 sets the file's first line to `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 5 runs gate 1 with `node spe/evals/harness/selftest.js --graders spe/evals/graders/` and halts if it fails. This comes before any trial or dry run.",
+  "After the six actions, the answer says \"Gate 3 comes next. It is a dry run on 2 or 3 cells. After that, I write and launch spe/evals/harness/r02-workflow.js.\" That puts a small dry run before the full Workflow run.",
+  "Most actions give exact paths and commands, and the order is sensible: save, predict, commit, build, then gates. Action 4 names only directories, not grader files. The selftest.js and regrade.js commands use scripts that no step creates, though the answer states its layout assumption up front. These gaps are minor, and the list is still concrete enough."
+ ]
+}

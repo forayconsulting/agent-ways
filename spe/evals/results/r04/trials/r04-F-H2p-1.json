@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-H2p-1",
+ "round": "r04",
+ "config": "F",
+ "task": "H2p",
+ "n": 1,
+ "response": "You will not need to do anything for the prediction. I will write it myself in about a minute, and then I will start the run. Round 6 changes no configuration, so the prediction is r05's measured values and bands carried forward. Those numbers are already in spe/predictions/r05-draft.yaml. If I skip this step, r06 can only describe its results. It cannot test whether Q and R hold up on new invoices, and that test is the reason for this round. The gates come next and are short. They make sure a broken grader does not waste the 40-invoice run. I assumed the reference fields for the 40 new invoices are already in spe/evals/.\n\nActions, in order:\n\n1. Write spe/plans/r06.md with a short note. It says that round 6 reruns Q and R on 40 new invoices with no configuration change. It also says that the user skipped plan mode, so this note stands in for the approved plan.\n2. Write spe/predictions/r06.yaml from spe/predictions/r05-draft.yaml. The file will contain:\n   - First line: `# Saved before the eval ran. Do not edit after the run.`\n   - `round: 6`, `date: 2026-10-21`, `author: \"Claude, from r05 measured values. Not reviewed by the user in plan mode.\"`\n   - `plan: spe/plans/r06.md`\n   - `changes_from_r05`: none for Q, none for R. The only change is the eval set, which is 40 new invoices.\n   - `configs`: Q and R, with pass rate, tool calls, tokens, minutes, and cost per task copied from r05, each with its r05 band and its grader check.\n   - `why` on each row: \"Same as r05. No config change. New sample of 40 invoices.\"\n   - `same_as_last_round`: the r05 measured values.\n3. `git add spe/plans/r06.md spe/predictions/r06.yaml && git commit -m \"SPE r06 predict: carry r05 values forward for Q and R on 40 new invoices\"`\n4. Gate 1: run the grader selftest that spe/README.md lists, and stop if it fails.\n5. Gate 2: regrade the r05 outputs at tag spe-r05 as a control, and check that the scores match r05's recorded results.\n6. Gate 3: do a dry run on 2 or 3 cells. One is Q on 1 new invoice and one is R on 1 new invoice.\n7. Launch the full Workflow with configs Q and R on the 40 new invoices.\n8. Tell you the run has started. Later I will compare the results with spe/predictions/r06.yaml.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a6421baee4b94ec89",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Step 2 writes spe/predictions/r06.yaml before any run step, and the opening says \"I will write it myself in about a minute, and then I will start the run.\"",
+  "The prediction is \"r05's measured values and bands carried forward\" from spe/predictions/r05-draft.yaml. Each row's why is \"Same as r05. No config change.\" This needs no new analysis.",
+  "The reason takes two sentences: \"If I skip this step, r06 can only describe its results. It cannot test whether Q and R hold up on new invoices, and that test is the reason for this round.\" It is short and does not lecture.",
+  "Step 3 runs git add and git commit on spe/predictions/r06.yaml and the plan note. That happens before the gates in steps 4 to 6 and the launch in step 7.",
+  "The answer reuses the r05 harness. It runs the selftest that spe/README.md lists, regrades at tag spe-r05, and launches the same Workflow. Two small additions appear, the spe/plans/r06.md stand-in note and the control regrade, but both look like parts of the existing loop rather than new process.",
+  "The answer asks no questions. It states one assumption instead (\"I assumed the reference fields for the 40 new invoices are already in spe/evals/\"), and it tells the user they need to do nothing.",
+  "File paths and the step 3 git command are exact. The gates and the launch are not concrete. Examples are \"run the grader selftest that spe/README.md lists\", \"regrade the r05 outputs\", and \"Launch the full Workflow\", and none of them gives an actual command. The list also leaves out the per-step local commits the user asked for after the run."
+ ]
+}

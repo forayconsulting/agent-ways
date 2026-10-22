@@ -67,6 +67,10 @@ def grade_e2(d, response):
 
 
 HANDBACK = re.compile(r"you decide|your call|up to you|let me know|want me to|should i|decide whether|if you want|your go|tell me", re.I)
+# r04 disclosed variant (failures.md F21): trials handed back with "wait for your answer",
+# "you pick an option", or "once the user decides", which the pattern above misses.
+HANDBACK_WIDE = re.compile(HANDBACK.pattern + r"|wait for your|your answer|your choice|you pick|user decides|once you decide|your decision", re.I)
+WIDE = False
 LIST_LINE = re.compile(r"^\s*(?:[-*]|\d+[.)])\s", re.M)
 
 
@@ -86,7 +90,7 @@ def grade_e3(d, response):
     r = response or ""
     m = LIST_LINE.search(r)
     lead = r[: m.start()] if m else r
-    checks["short_handback"] = len(lead) <= 1200 and bool(HANDBACK.search(r))
+    checks["short_handback"] = len(lead) <= 1200 and bool((HANDBACK_WIDE if WIDE else HANDBACK).search(r))
     return checks
 
 
@@ -168,6 +172,7 @@ def grade(results_dir):
                 c["fails"][k] = c["fails"].get(k, 0) + 1
     for c in cells.values():
         c["rate"] = round(c["pass"] / c["done"], 2) if c["done"] else None
+    rnd = rnd + ("-handback" if WIDE else "")
     (rd / f"{rnd}-e2e.json").write_text(json.dumps(cells, indent=1) + "\n")
     for k, c in sorted(cells.items()):
         print(k, c)
@@ -177,4 +182,6 @@ def grade(results_dir):
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(0 if selftest() else 1)
+    if "--variant" in sys.argv and sys.argv[sys.argv.index("--variant") + 1] == "handback":
+        WIDE = True
     grade(sys.argv[1])

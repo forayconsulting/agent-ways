@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-T7-1",
+ "round": "r04",
+ "config": "F",
+ "task": "T7",
+ "n": 1,
+ "response": "I assumed graders live in `spe/evals/graders/` and tasks live in `spe/evals/tasks/`, because the situation does not name those folders.\n\n1. Copy the approved plan. This copy is the only lasting record of it.\n   `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table.\n   - The first line reads `# Saved before the eval ran. Do not edit after the run.`\n   - It sets `round: 2`, `date: 2026-10-21`, `author: Claude, approved by the user in plan mode`, and `plan: spe/plans/r02.md`.\n   - `changes_from_r01` gives one change per config: A is the baseline, B uses the 12-line prompt, C merges the tools to 3, and D moves to Haiku 5.5.\n   - It also lists `constants` (trials per cell, caps, judge model) and `configs` A to D.\n   - For each config it gives pass rate (category, priority, reply), tool calls, tokens, minutes and cost per task. Each number has a `band`, a `why` line and its grader check.\n   - `same_as_last_round` is filled from the r01 measured values.\n\n3. Make a local commit of both files. Do not push. Add no attribution lines.\n   `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D, prediction saved before eval\"`\n\n4. Build the graders named in the plan.\n   - Write `spe/evals/graders/triage-grader.js`. It checks for an exact category match and an exact P1 to P4 match against the support lead's labels. It also runs a rubric judge on the drafted reply.\n   - Write `spe/evals/graders/selftest.js`. It uses known-pass and known-fail fixtures.\n\n5. Build the tasks and the harness.\n   - Write the 40 tickets to `spe/evals/tasks/r02/`. Keep the reference labels in `spe/evals/tasks/r02/answer-key.json`, where the agent under test cannot reach them.\n   - Write `spe/evals/harness/r02-workflow.js` with the Workflow arguments from the plan.\n\n6. Run gate 1, the grader selftest. If it fails, I halt and report a broken grader.\n   `node spe/evals/graders/selftest.js`\n\nThe next gates come after these six actions. First I regrade r01 as a control. Then I do a dry run on 2 or 3 cells. Only then do I launch the r02 Workflow.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ae4596a2ac0a1e1db",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Action 3 commits both files with `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...`. Grader work starts after that, in action 4.",
+  "Action 2 sets `round: 2`, `date: 2026-10-21` and an `author` line. It gives numbers for each config, and each number has a `band` and a `why` line. It fills `same_as_last_round` from the r01 measured values.",
+  "The file's first line reads `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 6 runs `node spe/evals/graders/selftest.js` as gate 1 and halts if it fails. This happens before any trial or Workflow launch.",
+  "The closing note says the agent will \"do a dry run on 2 or 3 cells. Only then do I launch the r02 Workflow.\" The dry run is outside the six listed actions, but the answer states the order clearly.",
+  "Each action names an exact path or command, such as `spe/evals/graders/triage-grader.js`, `spe/evals/tasks/r02/answer-key.json` and `spe/evals/harness/r02-workflow.js`. The order runs plan, prediction, commit, build, then selftest. The answer states its assumed folder names up front."
+ ]
+}

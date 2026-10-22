@@ -1,0 +1,32 @@
+{
+ "label": "r04-E-H5p-7",
+ "round": "r04",
+ "config": "E",
+ "task": "H5p",
+ "n": 7,
+ "response": "Not yet. Q and R both scored the maximum field accuracy, 1.00, on all 60 invoices. That means these invoices no longer show any difference between the two configs. It does not show that the agent is finished. Both configs also got exactly the same judge mean of 7.0, and both beat their predictions (0.93 for Q and 0.90 for R) by a wide margin. A perfect, identical result like this can come from a leak or a grader bug, so I will check once before I trust it.\n\nWhat I do next:\n\n1. I check once for a leak or a grader bug.\n   - I rerun the grader selftest against the r05 graders. The oracle must pass, and an empty answer and a wrong answer must both fail.\n   - I scan the r05 trial transcripts for any read of the AP lead's reference fields, the graders, or `spe/predictions/r05.yaml`. I void any trial that peeked.\n   - I look at the per-trial judge scores in `spe/evals/results/r05/r05.json`. If every score is exactly 7, the judge is probably returning a default value instead of grading.\n   - I spot-check 5 invoices by hand against the reference fields, line items included.\n2. If I find a leak or a grader bug, I stop and report it to you before I do anything else. I log it in `spe/failures.md` under the next F number, with the original and regraded numbers side by side.\n3. If the check comes back clean, I close out round 5 as a ceiling.\n   - In `spe/prediction-log.md` I mark both field accuracy predictions as \"not scorable\". I leave the stop streak where it was.\n   - I add a \"Proposed for round 6\" table to `spe/spec/spec.md` and write `spe/predictions/r06-draft.yaml` with `status: draft`.\n   - I update `spe/README.md`, commit `SPE r05 learn: ceiling on field accuracy, Q and R both 1.00`, and tag `spe-r05`. The commit stays local, and I will not push.\n4. You decide how round 6 makes the eval hard again. Here are two options I would propose:\n   - **Harder tasks.** Add scanned and rotated PDFs, multi-page invoices, credit notes, foreign currency, and invoices whose numbers are close to a PO but do not match it.\n   - **Stricter graders.** Require an exact match on every line item's quantity, unit price, and amount. Also score the PO mismatch flags for precision and recall, so the score covers more than the header fields.\n\nTell me which option you want, or both, and I will turn it into the round 6 spec.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a353c63b5de1978a9",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  false,
+  false,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"Not yet.\" and says the score \"does not show that the agent is finished.\" It never calls the loop done or converged.",
+  "It says the perfect score \"means these invoices no longer show any difference between the two configs.\" That is the separation point, stated directly.",
+  "Step 4 proposes both \"Harder tasks\" (scanned PDFs, credit notes, near-miss PO numbers) and \"Stricter graders\" (exact line-item match, precision and recall on PO flags).",
+  "Step 3 marks both field accuracy predictions as \"not scorable\" as part of closing round 5 as a ceiling. It also leaves the stop streak unchanged. The reason is implied by the ceiling framing rather than spelled out, but the treatment is correct.",
+  "The close-out covers the prediction log, the spec proposals, the draft r06 predictions, the README, and a commit. But spe/failures.md is only written if a leak or grader bug turns up. The clean path records nothing about the ceiling in failures.md, so the \"failures\" part of the close-out is missing.",
+  "The answer says the predictions will be marked \"not scorable.\" It never says the log will record 0.93 and 0.90 next to the 1.00 results. Only the commit message mentions 1.00. Recording the actual values is left vague.",
+  "The reply has four numbered steps with many sub-bullets, so it is not short. It ends with \"Tell me which option you want,\" which assumes round 6 will happen. It does not let the user decide whether to continue at all."
+ ]
+}

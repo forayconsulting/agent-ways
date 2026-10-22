@@ -1,0 +1,32 @@
+{
+ "label": "r04-E-T7-5",
+ "round": "r04",
+ "config": "E",
+ "task": "T7",
+ "n": 5,
+ "response": "I assumed the graders go in spe/evals/graders/ and the tasks in spe/evals/tasks/r02/.\n\n1. Run `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. This copies the approved plan before plan mode overwrites it next round.\n\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table.\n   - The first line is `# Saved before the eval ran. Do not edit after the run.`\n   - The top fields are `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"` and `plan: spe/plans/r02.md`.\n   - `changes_from_r01` gives the one change per config.\n   - `constants` holds trials per cell, the caps and the judge model.\n   - `configs` has one entry each for A, B, C and D.\n   - Each config gets five metrics: category and priority pass rate, tool calls, tokens, minutes, and cost per task. Every number has a `band`, a `why` line and a named grader check.\n   - `same_as_last_round` holds the r01 measured values, copied from `spe/prediction-log.md`.\n\n3. Run `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: plan and numeric prediction for configs A-D\"`. The commit has no Co-Authored-By line, and I do not push.\n\n4. Build the graders and tasks from the plan's Evaluate section in `spe/evals/graders/triage-grader.js` and `spe/evals/tasks/r02/`. Code checks cover the category label, the priority label and the reply schema. A judge scores only the drafted reply. Trials cannot read `spe/evals/graders/`, the reference labels or `spe/predictions/`.\n\n5. Run the first gate, the grader selftest: `node spe/evals/graders/selftest.js`. The oracle answers must pass, and the empty and wrong answers must fail. If any check gives the wrong result, I stop and report it.\n\n6. Run the second gate, a regrade of round 1 as a control: `node spe/evals/graders/regrade.js --round r01`. I compare its scores with the r01 measured values in `spe/prediction-log.md`. If they differ, the grader changed or has a bug. In that case I stop before I write `spe/evals/harness/r02-workflow.js` or start the dry run.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "aff308ae5f4d186ff",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  true
+ ],
+ "critiques": [
+  "In action 1, the agent runs `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. In action 2, it writes `spe/predictions/r02.yaml` from the plan's Predict table. These are the first two actions.",
+  "Action 3 commits both spe/plans/r02.md and spe/predictions/r02.yaml with `git commit`. Grader and task work does not start until action 4.",
+  "The file lists `round: 2`, `date`, `author`, the metrics for configs A to D with bands, a `why` line for every number, and a `same_as_last_round` field with the r01 measured values. Every required field is present.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.` This clearly marks the file as not to be edited after the run.",
+  "Action 5 runs the grader selftest with `node spe/evals/graders/selftest.js`. The oracle answers must pass and the empty and wrong answers must fail, or the agent stops. This happens before any trial runs.",
+  "The answer names the dry run only once, in action 6, as something the agent will not start if the regrade fails. It never says that a small dry run must come before the full Workflow run. It also gives no size for the dry run or a command for it, so this check is vague.",
+  "Each action gives an exact path or command, such as the cp command, the git add and commit line, and the node commands for the selftest and the regrade. The order is plan, then prediction, then commit, then graders, then the gates, which is sensible. The agent also states its assumptions about where the files go."
+ ]
+}

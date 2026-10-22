@@ -1,0 +1,32 @@
+{
+ "label": "r04-E-H4p-5",
+ "round": "r04",
+ "config": "E",
+ "task": "H4p",
+ "n": 5,
+ "response": "**Next step:** I would not move production to Opus 6 yet. I would answer the user like this:\n\n\"Not before an eval. Q on the pinned claude-sonnet-5-5 id stays the reference. Round 7 adds Opus 6 as one new config that changes only the model. Please enter plan mode for round 7, and I will bring the plan below.\"\n\nI change no production config and no spe/ files until the user approves the plan.\n\n**Assumptions:**\n- I don't know Opus 6's dated id or price, so I would look both up in the current model docs before writing any cost number. Until then, the cost numbers below are labeled estimates.\n- Config S runs the same number of trials per invoice as round 6.\n\n**Round 7 plan**\n\n1. **Specify** (new rows in `spe/spec/spec.md`, prompt saved to `spe/spec/transcripts/2026-10-21-r07.md`)\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R7-1 | Q stays the reference config on the pinned claude-sonnet-5-5 dated id. | New-model rule | The config file shows the same id as spe-r06 |\n| R7-2 | Add config S, which is Q with the model set to the dated Opus 6 id. Nothing else changes. | User: \"Opus 6 is out\" | A diff of the Q and S configs shows only the model field |\n| R7-3 | Use the same 60 invoices, the same AP lead reference fields, and the same graders as r06. | New-model rule | Grader and answer-key hashes match spe-r06 |\n| R7-4 | Production stays on Q until the user decides after the round. | A decision only the user can make | An entry in `disagreements.md` with the user as owner |\n| R7-5 | Each item in the \"Proposed for round 7\" table gets adopt or reject, with a reason. My default is to defer items that are not about the model to round 8, so Opus 6 is the only change this round. | r06 close-out | Each proposal row has a verdict |\n\n   I would also propose a switch rule, logged with the user as owner. S replaces Q only if S's accuracy beats Q's by more than both bands combined, and only if S's cost per invoice stays under a limit the user sets.\n\n2. **Predict** (start from `spe/predictions/r06-draft.yaml`)\n\n| Metric | Q (reference) | S (Opus 6) | Why | Grader check |\n|---|---|---|---|---|\n| Field accuracy | 0.93 with the r06-draft band | 0.95 \u00b1 0.03 | A larger model may read line items better. The schema-first prompt already closes much of that gap. | Per-field code match against the reference fields |\n| Cost per invoice | $0.011 with the r06-draft band | about $0.019 \u00b1 $0.005 (estimate) | Opus has cost more per token than Sonnet in past releases. I would fix this number from the real price before saving. | Token counts times the list price |\n| Seconds per invoice | 14 with the r06-draft band | 18 \u00b1 5 | Larger models have usually been slower. | Wall clock for completed trials only |\n\n   A result counts as a hit when it falls inside the band. For Q, the prediction is \"same as last round\". So if Q's control moves, the cause is the harness or the grader, not the model.\n\n3. **After approval**, in this order:\n   - Copy the plan to `spe/plans/r07.md`.\n   - Write `spe/predictions/r07.yaml` with the header line \"# Saved before the eval ran. Do not edit after the run.\"\n   - Commit both locally.\n\n4. **Evaluate:**\n   - Run the grader selftest. The oracle answer must pass, and the empty and wrong answers must fail.\n   - Regrade the r06 results as a control.\n   - Do a dry run on 2 or 3 cells with `args.only`.\n   - Launch `spe/evals/harness/r07-workflow.js` with `ROUND = 7` in a single constant.\n   - Cap API spend in the Workflow arguments. My unmeasured estimate is about $2 per full pass of both configs over the 60 invoices, plus the judge calls. Trials that would cross the cap are skipped and logged.\n   - Trials may not read `spe/evals/` or `spe/predictions/`. I scan the transcripts and void any trial that read them.\n\n5. **Learn:** when the completion notice arrives, I do the close-out:\n   - Update `spe/prediction-log.md` and `spe/failures.md`.\n   - Add a \"Proposed for round 8\" table to the spec and write `spe/predictions/r07-draft.yaml`.\n   - Update `spe/README.md`, commit, and tag the round spe-r07.\n   - Report the Q versus S numbers to the user, who makes the switch decision.\n\n**Commits:** I make one local commit after each SPE step: specify, predict, evaluate, and learn. I never push and never change production.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a6e0e558ccc251c1e",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer treats the release as a new round. It says \"Round 7 adds Opus 6 as one new config\" and then lays out a full Round 7 plan with Specify, Predict, Evaluate, and Learn steps.",
+  "R7-1 says \"Q stays the reference config on the pinned claude-sonnet-5-5 dated id.\" R7-2 adds config S next to Q, and the predict table compares the two side by side.",
+  "R7-2 defines S as \"Q with the model set to the dated Opus 6 id. Nothing else changes.\" Its test is a diff that shows only the model field changed. R7-5 also pushes non-model items to round 8 so that Opus 6 is the only change.",
+  "The predict table gives S numbers with bands: 0.95 \u00b1 0.03 accuracy, about $0.019 \u00b1 $0.005 cost, and 18 \u00b1 5 s. After approval, the answer writes these to spe/predictions/r07.yaml with a \"Saved before the eval ran\" header and commits them before the Evaluate step.",
+  "R7-3 requires \"the same 60 invoices, the same AP lead reference fields, and the same graders as r06\". Its test checks that grader and answer-key hashes match spe-r06.",
+  "The answer opens with \"I would not move production to Opus 6 yet.\" R7-4 keeps production on Q until the user decides, and the answer says \"I never push and never change production.\"",
+  "The plan names field accuracy, cost per invoice, and seconds per invoice as metrics. Tokens are not a metric to compare. They appear only inside the cost grader check (\"Token counts times the list price\"). So the plan misses one of the four required metrics."
+ ]
+}

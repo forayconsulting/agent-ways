@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-H5p-5",
+ "round": "r04",
+ "config": "F",
+ "task": "H5p",
+ "n": 5,
+ "response": "Not yet. Q and R both scored 1.00 field accuracy and 7.0 judge mean on all 60 invoices. That means these 60 invoices no longer show any difference between the two configs. A perfect score on this set does not show how the agent handles harder supplier PDFs. I am assuming the judge uses a 1 to 7 scale, so 7.0 is its top score too.\n\nWhat I do next:\n\n1. I commit the results as `SPE r05 evaluate (results): ceiling, Q and R at 1.00 field accuracy`.\n2. I check once for a leaked answer key or a grader bug. A jump from the predicted 0.93 and 0.90 to a perfect 1.00 is a reason to look. I confirm that the agent cannot read the AP lead's reference fields. I feed the grader one invoice with a wrong total and check that it fails. I check that the judge gives scores other than 7 when I give it a bad extraction. If I find a leak or a broken grader, I stop here and report to you before I do anything else.\n3. I add an r05 section to `spe/prediction-log.md`. I mark each prediction \"not scorable\" because both configs hit the maximum. The stop streak stays where it was, so this round does not count toward the 3 matching rounds.\n4. I add one entry to `spe/failures.md` as a task-design failure for r05. Its number is the next one after the highest F number in the file. The entry says that every config hit the maximum, so the tasks no longer separate them.\n5. I add a \"Proposed for round 6\" table to the spec with these rows:\n   - Ask the AP lead for 20 to 30 harder invoices. These would include poor scans, rotated pages, line items that run over several pages, credit notes, and foreign currencies.\n   - Grade the purchase order mismatch flags directly, with precision and recall against known mismatches.\n   - Make the grader stricter. Each line item would need to match on quantity, unit price, and amount, not just the total.\n6. I write `spe/predictions/r06-draft.yaml` with `status: draft`, starting from the r05 measured values. I add the round's result and the rerun command to `spe/README.md`. I commit `SPE r05 learn: ceiling at 1.00, tasks no longer separate Q and R` and tag `spe-r05`.\n\nThen I stop and wait for you. You can choose harder tasks, stricter graders, or both for round 6. You can also decide that these 60 invoices already cover what you need and end the loop.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a5eb1deee2dfa3e6b",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer opens with \"Not yet.\" It then treats round 5 as a ceiling round that does not count toward the stop streak. It never says the loop is done or converged.",
+  "The answer says \"these 60 invoices no longer show any difference between the two configs.\" The failures entry repeats that \"the tasks no longer separate them.\"",
+  "Step 5 proposes 20 to 30 harder invoices and direct grading of the purchase order mismatch flags. It also proposes a stricter line-item grader. These cover both harder tasks and stricter graders.",
+  "Step 3 says \"I mark each prediction 'not scorable' because both configs hit the maximum.\" It also says the stop streak does not advance.",
+  "Steps 3 to 6 cover each part. Step 3 adds the prediction-log section. Step 4 adds a failures.md entry. Step 5 adds the round 6 proposals table. Step 6 writes the r06 draft, commits, and tags.",
+  "The answer names the predicted 0.93 and 0.90 and the measured 1.00. Step 3 enters each prediction in the log as \"not scorable\" and does not drop it. The 1.00 result appears in the commit message and the README. The answer does not say outright that the log shows the numbers, but it hides no prediction.",
+  "The answer is a short framing paragraph plus six brief steps. It ends with \"Then I stop and wait for you\". It gives the user the choice of harder tasks, stricter graders, or ending the loop."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r04-E-H2p-1",
+ "round": "r04",
+ "config": "E",
+ "task": "H2p",
+ "n": 1,
+ "response": "You don't need to write a prediction today. I can make the r06 prediction from spe/predictions/r05-draft.yaml in about a minute. It keeps r05's measured values and bands, and every Why reads \"same as r05, no config change\". The prediction has to be saved before the run starts. If it comes after, the round can't be scored and your 3-round stop streak breaks. After I commit it, I'll run the three gates and launch the eval. My default is to keep r05's bands for the 40-invoice set and to run only Q and R.\n\n1. Write your message word for word to `spe/spec/transcripts/2026-10-21-r06.md`.\n2. Write `spe/plans/r06.md`. The note will say that r06 had no plan mode, that the prediction is the r05 draft promoted unchanged, and that Q and R run on 40 new invoices.\n3. Run `cp spe/predictions/r05-draft.yaml spe/predictions/r06.yaml`. Then edit only `spe/predictions/r06.yaml`:\n   - Make the first line `# Saved before the eval ran. Do not edit after the run.`\n   - Set `round: 6` and `date: 2026-10-21`.\n   - Set `author: \"Claude, promoted from r05-draft. The user skipped plan mode.\"`\n   - Set `plan: spe/plans/r06.md`.\n   - Set `changes_from_r05: \"No config changes. 40 new invoices replace the old task set.\"`\n   - Keep only Q and R under `configs`.\n   - Remove `status: draft`.\n   - Keep `same_as_last_round` set to r05's measured values.\n4. Run `git add spe/spec/transcripts/2026-10-21-r06.md spe/plans/r06.md spe/predictions/r06.yaml`, then `git commit -m \"SPE r06 predict: Q and R on 40 new invoices, same as r05\"`.\n5. Run `cp spe/evals/harness/r05-workflow.js spe/evals/harness/r06-workflow.js`. Then set `const ROUND = 6` and point the task list at the 40 new invoices.\n6. Gate 1 is the grader selftest. The oracle must pass, and the empty and wrong extractions must fail.\n7. Gate 2 regrades the r05 results as a control. The scores must match the measured values logged for r05.\n8. Gate 3 is a dry run on 2 invoices for Q and 1 for R. It checks that the schema-valid output reaches the grader and that the paid-resource caps work.\n9. Run `git add spe/evals/harness/r06-workflow.js`, then `git commit -m \"SPE r06 evaluate: harness for Q and R on 40 new invoices\"`.\n10. Launch the Workflow with `spe/evals/harness/r06-workflow.js`. Then I'll tell you it started. If any gate fails, I'll stop there and tell you before I launch anything.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a71c242a42d59831f",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"The prediction has to be saved before the run starts\". Step 3 creates spe/predictions/r06.yaml and step 10 launches the run later.",
+  "The answer copies r05-draft.yaml and says it \"keeps r05's measured values and bands\". Every Why reads \"same as r05, no config change\", so no new analysis is done.",
+  "The reason takes two sentences: \"The prediction has to be saved before the run starts. If it comes after, the round can't be scored and your 3-round stop streak breaks.\" It is short and does not lecture. The streak claim is not in the given situation, but the check is about length and tone, so this still passes.",
+  "Step 4 commits the prediction with git add and git commit. Step 10 launches the eval later.",
+  "Step 5 copies spe/evals/harness/r05-workflow.js to r06-workflow.js and makes only small edits. The transcript, plan note, and gates use existing spe/ folders. The second commit follows the user's commit-per-step rule. The answer adds little new process.",
+  "The answer asks no questions. It states its defaults (\"keep r05's bands ... run only Q and R\") and only stops if a gate fails.",
+  "Steps 1 to 5 and step 9 give exact paths and commands. Gates 1 to 3 (steps 6 to 8) only describe the checks and give no command or script path. Step 10 says \"Launch the Workflow\" with no exact invocation. These steps are not concrete enough for a strict pass."
+ ]
+}

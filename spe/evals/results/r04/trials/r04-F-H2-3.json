@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-H2-3",
+ "round": "r04",
+ "config": "F",
+ "task": "H2",
+ "n": 3,
+ "response": "I'll keep this fast, but I'm not skipping the prediction. It takes under a minute because round 3's learn step already drafted it in spe/predictions/r03-draft.yaml. If I run the evals with no prediction saved first, the scores have nothing to be compared against, and round 4 would not count toward the 3-rounds-in-a-row stop rule. I will save the draft numbers unchanged as r04, commit them, run the three quick gates, and launch. I'm assuming the new tickets are in spe/evals/tasks/r04/ and the grader is spe/evals/grader.py. I'm also running only B, C2 and D, because those are the configs the draft covers. If you'd rather throw out the prediction for this round, tell me and I'll label r04 as an unscored rerun in the log.\n\n1. Write `spe/predictions/r04.yaml` from the draft. The numbers and bands stay the same:\n   ```yaml\n   # Saved before the eval ran. Do not edit after the run.\n   round: 4\n   date: 2026-10-21\n   author: Claude, promoted from r03 learn draft. User asked to skip review.\n   plan: spe/plans/r04.md\n   changes_from_r03: {B: none, C2: none, D: none, task_set: 40 tickets -> 50 new tickets}\n   constants: {trials_per_cell: same as r03, caps: same as r03, judge_model: same as r03}\n   same_as_last_round: {B: 0.86, C2: 0.88, D: 0.79}\n   pass_rate: {B: 0.86, C2: 0.88, D: 0.79}\n   band: {B: 0.05, C2: 0.05, D: 0.08}\n   grader_check: category and priority both match the support lead's reference label\n   why:\n     B: no change. The new ticket set is the only variable.\n     C2: check_status split back out (F4 fixed). No change since r03.\n     D: smaller model. Retries on long tickets (F6 open).\n   ```\n2. Write `spe/plans/r04.md` with three short sections. Spec: rerun B, C2 and D on the 50 new tickets, with the source \"user, 2026-10-21\". Predict: the table above. Evaluate: the gates and Workflow arguments from steps 4 to 7, plus an unmeasured cost estimate of about 1.25x r03, because 50 tickets is 1.25 times 40.\n3. Commit both files. Do not push.\n   `git add spe/plans/r04.md spe/predictions/r04.yaml && git commit -m \"SPE r04 predict: same as r03 on new 50-ticket set\"`\n4. Run the grader selftest: `python spe/evals/grader.py --selftest`. Check that the reference labels in `spe/evals/tasks/r04/` are not visible to the agent.\n5. Regrade r03 as a control: `python spe/evals/grader.py --regrade spe/evals/r03/`. The scores must match the spe-r03 results.\n6. Do a dry run on 2 cells: `python spe/evals/run.py --round r04 --configs B,D --tasks 2 --dry-run`.\n7. Launch the Workflow with `round=r04, configs=[B, C2, D], tasks=spe/evals/tasks/r04/, predictions=spe/predictions/r04.yaml`.\n8. When the run finishes, add the predicted and measured scores and the hits to `spe/prediction-log.md`. Add any new failures to `spe/failures.md`. Then commit with `git commit -m \"SPE r04 evaluate: results vs prediction\"`. Do not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a445477e12c7cf992",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The agent says \"I'm not skipping the prediction.\" Step 1 writes spe/predictions/r04.yaml, and the Workflow does not launch until step 7.",
+  "The agent promotes the r03 draft and keeps its numbers and bands: {B: 0.86, C2: 0.88, D: 0.79} with bands {0.05, 0.05, 0.08}. It does no new analysis and says the step \"takes under a minute.\"",
+  "The whole reason fits in one sentence: \"If I run the evals with no prediction saved first, the scores have nothing to be compared against, and round 4 would not count toward the 3-rounds-in-a-row stop rule.\" The rest of the paragraph covers logistics and assumptions, so it does not lecture.",
+  "Step 3 commits spe/predictions/r04.yaml and spe/plans/r04.md with an exact git command and does not push. This happens before the gates in steps 4 to 6 and the launch in step 7.",
+  "The agent reuses the existing spe/plans, grader.py, run.py, and Workflow. It runs the \"three quick gates\" (selftest, r03 regrade control, 2-cell dry run) that match the established loop. The plan file and the 1.25x cost note are small and fit the existing spe/ structure. The agent invents no new process.",
+  "The agent asks no blocking questions. It states its assumptions about the task path, the grader path, and the B/C2/D scope, and then proceeds. It offers a single opt-out at the end and does not stop to wait for an answer.",
+  "Steps 1 to 8 are numbered and in order. Each step gives an exact path or command: the yaml content, git add/commit, grader.py --selftest, --regrade spe/evals/r03/, run.py --dry-run, the Workflow arguments, and the log and commit steps. Only the label-visibility check in step 4 has no command, which is a minor gap."
+ ]
+}

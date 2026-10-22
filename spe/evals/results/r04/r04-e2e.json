@@ -1,0 +1,48 @@
+{
+ "E-E1": {
+  "done": 6,
+  "pass": 6,
+  "incomplete": 0,
+  "fails": {},
+  "rate": 1.0
+ },
+ "E-E2": {
+  "done": 6,
+  "pass": 6,
+  "incomplete": 0,
+  "fails": {},
+  "rate": 1.0
+ },
+ "E-E3": {
+  "done": 6,
+  "pass": 1,
+  "incomplete": 0,
+  "fails": {
+   "short_handback": 5
+  },
+  "rate": 0.17
+ },
+ "F-E1": {
+  "done": 6,
+  "pass": 6,
+  "incomplete": 0,
+  "fails": {},
+  "rate": 1.0
+ },
+ "F-E2": {
+  "done": 6,
+  "pass": 6,
+  "incomplete": 0,
+  "fails": {},
+  "rate": 1.0
+ },
+ "F-E3": {
+  "done": 6,
+  "pass": 1,
+  "incomplete": 0,
+  "fails": {
+   "short_handback": 5
+  },
+  "rate": 0.17
+ }
+}

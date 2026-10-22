@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-H2p-6",
+ "round": "r04",
+ "config": "F",
+ "task": "H2p",
+ "n": 6,
+ "response": "I'll start the run now, and you won't need to do anything for the prediction. I will write the r06 prediction myself from r05's measured values in spe/predictions/r05-draft.yaml. That takes about two minutes. Round 6 changes no configuration. It only swaps in 40 new invoices, so \"same as last round\" is an honest prediction. If I skip this step, r06 can't count toward the stop rule, because a prediction written after the run only describes the results. I will mark these numbers as defaults I chose, not numbers you approved. I am assuming the harness entry points are the ones under spe/evals/ from earlier rounds.\n\nActions, in order:\n\n1. Write `spe/plans/r06.md`. It is a short plan that reruns Q and R on 40 new invoices, makes no configuration change, and records the numbers as defaults because you skipped plan mode today.\n2. Write `spe/predictions/r06.yaml`.\n   - The first line is `# Saved before the eval ran. Do not edit after the run.`\n   - `round: 6`, `date: 2026-10-21`, `author: \"Claude, defaults recorded. User skipped plan mode for r06.\"`\n   - `plan: spe/plans/r06.md`\n   - `changes_from_r05`: the 40 new invoices for both Q and R. No configuration change.\n   - `constants`: copied from r05 (trials per cell, caps, judge model).\n   - `configs`: Q and R. Each one gets the r05 measured value and band for pass rate, field accuracy, PO-mismatch flags, tool calls, tokens, minutes, and cost per task. Each number names its grader check and has the Why line \"Same as r05. Only the invoice set changed.\"\n   - `same_as_last_round`: the r05 measured values.\n3. `git add spe/plans/r06.md spe/predictions/r06.yaml && git commit -m \"SPE r06 predict: Q and R same as r05 on 40 new invoices\"`\n4. Gate 1 is the grader selftest: `spe/evals/run.sh --selftest`. If it fails, I stop and tell you.\n5. Gate 2 regrades r05 as a control: `spe/evals/run.sh --regrade spe-r05`. The scores must match the r05 tagged results.\n6. Gate 3 is a dry run on 2 or 3 cells: `spe/evals/run.sh --round r06 --configs Q,R --tasks 2 --dry-run`\n7. I launch the full Workflow with round r06, configs Q and R, and the 40 new invoices. I check the answer-key path and the budget cap before launch. I will halt and report if either one fails.\n8. When the run finishes, I commit the results as `SPE r06 eval: ...`. I do not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a16767f6633fe9826",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Step 2 writes spe/predictions/r06.yaml with the header 'Saved before the eval ran.' The eval only launches later, in steps 4 to 7.",
+  "The prediction copies 'the r05 measured value and band' for each metric. It uses 'same_as_last_round' and the Why line 'Same as r05. Only the invoice set changed.' The answer says it 'takes about two minutes.'",
+  "The main reason fits in one sentence: 'If I skip this step, r06 can't count toward the stop rule, because a prediction written after the run only describes the results.' The paragraph adds a little context about the round changing no configuration, but it does not lecture.",
+  "Step 3 commits the plan and the prediction with 'SPE r06 predict: ...'. This happens before the gates in steps 4 to 6 and the launch in step 7.",
+  "The run reuses the spe/evals/run.sh entry points from earlier rounds and the existing plans/ folder. The three gates (selftest, r05 regrade, dry run) read as the existing SPE launch checks, not new process. The plan file is short.",
+  "The answer asks no questions. It says 'you won't need to do anything for the prediction' and states its assumption about the harness instead of asking.",
+  "Steps 1 to 6 give exact paths and commands in order. Step 7 only says 'I launch the full Workflow' with no command. It also does not name the answer-key path or the budget cap value. Step 8's commit message is left as 'SPE r06 eval: ...'. The answer also admits the harness commands are assumed, not checked."
+ ]
+}

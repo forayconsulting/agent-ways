@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-H4-2",
+ "round": "r04",
+ "config": "F",
+ "task": "H4",
+ "n": 2,
+ "response": "Next step: I start round 5 at Specify. C2 on pinned Sonnet 5.5 stays as the reference config. I add one new config, E, which is C2 with only the model changed to Sonnet 6. Production stays on C2 until the eval is done. Before I fill in the cost row, I will look up the dated Sonnet 6 model ID and its price in the current Anthropic docs. Until then, I assume Sonnet 6 costs the same per token as Sonnet 5.5.\n\n# Round 5 plan (outline)\n\n## Specify\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R1 | Keep C2 on the pinned claude-sonnet-5-5 dated ID as the reference config. | Way rule \"a new model\" | The harness config list includes C2 with the exact pinned ID. |\n| R2 | Add config E. E is C2 with only the model changed, to the pinned dated Sonnet 6 ID. | User: \"Sonnet 6 just shipped.\" | A diff of the C2 and E configs shows only the model field changed. |\n| R3 | Use the same 40 tickets, the same reference labels, and the same graders as round 4. | Way rule \"same tasks and graders\" | The task file and grader file hashes match the spe-r04 tag. |\n| R4 | Compare category_acc, priority_acc, cost, tokens, and seconds per ticket for E against C2. | Way rule \"a new model\" | The synthesis table has all 5 metrics for both configs. |\n| R5 | Do not switch production to Sonnet 6 in this round. | Decision | Production config is unchanged at round close. |\n| R6 | Trial agents must not read spe/evals/ or spe/predictions/. | Way rule \"keep the answer keys hidden\" | A transcript scan finds zero reads of those paths. Any trial that read them is voided. |\n| R7 | API spend is capped at $6 for this round. | Default | The harness checks the cap before each trial and logs any trial it skipped. |\n\nRound 4 proposals: I list each open proposal from spe/failures.md and the r04 learn notes in this table. I defer any proposal that changes the prompt or the tools to round 6, so that this round changes only the model. I adopt grader fixes only if they pass the selftest and leave the control unchanged.\n\n## Predict\n\nC2 starts from \"same as last round\" (spe/predictions/r04-draft.yaml). Each ticket is 0.025 of accuracy, because the set has 40 tickets.\n\n| Metric | C2 (Sonnet 5.5) | E (Sonnet 6) | Why | Grader check |\n|---|---|---|---|---|\n| category_acc | 0.89 \u00b1 0.04 | 0.91 \u00b1 0.04 | A newer model may get about 1 more ambiguous ticket right. This sits near the 0.89 to 0.93 range, where the remaining misses are often label disputes. | Exact match against the reference category |\n| priority_acc | 0.81 \u00b1 0.05 | 0.83 \u00b1 0.05 | Priority depends on judging urgency, and a stronger model may gain about 1 ticket. | Exact match against the reference P1 to P4 |\n| cost_per_ticket ($) | 0.006 \u00b1 0.001 | 0.006 \u00b1 0.0015 | I assume the same price per token. I use a wider band for E because its token count may differ. I will revise this before approval if the price in the docs differs. | Usage tokens times the listed price |\n| tokens_per_ticket | 9100 \u00b1 900 | 9100 \u00b1 1500 | The prompt and tools are the same. Output length on a new model is unknown, so E gets a wider band. | Sum of usage tokens per trial |\n| seconds_per_ticket | 7.4 \u00b1 1.0 | 7.0 \u00b1 1.5 | Launch-week load on a new model can go either way. | Wall time per completed trial |\n\nThe bands for tokens and seconds were not in the draft. I set them to about 10% for C2 and about 15 to 20% for E.\n\n## Evaluate\n\nGates, run in order. Each gate must pass before the next one starts.\n1. Grader selftest. The oracle labels pass. Empty labels and wrong labels fail.\n2. Control. I regrade the r04 results with the r05 graders. The scores must match 0.89 and 0.81 exactly. A change here means the grader changed, not the agent.\n3. Dry run. I run `args.only` on 3 cells (E on 2 tickets, C2 on 1 ticket). Each cell must return valid schema output.\n\nScript: spe/evals/harness/r05-workflow.js, copied from r04, with `ROUND = 5` set in one constant.\nPhases: Trials, Grade (code checks), Top-up, Synthesis, failure analysis, completeness critic.\n\nWorkflow args: `{ ROUND: 5, configs: [\"C2\", \"E\"], tasks: 40, trialsPerCell: 3, topUpCap: 2, spendCapUsd: 6, allowedPaths: [\"src/\", \"prompts/\", \"tools/\"] }`\n\nCost estimate (not measured): 240 trials \u00d7 $0.006 \u2248 $1.45. Top-up adds about $0.30. The analysis and critic agents add about $1 to $2. The total is about $3 to $4, which is under the $6 cap.\n\n## After approval\n1. Copy this plan to spe/plans/r05.md.\n2. Write spe/predictions/r05.yaml from the Predict table. It replaces r04-draft.yaml as the round 5 prediction.\n3. Commit both locally with the message \"spe: r05 plan and predictions\". I will not push.\n4. Run the 3 gates, then launch the Workflow.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a85f50f86142d71a2",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer opens with \"I start round 5 at Specify.\" It then lays out Specify, Predict, Evaluate, and After approval sections. The model release clearly starts a new round.",
+  "R1 keeps \"C2 on the pinned claude-sonnet-5-5 dated ID as the reference config.\" R2 adds config E for Sonnet 6, and the workflow args list both configs as [\"C2\", \"E\"].",
+  "R2 says \"E is C2 with only the model changed\" and tests this with a config diff. The answer also defers prompt and tool proposals to round 6 \"so that this round changes only the model.\"",
+  "The Predict table gives E numbers with bands, such as 0.91 \u00b1 0.04 and 0.83 \u00b1 0.05. After approval, the agent writes spe/predictions/r05.yaml and commits it before it runs the gates and launches the Workflow.",
+  "R3 requires \"the same 40 tickets, the same reference labels, and the same graders as round 4.\" Its test checks that the file hashes match the spe-r04 tag. The control gate regrades r04 results and requires an exact match.",
+  "The answer says \"Production stays on C2 until the eval is done.\" R5 repeats this: \"Do not switch production to Sonnet 6 in this round.\"",
+  "R4 names category_acc, priority_acc, cost, tokens, and seconds per ticket. The Predict table has a row for each of these metrics for both configs."
+ ]
+}

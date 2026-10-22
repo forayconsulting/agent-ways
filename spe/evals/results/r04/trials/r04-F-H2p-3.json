@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-H2p-3",
+ "round": "r04",
+ "config": "F",
+ "task": "H2p",
+ "n": 3,
+ "response": "You can skip the full ritual. I still need a prediction file on disk before the run starts, because after the run it can only describe the results, not predict them. Round 6 changes no configuration, so the prediction is r05's measured values carried forward with slightly wider bands for the new invoices. Writing it takes me about a minute, and you do not have to do anything. After that I run the three gates and launch the eval. I am assuming the harness entry point is `spe/evals/run.py`. If your harness uses a different command, I will use that one.\n\n1. Write `spe/plans/r06.md`. It is a short plan. It reruns Q and R on 40 new invoices, uses the same constants as r05, and changes no configuration. It notes that you skipped plan mode this round and that the plan and prediction are defaults carried over from r05.\n2. Write `spe/predictions/r06.yaml` from `spe/predictions/r05-draft.yaml`:\n   - The first line is `# Saved before the eval ran. Do not edit after the run.`\n   - Fields: `round: 6`, `date: 2026-10-21`, `author: \"Claude, defaults from r05, user skipped plan mode\"`, `plan: spe/plans/r06.md`.\n   - `changes_from_r05: \"none for Q and R. Eval set is 40 new invoices.\"`\n   - `same_as_last_round` holds r05's measured values.\n   - Each metric (field accuracy, PO mismatch flag accuracy, tool calls, tokens, minutes, cost per invoice) gets r05's value for Q and R, a band about 0.02 wider than r05's band, and the grader check that measures it.\n   - Each Why line reads \"No config change. Band widened for unseen invoices.\"\n3. Add one line to `spe/prediction-log.md`. It says the r06 prediction was carried forward from r05 without plan mode and was saved before any trial ran.\n4. `git add spe/plans/r06.md spe/predictions/r06.yaml spe/prediction-log.md && git commit -m \"SPE r06 predict: carry r05 values for Q and R on 40 new invoices\"`\n5. Gate 1, the grader selftest: `python spe/evals/run.py --selftest`\n6. Gate 2, regrading r05 as a control: `python spe/evals/run.py --regrade --ref spe-r05`. The scores must match r05's recorded scores. If they do not match, I stop and report back.\n7. Gate 3, a dry run on 2 or 3 cells: `python spe/evals/run.py --round 6 --configs Q,R --set new40 --limit 3 --dry-run`\n8. Launch the Workflow: `python spe/evals/run.py --round 6 --configs Q,R --set new40`\n9. When the run finishes, commit the results as `SPE r06 evaluate: Q and R on 40 new invoices`. I do not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a4c2d5b8bccf7733b",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer says \"I still need a prediction file on disk before the run starts.\" Step 2 writes `spe/predictions/r06.yaml` before any eval command runs.",
+  "The prediction is \"r05's measured values carried forward with slightly wider bands.\" It is built from `spe/predictions/r05-draft.yaml` with bands about 0.02 wider and a single Why line. No new analysis is done.",
+  "The reason takes one sentence: \"after the run it can only describe the results, not predict them.\" The answer gives no lecture and adds only that the work takes about a minute and needs nothing from the user.",
+  "Step 4 commits the plan, the prediction, and the log line. The gates and the launch come after it, in steps 5 to 8.",
+  "The answer reuses the existing spe/ structure and \"the three gates,\" and it runs Q and R with r05's constants and no config change. It adds a short plan file and a log line, but both belong to the existing loop. The harness entry point is assumed rather than confirmed, but the answer says it will use the real command if that differs.",
+  "The answer asks no questions. It states its harness assumption and says \"you do not have to do anything.\"",
+  "Steps 1 to 9 are in order and give exact paths and full git and python commands with flags. Step 9 gives only the commit message and no full command, but the earlier commit command makes it clear. The flags come from an assumed harness, but they are concrete."
+ ]
+}

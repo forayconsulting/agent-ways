@@ -1,0 +1,32 @@
+{
+ "label": "r04-E-H4p-6",
+ "round": "r04",
+ "config": "E",
+ "task": "H4p",
+ "n": 6,
+ "response": "Not yet. Q stays on claude-sonnet-5-5 as the pinned reference config, and production stays on Q. I add Opus 6 as a new config, S, that changes only the model. Round 7 measures S against Q, and you decide on a switch after you see the results.\n\n**Next step:** I start round 7 in plan mode. First I check the current Anthropic docs for Opus 6's dated model id and its per-token price. I won't guess either one.\n\n**Plan for round 7**\n\n1. **Specify**\n   - Save your question verbatim to `spe/spec/transcripts/2026-10-21-r07.md`.\n   - Add a round 7 table to `spe/spec/spec.md`. Turn each row of the r06 \"Proposed for round 7\" table into a row, and adopt or reject each one with a reason. Add one new row: \"Compare Opus 6 against Q with only the model changed.\" Its source is your words.\n   - Configs are Q (reference, claude-sonnet-5-5 at its dated id) and S (Q with the Opus 6 dated id). I chose to drop P and R this round to save budget, because r06 already ranked them below Q.\n   - Log one open decision in `spe/spec/disagreements.md` with you as owner. The question is what accuracy gain justifies a higher cost per invoice. My default is this: switch only if S's accuracy is above Q's band and S stays under a cost cap that you set.\n\n2. **Predict**\n   - Q's numbers start as \"same as last round\" from `spe/predictions/r06-draft.yaml`: field accuracy 0.93, $0.011 per invoice, and 14 s per invoice, with the r06 bands.\n   - S's numbers also start from Q's. I move a number only for a stated reason. Cost per invoice is Q's token counts priced at Opus 6 rates, and it is labeled as an estimate until the run measures it. Latency moves up only if the docs give a reason. Accuracy gets a band no narrower than one invoice out of 60 (about 0.017), because a smaller gain cannot be told apart from noise.\n   - Each number names its grader check. I also add per-field accuracy and PO-mismatch flag accuracy, so that a change in the total does not hide a field that got worse.\n\n3. **After approval**\n   - Write `spe/plans/r07.md` and `spe/predictions/r07.yaml`, which starts with the \"Saved before the eval ran\" line. Commit both locally.\n\n4. **Evaluate**\n   - Copy the r06 script to `spe/evals/harness/r07-workflow.js`, set `ROUND = 7` once, and add config S.\n   - Gates run in order. The grader selftest runs first. Next comes r06 regraded as a control, where Q should come back at 0.93. Last is a dry run on 2 or 3 cells with `args.only`, including one S cell.\n   - Caps go in the arguments for API spend and agent count. Trials that would cross a cap are skipped and logged. The plan includes an unmeasured cost estimate.\n   - Trials may read only the invoice PDFs and the PO data. I scan transcripts for reads of `spe/evals/` and `spe/predictions/`, and I void any trial that peeked.\n   - Split cells get extra trials up to a cap. The run ends with failure analysis and a completeness critic.\n\n5. **Learn**\n   - When the completion notice arrives, I update `spe/prediction-log.md`, `spe/failures.md`, the \"Proposed for round 8\" table, `spe/predictions/r07-draft.yaml`, and `spe/README.md`.\n   - I commit locally and tag `spe-r07`. Nothing gets pushed or deployed.\n   - Then I report S against Q on accuracy, cost, and latency, and you make the switch decision.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "aa812e5d51ca024ea",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I start round 7 in plan mode\" and walks through Specify, Predict, Evaluate, and Learn for round 7. It ends with the tag spe-r07.",
+  "The answer says \"Q stays on claude-sonnet-5-5 as the pinned reference config\" and adds \"Opus 6 as a new config, S\". It lists the configs as \"Q (reference...) and S\".",
+  "The answer defines S as a config \"that changes only the model\" and as \"Q with the Opus 6 dated id\". The spec row also says \"with only the model changed.\"",
+  "The predict step gives S starting numbers taken from Q (0.93, $0.011, 14 s). It sets an accuracy band no narrower than about 0.017 and marks cost as an estimate. r07.yaml opens with the \"Saved before the eval ran\" line and is committed before the eval runs.",
+  "The answer copies the r06 harness to r07 and runs the grader selftest. It regrades r06 as a control and expects Q to return 0.93. It also uses the 60-invoice base for the noise band. Together these keep the same invoice set and graders, though the answer never says so in one direct sentence.",
+  "The answer says \"production stays on Q\" and \"Nothing gets pushed or deployed\". It also says \"you decide on a switch after you see the results.\"",
+  "The answer names accuracy (including per-field accuracy and PO-flag accuracy), cost per invoice, and latency. The final report covers \"accuracy, cost, and latency\". Tokens appear only as an input to the cost estimate and are never named as a metric to compare, so the check fails."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r04-E-H4-8",
+ "round": "r04",
+ "config": "E",
+ "task": "H4",
+ "n": 8,
+ "response": "I treat \"Sonnet 6 just shipped\" as the start of round 5. I enter plan mode and respec from round 4's evidence. C2 on the pinned Sonnet 5.5 stays as the reference config and keeps running in production. I add one new config, C2-S6, that changes only the model. The tasks and graders stay the same. I will not switch production before the eval. That switch is your decision after the results come in.\n\n## Round 5 plan outline (draft for approval)\n\n**0. Record the spec**\n- I save your words verbatim to `spe/spec/transcripts/2026-10-21-r05.md`.\n- I will pin the dated Sonnet 6 model id from the current models list and confirm it before the dry run. I do not know the exact id yet.\n\n**1. Specify** (round 5 table in `spe/spec/spec.md`)\n\n| ID | Requirement | Source | Test |\n|---|---|---|---|\n| R5-1 | Run C2 on the pinned `claude-sonnet-5-5` as the reference config. | Way rule for a new model, r04 draft | Config hash matches r04 |\n| R5-2 | Add C2-S6. It is C2 with only the model id changed to the pinned dated Sonnet 6 id. | User: \"Sonnet 6 just shipped\" | A diff of the configs shows only the model field |\n| R5-3 | Both configs use the same 40 tickets, reference labels, and graders as r04. | Way rule | Grader and task checksums match `spe-r04` |\n| R5-4 | Production stays on C2 Sonnet 5.5 until you decide. | Way rule | Logged in `spe/spec/disagreements.md` with you as owner |\n| R5-5 | Each row from r04's \"Proposed for round 5\" gets adopted or rejected with a reason. Grader fixes apply to both configs. Agent changes wait for round 6, so this round compares only the model. | r04 learn | Every row has a decision |\n\n**2. Predict** (saved as `spe/predictions/r05.yaml` before any trial runs)\n\n| Metric | C2 (Sonnet 5.5) | C2-S6 | Grader check | Why |\n|---|---|---|---|---|\n| category_acc | 0.89 \u00b1 0.04 | 0.89 \u00b1 0.06 | Exact match to the lead's label | Same as last round. I have no evidence that Sonnet 6 is better on this task. The band is wider because a model swap is a bigger change than a prompt edit. |\n| priority_acc | 0.81 \u00b1 0.05 | 0.81 \u00b1 0.07 | Exact match to P1 to P4 | Same reasoning as category_acc. |\n| cost_per_ticket | 0.006 \u00b1 0.001 | 0.006 \u00b1 0.002 | Token counts times the list price | I assume Sonnet 6 has the same per-token price as Sonnet 5.5. I will check the published price before approval and move this number only if the price differs. |\n| tokens_per_ticket | 9100 \u00b1 900 | 9100 \u00b1 1500 | Usage field in the API response | Same as last round. The wider band covers a possible tokenizer or verbosity change. |\n| seconds_per_ticket | 7.4 \u00b1 1.0 | 7.4 \u00b1 2.0 | Wall clock per trial | Same as last round. Launch-week latency on a new model is uncertain. |\n\nA result inside the band is a hit. The reference column also checks for drift. If C2 misses its own band, the problem is in the harness or the grader, not in Sonnet 6.\n\n**3. Evaluate**\n- Gate 1: the grader selftest. The oracle labels must pass, and the empty and wrong labels must fail.\n- Gate 2: I regrade the r04 results with the r05 graders as a control. The scores must match r04.\n- Gate 3: a dry run with `args.only` on 3 cells. It must return valid schema output.\n- Script: `spe/evals/harness/r05-workflow.js`, copied from r04. `ROUND = 5` is set in one constant. The phases are Trials, Grade, Judge, Top-up, and Synthesis.\n- Trials: 40 tickets \u00d7 2 configs \u00d7 3 trials = 240. Code checks score category and priority. A judge scores only the draft reply. Trials may read only the ticket input. I scan the transcripts for reads of `spe/evals/` or `spe/predictions/`, and I void any trial that read them.\n- Top-up: split cells get up to 2 extra trials each, with a cap of 40 extra trials.\n- Caps: $5 API spend and 300 trial agents. I skip any trial that would cross a cap and log the skip.\n- Estimated cost (not measured): about $1.50 for the trials, plus the judge and the analysis agents. That is under $5 in total if Sonnet 6 is priced like Sonnet 5.5.\n- The run ends with a failure-analysis agent and a completeness critic.\n\n**4. Commits** (local only, no push)\n- After approval, I copy the plan to `spe/plans/r05.md` and commit it together with `spe/predictions/r05.yaml`.\n- After the run, I commit the learn step and tag it `spe-r05`.\n\n**Open decision for you:** whether to move production to Sonnet 6. I will bring you the round 5 results to make that call.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ab6eb6029f78e3946",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer opens with \"I treat 'Sonnet 6 just shipped' as the start of round 5\" and writes a full round 5 plan with Specify, Predict, and Evaluate steps.",
+  "R5-1 keeps \"C2 on the pinned claude-sonnet-5-5 as the reference config\". R5-2 adds C2-S6 as a separate config, and both run in the same trials (\"40 tickets \u00d7 2 configs\").",
+  "R5-2 defines C2-S6 as \"C2 with only the model id changed\" and tests it with \"A diff of the configs shows only the model field.\" R5-5 holds agent changes until round 6 \"so this round compares only the model.\"",
+  "The Predict step is \"saved as spe/predictions/r05.yaml before any trial runs.\" It gives a number and a band for each metric for C2-S6, for example category_acc 0.89 \u00b1 0.06 and cost 0.006 \u00b1 0.002, and it gives a reason for each band.",
+  "R5-3 says both configs use \"the same 40 tickets, reference labels, and graders as r04,\" checked against spe-r04 checksums, and Gate 2 regrades the r04 results as a control. R5-5 allows \"grader fixes\", which conflicts a little with the checksum test. Gate 2 still requires the scores to match r04, so the graders stay effectively the same.",
+  "The answer says \"I will not switch production before the eval.\" R5-4 keeps production on C2 Sonnet 5.5 until the user decides, and the switch is listed as an open decision for the user.",
+  "The Predict table names category_acc, priority_acc, cost_per_ticket, tokens_per_ticket, and seconds_per_ticket for both configs. That covers accuracy, cost, tokens, and time per ticket."
+ ]
+}

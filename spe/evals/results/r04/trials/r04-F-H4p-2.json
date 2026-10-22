@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-H4p-2",
+ "round": "r04",
+ "config": "F",
+ "task": "H4p",
+ "n": 2,
+ "response": "**Short answer:** Not yet. I will test Opus 6 against Q first, and we switch only if the numbers support it. Q on the pinned claude-sonnet-5-5 stays in production until round 7 closes.\n\n**What I do next**\n\nI will draft the round 7 plan here for your approval. I will not write any files, run anything, or commit until you approve it. I will check the current Opus 6 pricing and its dated model id before I fill in the cost cells. The cost figures below are estimates until then.\n\n**Round 7 plan outline**\n\n1. **Specify (requirement table)**\n   - R1: Compare Opus 6 against Q on the same 60 invoices with the same graders. Source: your question, \"Opus 6 is out, should we just move to it?\"\n   - R2: Keep Q on the dated claude-sonnet-5-5 id as the reference config. Source: decision.\n   - R3: The new config changes only the model. Source: decision.\n   - R4: Report field accuracy, cost per invoice, tokens, time per invoice, tool calls and tool errors for each config. Source: decision.\n   - R5: Leave production on Q until you choose after the eval. Source: decision.\n   - I will adopt or reject each proposal from round 6 in spe/failures.md and give a reason for each.\n   - I will drop R from this round so the comparison is only Q against S.\n\n2. **Predict (configs Q and S)**\n   - Q is the reference: claude-sonnet-5-5 on its dated id, with the schema-first prompt.\n   - S is Q with the model set to the dated Opus 6 id. Nothing else changes.\n   - Q's starting numbers are \"same as last round.\" They come from spe/predictions/r06-draft.yaml, and I will not edit that file.\n\n   | Metric | Q | S | Why | Grader check |\n   |---|---|---|---|---|\n   | Field accuracy | 0.93 \u00b1 r06 band | 0.95 \u00b1 0.03 | A stronger model may misread fewer line items. | Code match against the AP lead's reference fields |\n   | Cost per invoice | $0.011 \u00b1 r06 band | $0.030 \u00b1 0.015 (estimate) | Opus costs more per token than Sonnet. | Token usage from the API times current prices |\n   | Time per invoice | 14 s \u00b1 r06 band | 20 s \u00b1 6 s | Larger models run slower. | Wall clock per trial |\n\n   I will add rows for tokens per invoice and for PO mismatch flag accuracy, using the same format.\n\n3. **Evaluate**\n   - The script goes in spe/evals/harness/r07-workflow.js. It is copied from r06 and uses one ROUND constant.\n   - The phases are Trials, Grade, Top-up for cells where only some trials passed (with a cap), Synthesis, failure analysis, and a completeness critic.\n   - The arguments include a spend cap and an agent cap. The script checks the cap before each trial and logs any trial it skips.\n   - Trial agents may read only the invoice PDFs and the PO data. A transcript scan voids any trial that read spe/evals/ or spe/predictions/.\n   - I will give an unmeasured cost estimate for the run in the plan.\n\n**After you approve**\n\n1. I copy the plan to spe/plans/r07.md and write spe/predictions/r07.yaml.\n2. I make one local commit of both files: \"spe(r07): plan and predictions\". I will not push.\n3. I run the gates in order. First the grader selftest. Then I regrade the r06 Q results as a control, which should give 0.93. Then a dry run on 2 or 3 invoices per config using args.only.\n4. I launch the Workflow and make one local commit at close-out.\n\n**The decision is yours.** If S's accuracy falls above Q's band, I will report the accuracy gained against the extra cost and time per invoice. You decide whether the gain is worth the price. If S's accuracy falls inside Q's band, I will recommend staying on Q.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "acc96027e8a00a9ba",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "The answer treats the release as a new round. It says \"Round 7 plan outline\" and goes through Specify, Predict, and Evaluate.",
+  "The answer says \"Q is the reference: claude-sonnet-5-5 on its dated id.\" It adds a new config next to Q: \"S is Q with the model set to the dated Opus 6 id.\"",
+  "R3 says \"The new config changes only the model.\" The Predict step repeats it: \"Nothing else changes.\" The answer also drops R \"so the comparison is only Q against S.\"",
+  "The table gives S numbers with bands: 0.95 \u00b1 0.03, $0.030 \u00b1 0.015, and 20 s \u00b1 6 s. The agent writes spe/predictions/r07.yaml and commits it before the gates and the Workflow launch.",
+  "R1 says \"Compare Opus 6 against Q on the same 60 invoices with the same graders.\" The plan also regrades the r06 Q results as a control.",
+  "The answer says \"Q on the pinned claude-sonnet-5-5 stays in production until round 7 closes.\" R5 says \"Leave production on Q until you choose after the eval.\"",
+  "R4 lists \"field accuracy, cost per invoice, tokens, time per invoice.\" The table covers accuracy, cost, and time. The answer promises a tokens-per-invoice row in the same format."
+ ]
+}

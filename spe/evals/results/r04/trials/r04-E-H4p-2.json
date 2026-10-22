@@ -1,0 +1,32 @@
+{
+ "label": "r04-E-H4p-2",
+ "round": "r04",
+ "config": "E",
+ "task": "H4p",
+ "n": 2,
+ "response": "Not yet. Q stays in production on its pinned claude-sonnet-5-5 dated id. I will test Opus 6 in round 7 as a new config that changes only the model. You decide on a switch after the results come in.\n\n**What I do next**\n\nI open the round 7 respec in plan mode. I do not change any production config or any saved round 6 file.\n\n**Plan outline for round 7**\n\n1. **Specify**\n   - Save your question verbatim to `spe/spec/transcripts/2026-10-21-r07.md`.\n   - Add a round 7 table to `spe/spec/spec.md`. I will adopt or reject each row in the round 6 \"Proposed for round 7\" table and give a reason for each.\n   - Add a new row with the source \"user's words\": \"Compare Opus 6 against Q on the same 60 invoices and graders.\"\n   - Configs:\n     - Q is the reference. It runs on claude-sonnet-5-5 at its dated id.\n     - S is Q on Opus 6, pinned to Opus 6's dated id. The prompt, the tools, the tasks, and the graders stay the same.\n   - I chose to run only Q and S, to keep the spend low. P and R add nothing to this question.\n   - Add an open decision to `spe/spec/disagreements.md`, owned by you. The question is what gain in accuracy justifies the higher cost and latency.\n   - Commit locally with the message \"spe r07: specify\".\n\n2. **Predict**\n   - Q is \"same as last round\" and uses the numbers in `spe/predictions/r06-draft.yaml`. That is 0.93 field accuracy, $0.011 per invoice, and 14 s per invoice, with the bands saved there.\n   - My provisional numbers for S are below. They are estimates.\n     - Field accuracy: 0.94 \u00b1 0.03. Why: a stronger model may help on messy line items. Q is already at 0.93, so the room to improve is small.\n     - Cost per invoice: $0.03 \u00b1 0.01. Why: Opus usually costs several times more per token than Sonnet. Before I save the file, I will check the published Opus 6 rate and recompute this number from Q's measured token counts.\n     - Latency: 20 s \u00b1 6 s. Why: Opus usually runs slower than Sonnet.\n   - Grader checks:\n     - Accuracy is a field-level code match against the AP lead's reference fields.\n     - Cost comes from the token usage logs.\n     - Latency is the runtime of each trial.\n   - After you approve, I copy the plan to `spe/plans/r07.md`. Then I write `spe/predictions/r07.yaml` with the \"Saved before the eval ran\" header and commit both locally with the message \"spe r07: predict\".\n\n3. **Evaluate**\n   - Gates, in this order:\n     1. The grader selftest. The oracle answer must pass, and the empty and wrong answers must fail.\n     2. A regrade of the round 6 results as a control.\n     3. A dry run with `args.only` on 2 invoices under S.\n   - The script is `spe/evals/harness/r07-workflow.js`. The round number lives in one `ROUND` constant.\n   - The run is 60 invoices \u00d7 2 configs \u00d7 3 trials. Trials that pass only some of the time get extra trials up to a stated cap.\n   - The spend cap is $15. This is an unmeasured estimate. I worked it out as about $2 for Q plus about $5.40 for S, then added room for the extra trials and the judge. Any trial that would cross the cap is skipped, and every skip is logged.\n   - Trials may read only the invoice PDFs and the PO data. I scan their transcripts for reads of `spe/evals/` or `spe/predictions/` and void any trial that peeked.\n   - Commit the script locally with the message \"spe r07: evaluate\".\n\n4. **Learn**\n   - When the completion notice arrives, I update `spe/prediction-log.md`, `spe/failures.md`, the \"Proposed for round 8\" table, `spe/predictions/r07-draft.yaml`, and `spe/README.md`.\n   - Commit locally and tag the commit `spe-r07`.\n   - Then I give you the numbers for Q and S side by side and a recommendation. I will not push anything or deploy anything.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "abf718944f623d15e",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"I will test Opus 6 in round 7\" and opens \"the round 7 respec in plan mode\". It then walks through Specify, Predict, Evaluate, and Learn for round 7.",
+  "The answer says \"Q is the reference. It runs on claude-sonnet-5-5 at its dated id.\" It adds \"S is Q on Opus 6, pinned to Opus 6's dated id\" as a separate config.",
+  "The answer calls S \"a new config that changes only the model\". It also says \"The prompt, the tools, the tasks, and the graders stay the same.\"",
+  "The answer gives S numbers with bands: 0.94 \u00b1 0.03, $0.03 \u00b1 0.01, and 20 s \u00b1 6 s. It writes them to spe/predictions/r07.yaml with the \"Saved before the eval ran\" header and commits that file before the Evaluate step.",
+  "The spec row says \"Compare Opus 6 against Q on the same 60 invoices and graders.\" S keeps \"the tasks, and the graders\" the same, and step 3 runs 60 invoices.",
+  "The answer opens with \"Not yet. Q stays in production\" and says \"I do not change any production config.\" It ends with \"I will not push anything or deploy anything.\"",
+  "The answer predicts and compares field accuracy, cost per invoice, and latency. Tokens show up only as an input to the cost number (\"Q's measured token counts\", \"token usage logs\"). They are never named as a metric to compare, so the token part of this check is missing."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-H5p-4",
+ "round": "r04",
+ "config": "F",
+ "task": "H5p",
+ "n": 4,
+ "response": "**Short answer:** No, not yet. Both Q and R scored 1.00 field accuracy on all 60 invoices, which is the maximum. The tasks can no longer tell the two configs apart. A perfect score at the ceiling does not show that the agent is done. It shows that this eval has stopped measuring differences.\n\nTwo things also need one check before I trust the scores:\n\n- **Field accuracy:** you predicted 0.93 and 0.90. Both configs jumped to exactly 1.00. A leaked answer key or a loose field match in the grader could cause that.\n- **Judge score:** Q and R both got a judge mean of exactly 7.0. A constant score like that often means the judge returns the same value every time. If the judge scale goes to 10, 7.0 is also not a perfect score.\n\n**What I do next:**\n\n1. **Check once for a leak or a broken grader.**\n   - I confirm that the AP lead's reference fields cannot reach the agent. That covers the prompt, the OCR cleanup tool's inputs, and the working directory.\n   - I hand-check five trials against the reference fields. I also confirm that a blank or wrong field fails the comparison.\n   - I look at the judge scores for each trial and check its scale.\n   - If I find a leak or a broken grader, I stop here. I report it to you and do not close the round.\n2. **Close the r05 learn step.**\n   - I add an r05 section to `spe/prediction-log.md`. It records Q at 0.93 against 1.00 and R at 0.90 against 1.00. Both are marked \"not scorable (ceiling)\", and the stop streak stays where it was.\n   - I add a task-design failure to `spe/failures.md`. I read the highest F number in the file first and use the next one. The entry says that every config hit 1.00 field accuracy on r05, so the tasks no longer separate them.\n   - If the judge's 7.0 turns out to be a constant output, I log it as its own grader failure.\n3. **Seed round 6.**\n   - I add a \"Proposed for round 6\" table to the spec.\n   - It proposes harder invoices: skewed or low-quality scans, line items that run across several pages, credit notes, mixed currencies, and planted mismatches against purchase orders.\n   - It proposes stricter graders: exact match on each line item, a check that line items add up to the total, and precision and recall on the PO mismatch flags.\n   - I write `spe/predictions/r06-draft.yaml` with `status: draft`. I update `spe/README.md` with the r05 result and the rerun command.\n4. **Commit locally and tag.** I commit `SPE r05 learn: Q and R at ceiling, tasks saturated` and tag `spe-r05`. If the results commit is missing, I add `SPE r05 evaluate (results): Q and R 1.00 field accuracy, ceiling` first. I do not push.\n\n**Your call:** after that, you decide whether round 6 uses the harder invoices, the stricter graders, or both. You could also decide the agent is good enough for your needs. That is your choice, but this eval cannot show it.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a109746b757e62ada",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer opens with \"No, not yet\" and says \"A perfect score at the ceiling does not show that the agent is done.\" It does not declare the loop done or converged.",
+  "The answer says \"The tasks can no longer tell the two configs apart\" and \"this eval has stopped measuring differences.\" It also logs a failure saying \"the tasks no longer separate them.\"",
+  "Step 3 proposes harder invoices, such as skewed scans, multi-page line items, credit notes, mixed currencies, and planted PO mismatches. It also proposes stricter graders, such as exact line-item match, a check that line items sum to the total, and precision and recall on PO flags.",
+  "The prediction-log entry marks both configs \"not scorable (ceiling)\" and keeps the stop streak where it was. That records that the predictions cannot be judged at the ceiling. The answer states this as a log action and does not explain it to the user in prose, but the point is clearly there.",
+  "Step 2 adds an r05 section to prediction-log.md and adds a task-design failure to failures.md using the next F number. Step 3 adds a \"Proposed for round 6\" table and an r06 draft. Step 4 commits locally, matching the user's commit-per-step request.",
+  "The log entry records \"Q at 0.93 against 1.00 and R at 0.90 against 1.00,\" and both are marked not scorable. Both the predictions and the results are written down. (The answer wrongly says \"you predicted,\" but the values are kept.)",
+  "The answer does end by handing the decision to the user (\"you decide whether round 6 uses the harder invoices, the stricter graders, or both\"). But it is not short. It runs to roughly 450 words with four numbered steps and many nested bullets, so under strict grading the \"short\" part fails."
+ ]
+}

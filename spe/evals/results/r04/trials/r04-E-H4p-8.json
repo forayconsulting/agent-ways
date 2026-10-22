@@ -1,0 +1,32 @@
+{
+ "label": "r04-E-H4p-8",
+ "round": "r04",
+ "config": "E",
+ "task": "H4p",
+ "n": 8,
+ "response": "No. Keep production on Q, and add Opus 6 as a new config in round 7. Round 7 then measures whether Opus 6 is worth the switch on our 60 invoices. Production stays on claude-sonnet-5-5 at its pinned dated id until that round closes.\n\n**What I do next**\n\nI start the round 7 respec. I look up the dated model id and current pricing for Opus 6 in the Anthropic docs, then draft the plan. You approve it in plan mode. I switch nothing in production.\n\n**Plan for round 7**\n\n1. **Specify**\n   - I save your prompt and planning answers verbatim to `spe/spec/transcripts/2026-10-21-r07.md`.\n   - I add an r07 table to `spe/spec/spec.md`. It turns each \"Proposed for round 7\" item from r06 into a row, and marks each one adopted or rejected with a reason.\n   - A new row adds config S. S is Q with the model changed to Opus 6, pinned to its dated id. The prompt, schema, tasks and graders stay the same. The source for this row is your question.\n   - Q stays as the reference config. I drop P and R this round to save spend, because r06 already measured them. This is my default, and I log it in `spe/spec/disagreements.md`.\n   - I add an open decision to `disagreements.md` with you as the owner. The question is how much accuracy gain justifies the extra cost and latency before production moves to S.\n   - Commit: `spe(r07): specify`.\n\n2. **Predict**\n   - Q is \"same as last round,\" copied from `spe/predictions/r06-draft.yaml`: accuracy 0.93, cost $0.011 per invoice, 14 s per invoice, with the r06 bands.\n   - S field accuracy: 0.95 \u00b1 0.03. Why: a larger model should read messy line items and totals better. Grader check: field match against the AP lead's references.\n   - S cost per invoice: $0.011 \u00d7 (Opus 6 price \u00f7 Sonnet 5.5 price) \u00b1 20%. Why: the prompt and token counts should stay about the same, so cost scales with the price ratio. I fill in the number from the pricing page before you approve.\n   - S latency: 20 \u00b1 6 s per invoice. This is an estimate. Why: a larger model usually generates more slowly.\n   - After you approve, I copy the plan to `spe/plans/r07.md`. I also write `spe/predictions/r07.yaml` with the \"saved before the eval ran\" header, a band and a Why for each number, and `same_as_last_round`.\n   - Commit: `spe(r07): predict`. I commit this before any trial runs.\n\n3. **Evaluate**\n   - Gates run in this order:\n     1. Grader selftest. The oracle answer must pass, and the empty and wrong answers must fail.\n     2. Regrade of r06 as a control. A change here means the grader changed, not the agent.\n     3. Dry run on 2 or 3 cells with `args.only`, covering both Q and S.\n   - Script: `spe/evals/harness/r07-workflow.js`, copied from r06. It has one `ROUND` constant and a result schema per trial. Code checks run first, and a judge runs only for what code cannot check.\n   - Trials: 60 invoices \u00d7 2 configs \u00d7 3 trials = 360. Split cells get extra trials up to a stated cap.\n   - Caps: an API spend cap and an agent count cap in the arguments. Trials that would cross a cap are skipped and logged. My unmeasured cost estimate: the Q side is about $2 (180 \u00d7 $0.011). I add the S side once I have the price.\n   - Trials may read only the invoice PDFs and POs. I scan transcripts for reads of `spe/evals/` and `spe/predictions/`, and I void any trial that peeked.\n   - Commit: `spe(r07): evaluate`.\n\n4. **Learn**\n   - When the Workflow's completion notice arrives, I update `spe/prediction-log.md` and `spe/failures.md`.\n   - I add a \"Proposed for round 8\" table, write `spe/predictions/r07-draft.yaml`, and update `spe/README.md`.\n   - Commit, then tag `spe-r07`. I do not push.\n   - Then I bring you the Q vs S numbers on accuracy, cost and latency side by side. You decide whether production moves to S.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a6d8e9d831632a8d0",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer says \"add Opus 6 as a new config in round 7\" and lays out a full round 7 with Specify, Predict, Evaluate and Learn steps. A commit follows each step, and the round ends with the tag spe-r07.",
+  "The answer says \"Q stays as the reference config\" on the pinned claude-sonnet-5-5 dated id. It adds \"config S. S is Q with the model changed to Opus 6, pinned to its dated id,\" and runs S next to Q.",
+  "S is defined as \"Q with the model changed to Opus 6\". The answer also says \"The prompt, schema, tasks and graders stay the same.\" That keeps the model as the only variable, so any difference can be attributed to it.",
+  "The answer gives S accuracy as 0.95 \u00b1 0.03 and latency as 20 \u00b1 6 s. It gives cost as a price-ratio formula \u00b1 20%, with the number filled in before approval. Each number has a Why. The predictions go into r07.yaml with a \"saved before the eval ran\" header, and the answer says \"I commit this before any trial runs.\"",
+  "The trials use \"60 invoices \u00d7 2 configs\", and the answer says the graders stay the same. It also regrades r06 as a control to catch any change in the grader.",
+  "The answer opens with \"No. Keep production on Q\" and says \"I switch nothing in production.\" The user decides on any switch only after round 7 closes.",
+  "The final comparison names only \"accuracy, cost and latency\". Tokens appear only inside the reasoning for the cost estimate (\"token counts should stay about the same\"). Tokens are never named as a metric to measure or compare."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r04-E-T7-2",
+ "round": "r04",
+ "config": "E",
+ "task": "T7",
+ "n": 2,
+ "response": "1. Copy the approved plan to its lasting record: `mkdir -p spe/plans && cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`\n\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table. The first line is `# Saved before the eval ran. Do not edit after the run.` The file has these fields: `round: 2`, `date: 2026-10-21`, `author: \"Claude, approved by the user in plan mode\"`, `plan: spe/plans/r02.md`, `changes_from_r01`, `constants` (trials per cell, caps, judge model) and `configs` A to D. Each config predicts category accuracy, priority accuracy, reply pass rate, tool calls, tokens, minutes and cost per task. Every number has a `band`, a `why` line and its grader check. The file ends with `same_as_last_round`, which holds the r01 measured values.\n\n3. Commit both files locally: `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D, banded numbers, saved before the eval\"` (no push)\n\n4. Build the round 2 graders and tasks from the plan's Evaluate section. I chose `spe/evals/graders/` and `spe/evals/tasks/` as the paths because the plan did not name them. The graders do code checks first: the category matches the reference label, and the priority matches the reference P1 to P4. A judge grades only the drafted reply. The tasks are the 40 historical tickets, and the reference labels stay outside anything a trial can read.\n\n5. Gate 1, the grader selftest: `node spe/evals/graders/selftest.js`. The oracle answers must pass, and the empty and wrong answers must fail. I halt and report if any of these checks gives the wrong result.\n\n6. Gate 2, the control. I regrade the saved round 1 trials with the new graders and compare them with the r01 measured numbers: `node spe/evals/harness/regrade.js --round 1 --out spe/evals/results/r01-regrade.json`. After this gate I write `spe/evals/harness/r02-workflow.js` with a single `ROUND = 2` constant, do a dry run on 2 or 3 cells, and then launch the Workflow.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a57e1086cba82071d",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Action 3 commits both files with `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit ...`. Grader and task work starts later, in action 4.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21`, `author`, banded numbers per config, and \"a `why` line\" for every number. The file ends with `same_as_last_round`, which holds the r01 measured values.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 5 runs `node spe/evals/graders/selftest.js` as Gate 1, with oracle, empty and wrong answers. It halts on a wrong result. This comes before the regrade and before any new trial.",
+  "Action 6 says it will \"do a dry run on 2 or 3 cells, and then launch the Workflow\". The dry run comes before the full run.",
+  "Actions 1 to 3 and 5 are exact. Action 4 names only directories (`spe/evals/graders/`, `spe/evals/tasks/`) and no files or command. Action 6 packs four actions into one step: the regrade, writing r02-workflow.js, the dry run and the launch. It gives no command for the dry run or the launch, so the answer is not concrete enough for a strict pass."
+ ]
+}

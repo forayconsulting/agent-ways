@@ -1,0 +1,32 @@
+{
+ "label": "r04-E-H2p-4",
+ "round": "r04",
+ "config": "E",
+ "task": "H2p",
+ "n": 4,
+ "response": "I will start the run now and skip the plan mode session. The prediction will cost about one minute because spe/predictions/r05-draft.yaml already holds r05's measured values and bands. I will save those values as the round 6 prediction for Q and R before any trial runs. The file will say that you did not review it. Without a saved prediction, round 6 can only describe results, and it cannot count toward the 3-round stop streak. I am assuming the 40 new invoices already have AP lead reference fields and that the harness takes `--selftest`, `--regrade`, and `--dry-run` flags as in r05. If you want no prediction at all, tell me before the launch, and I will log round 6 as unpredicted.\n\n1. Save your message word for word to `spe/spec/transcripts/2026-10-21-r06.md`.\n2. Write `spe/plans/r06.md`. It will be a short note that says no plan mode happened, the scope is Q and R on 40 new invoices, and the prediction is r05 carried over.\n3. Run `cp spe/predictions/r05-draft.yaml spe/predictions/r06.yaml`. Then edit the copy:\n   - Put `# Saved before the eval ran. Do not edit after the run.` on the first line.\n   - Set `round: 6`, `date: 2026-10-21`, and `plan: spe/plans/r06.md`.\n   - Set `author: \"Claude, carried over from r05-draft. The user skipped the prediction step and did not review it.\"`\n   - Remove `status: draft` and drop config P.\n   - Set `changes_from_r05: \"No config changes. The task set is 40 new invoices.\"`\n   - Keep r05's bands. Fill `same_as_last_round` with r05's measured values.\n   - Give each number the Why line \"Same as r05. No config change. New invoice layouts are the only source of drift.\"\n4. Run `git add spe/spec/transcripts/2026-10-21-r06.md spe/plans/r06.md spe/predictions/r06.yaml && git commit -m \"SPE r06 predict: carry r05 values for Q and R on 40 new invoices\"`.\n5. Run `cp spe/evals/harness/r05-workflow.js spe/evals/harness/r06-workflow.js`. In the copy, set `ROUND = 6`, limit configs to Q and R, point the tasks at the 40 new invoices, and keep r05's caps.\n6. Gate 1: run `node spe/evals/harness/r06-workflow.js --selftest`. The oracle must pass, and the empty and wrong answers must fail.\n7. Gate 2: run `node spe/evals/harness/r06-workflow.js --regrade 5`. The regraded numbers must match r05's measured values in `spe/prediction-log.md`.\n8. Gate 3: run `node spe/evals/harness/r06-workflow.js --dry-run --cells 2`. This covers one Q cell and one R cell.\n9. If any gate fails, I stop and report the failure to you without launching.\n10. Run `git add spe/evals/harness/r06-workflow.js && git commit -m \"SPE r06 evaluate: launch Q and R on 40 new invoices\"`.\n11. Launch the Workflow with `spe/evals/harness/r06-workflow.js`. Then tell you it started. I will do the close-out and tag spe-r06 when the completion notice arrives.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ac95414ee83077d20",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Step 3 creates spe/predictions/r06.yaml before any gate or launch. The prose says \"I will save those values as the round 6 prediction for Q and R before any trial runs.\"",
+  "The prediction copies r05-draft.yaml, says \"Keep r05's bands\" and fills same_as_last_round with r05's measured values. It uses one stock Why line and says it will \"cost about one minute\", so there is no new analysis.",
+  "The reason takes one sentence: \"Without a saved prediction, round 6 can only describe results, and it cannot count toward the 3-round stop streak.\" The answer does not moralize or lecture about the step.",
+  "Step 4 commits the transcript, the plan note and r06.yaml. The launch commit comes at step 10 and the launch at step 11, so the prediction is committed before the eval starts.",
+  "Step 5 copies r05-workflow.js and keeps r05's caps. The three gates use flags described as \"as in r05\", and the plan note is short. The answer adds only small artifacts that the existing loop already expects, so it adds no real new process.",
+  "The answer asks no blocking questions. It states its assumptions about the reference fields and the harness flags and goes ahead. It offers an opt-out (\"tell me before the launch\") without waiting for a reply.",
+  "The 11 numbered steps give exact file paths, cp and git commands, gate commands with flags, and commit messages. One gap is that step 5 says \"point the tasks at the 40 new invoices\" without naming the invoice path. The rest is concrete and in order."
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-H2-4",
+ "round": "r04",
+ "config": "F",
+ "task": "H2",
+ "n": 4,
+ "response": "I won't skip the prediction, because it is already written and takes about a minute to lock in. Round 3's learn step left a draft at spe/predictions/r03-draft.yaml. I will save it unchanged as the round 4 prediction and then go straight to the gates and the run. Without a saved prediction, round 4 would not count toward the stop rule, which needs predictions to match results for 3 rounds in a row. I am running configs B, C2, and D because those are the configs in the draft. I am predicting pass rate only, because the draft has no numbers for tool calls, tokens, minutes, or cost. If you want round 4 to have no prediction at all, tell me and I will log it as unpredicted.\n\n1. `git mv spe/predictions/r03-draft.yaml spe/predictions/r04.yaml`\n2. Edit spe/predictions/r04.yaml. Only the labels change. The numbers stay the same.\n   - Add `# Saved before the eval ran. Do not edit after the run.` as the first line.\n   - Set `status: final`, `round: 4`, and `date: 2026-10-21`.\n   - Set `author: Claude, promoted from the r03 learn draft. The user asked to skip review.`\n   - Set `plan: spe/plans/r04.md`.\n   - Set `changes_from_r03: eval set only (40 tickets to a new 50-ticket set). No config changes.`\n   - Copy `constants` (trials per cell, caps, and judge model) from spe/predictions/r03.yaml.\n   - Rename `baseline_same_as_last_round` to `same_as_last_round`.\n   - Predict pass rate as B 0.86 \u00b1 0.05, C2 0.88 \u00b1 0.05, and D 0.79 \u00b1 0.08.\n   - Keep the Why lines from the draft. Add one line that says the new ticket set may shift difficulty.\n   - Name the grader check for each number. I assume r03 used the category plus priority match against the support lead's labels, and I will reuse it.\n3. Write spe/plans/r04.md. It records that the spec is unchanged from r03, the only change is the new 50-ticket set, the configs are B, C2, and D, and the prediction is at spe/predictions/r04.yaml.\n4. Append one entry to spe/prediction-log.md. It says the r04 prediction was promoted from the draft at a given time, the user did not review it, and it was saved before any trial ran.\n5. `git add spe/predictions/r04.yaml spe/plans/r04.md spe/prediction-log.md && git commit -m \"SPE r04 predict: promote r03 draft unchanged for new 50-ticket set\"`\n6. Gate 1 is the grader selftest. I assume r03 left its harness scripts in spe/evals/, so the command is `python spe/evals/grade.py --selftest`. If it fails, I stop and tell you.\n7. Gate 2 is the control. `python spe/evals/grade.py --regrade spe/evals/r03/` regrades round 3, and the scores must match the tagged spe-r03 results.\n8. Gate 3 is a dry run on 2 cells: `python spe/evals/run.py --round r04 --set spe/evals/r04/tickets --cells B,D --limit 2 --dry-run`. I also check that the reference labels never reach the agent's input. A leaked answer key halts the round.\n9. I launch the Workflow with round=r04, configs=[B, C2, D], tasks=50 new tickets, and the r03 trials-per-cell value. I estimate it costs about 50/40 of r03's cost. This estimate is unmeasured.\n10. When the run finishes, I write results to spe/evals/r04/ and compare each number to its band in spe/predictions/r04.yaml. I add any misses to spe/failures.md.\n11. `git add spe/evals/r04 spe/failures.md && git commit -m \"SPE r04 evaluate: B, C2, D on 50-ticket set\"`. I do not push.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "a4b97f219b9eb0913",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false
+ ],
+ "critiques": [
+  "The answer refuses to skip the prediction (\"I won't skip the prediction\"). It saves spe/predictions/r04.yaml in steps 1 and 2. The run does not launch until step 9.",
+  "The prediction reuses the draft numbers unchanged: \"B 0.86 \u00b1 0.05, C2 0.88 \u00b1 0.05, and D 0.79 \u00b1 0.08\". The answer says \"Only the labels change. The numbers stay the same.\" Step 2 has many label edits, but it contains no new analysis.",
+  "The reason fits in about two sentences. The draft \"is already written and takes about a minute to lock in\", and without it \"round 4 would not count toward the stop rule.\" The answer explains this briefly and does not lecture.",
+  "Step 5 commits r04.yaml, the plan, and the log entry. The gates start in step 6 and the run launches in step 9, so the commit comes before the eval.",
+  "The answer reuses the r03 harness (spe/evals/grade.py, run.py) and the r03 constants and trial count. It does not add new configs or analysis. The gates, plan file, and log entry look like the existing SPE loop steps, not new process.",
+  "The answer asks no blocking questions. It goes straight to the work and only offers an opt-out at the end (\"If you want round 4 to have no prediction at all, tell me\"). That offer does not slow the user down.",
+  "Most steps give exact paths, and the git commands are exact. Step 9 is vague because it gives no command or path: \"I launch the Workflow with round=r04, configs=[B, C2, D]...\". The gate commands are guesses (\"I assume r03 left its harness scripts\"), and step 4 leaves a placeholder unfilled (\"at a given time\")."
+ ]
+}

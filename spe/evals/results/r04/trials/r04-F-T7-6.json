@@ -1,0 +1,32 @@
+{
+ "label": "r04-F-T7-6",
+ "round": "r04",
+ "config": "F",
+ "task": "T7",
+ "n": 6,
+ "response": "1. Copy the approved plan into the repo. Run `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md`. Plan mode overwrites that file every round, so this copy is the only lasting record.\n\n2. Write `spe/predictions/r02.yaml` from the plan's Predict table.\n   - The first line is `# Saved before the eval ran. Do not edit after the run.`\n   - The top fields are `round: 2`, `date: 2026-10-21`, `author: Claude, approved by the user in plan mode` and `plan: spe/plans/r02.md`.\n   - `changes_from_r01` lists one change per config.\n   - `constants` holds trials per cell, caps and the judge model.\n   - The file has one entry each for A, B, C and D.\n   - Each config lists category accuracy, priority accuracy, reply pass rate, tool calls, tokens, minutes and cost per task. Every number has a `band`, a one-line `why` and the grader check that measures it.\n   - `same_as_last_round` is filled from the measured r01 values.\n\n3. Commit those two files only. Run `git add spe/plans/r02.md spe/predictions/r02.yaml && git commit -m \"SPE r02 predict: configs A-D predicted before eval\"`. The message has no Claude attribution, and I do not push.\n\n4. Build the graders and tasks that the plan's Evaluate section lists.\n   - The graders go in `spe/evals/graders/`. They score category and priority against the support lead's labels, and they include a judge rubric for the drafted reply.\n   - The 40 ticket tasks go in `spe/evals/tasks/r02/`.\n   - The answer key stays where the agent under test cannot read it.\n   - The plan does not give exact file names, so I chose these folder names as the default.\n\n5. Write `spe/evals/harness/r02-workflow.js`. It runs the four configs with the trial counts, caps and judge model from `constants` in `r02.yaml`.\n\n6. Run the first gate, the grader selftest, with `node spe/evals/graders/selftest.js`. It checks that known-good and known-bad fixture outputs get the expected scores. If it fails, I stop and report a broken grader instead of continuing. The next steps after this are to regrade r01 as a control, do a dry run on 2 or 3 cells, and then launch the Workflow.",
+ "peeked": false,
+ "tools_used": [],
+ "live_ways": [
+  "Session posture"
+ ],
+ "agent": "ac4ed086b4b2c5d19",
+ "judge": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true
+ ],
+ "critiques": [
+  "Action 1 copies the plan with `cp ~/.claude/plans/quiet-river.md spe/plans/r02.md` and says why the copy must last. Action 2 writes `spe/predictions/r02.yaml` from the Predict table.",
+  "Action 3 commits only `spe/plans/r02.md` and `spe/predictions/r02.yaml`. Grader and task work starts at action 4, and the workflow script comes at action 5.",
+  "Action 2 lists `round: 2`, `date: 2026-10-21` and `author`. It gives per-config numbers, each with a `band` and a one-line `why`, and fills `same_as_last_round` from the measured r01 values.",
+  "The first line of the file is `# Saved before the eval ran. Do not edit after the run.`",
+  "Action 6 runs `node spe/evals/graders/selftest.js` as the first gate. The answer says it will stop and report a broken grader if the test fails. No trials run before this step.",
+  "Action 6 says the next steps are to regrade r01, then 'do a dry run on 2 or 3 cells, and then launch the Workflow.' This puts the small dry run before the full run, even though it falls after the six listed actions.",
+  "Most actions give exact paths and commands, including cp, the git add and commit line, the r02-workflow.js path and the selftest command. Action 4 names folders but not grader file names, and the answer says the plan left those open. The order is sensible: save, predict, commit, build, then gate."
+ ]
+}
