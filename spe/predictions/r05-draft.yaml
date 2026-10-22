@@ -1,0 +1,8 @@
+status: draft
+round: r05
+date: 2026-10-22
+author: Claude (Opus 5.5), draft for the next plan mode round
+baseline_same_as_last_round:   # r04 measured
+  text_mean: {E: 0.92, F: 0.91}
+  e2e_handback_variant: {E: {E1: 1.00, E2: 1.00, E3: 0.83}, F: {E1: 1.00, E2: 1.00, E3: 1.00}}
+lesson_from_r04: 30 of 40 hits and the predictions beat the naive guess 8 to 3. The miss that mattered was a behavior lost when the root was shortened.

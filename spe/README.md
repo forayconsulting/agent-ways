@@ -9,9 +9,9 @@ This folder stays out of any upstream PR.
 | Step | File | Status |
 |---|---|---|
 | Specify | [spec/spec.md](spec/spec.md), [spec/disagreements.md](spec/disagreements.md), raw record in [spec/transcripts/](spec/transcripts/) | r01 written 2026-10-21 |
-| Predict | [predictions/](predictions/), approved plans in [plans/](plans/) | r01 to r03 saved before their runs. r04 draft |
-| Evaluate | [evals/](evals/), results in [evals/results/](evals/results/) | r01: 117 trials. Mean pass C 0.92, B 0.65, A 0.02 (regraded C 0.96, B 0.83, A 0.14). r02: 384 trials. Mean pass D 0.77, C2 0.71, C 0.50, A 0.15. r03: 308 trials. Text E 0.86, D 0.64. Real tools E 6/6 and 6/6 |
-| Learn | [prediction-log.md](prediction-log.md), [failures.md](failures.md) | r01 to r03 written. Proposals for r04 at the end of spec.md |
+| Predict | [predictions/](predictions/), approved plans in [plans/](plans/) | r01 to r04 saved before their runs. r05 draft |
+| Evaluate | [evals/](evals/), results in [evals/results/](evals/results/) | r01: 117 trials. Mean pass C 0.92, B 0.65, A 0.02 (regraded C 0.96, B 0.83, A 0.14). r02: 384 trials. Mean pass D 0.77, C2 0.71, C 0.50, A 0.15. r03: 308 trials. Text E 0.86, D 0.64. Real tools E 6/6 and 6/6. r04: 308 trials. Text E 0.92, F 0.91. E kept |
+| Learn | [prediction-log.md](prediction-log.md), [failures.md](failures.md) | r01 to r04 written. Proposals for r05 at the end of spec.md |
 
 ## How a round runs in Claude Code
 
@@ -73,6 +73,10 @@ Then run the Workflow tool with `scriptPath: spe/evals/harness/r03-workflow.js` 
 ## Round 3 in one paragraph
 
 Config E added four rules to D: a scope rule, a ceiling and handback rule, a gate line in the root, and pinning for new models. Round 3 ran 17 text tasks (including 5 paraphrases) with 8 trials each, plus real tool trials in sandbox git repos. The semantic lane was turned on before the run, after the session found that shadow stubs had starved its calibration (F16). Building the round also uncovered that the task prompts had left out the project text since round 1 (F15). E led D at 0.86 against 0.64. It fixed the control tasks, the saturated round, and the after-approval step. In real tool trials, both configs saved and committed the prediction first, and only E kept SPE talk out of a typo fix. Predictions hit 27 of 40 cells and beat the naive guess for the first time. E is installed as the personal SPE tree.
+
+## Round 4 in one paragraph
+
+Config F cut E's root from about 6,000 to 2,477 characters and moved detail into the children, so the root fits the hook budget beside other ways. It also added a saturation failure entry and named release metrics. F tied E on the text suite (0.91 against 0.92) and on the real-tool scenarios, and it fixed the release metrics and the saturation entry. But the shorter ceiling line lost one behavior: telling the user the tasks no longer separate the configs (H5 0.50 against 0.75). The pre-registered rule kept E, which is installed and goes upstream. Predictions hit 30 of 40 cells and beat the naive guess 8 to 3.
 
 ## Rules for this folder
 

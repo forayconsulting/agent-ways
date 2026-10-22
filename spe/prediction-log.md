@@ -235,3 +235,46 @@ Same as last round is r02 D. The prompts now include the project text, which rou
 - E (D plus the scope, ceiling, gate, and pinning rules) is the best config. It leads by 0.22 in text and by 6 of 6 against 0 of 6 on the real typo fix.
 - The real-tool trials confirm the ordering behavior: both guided configs save and commit the prediction first. A saved 1 of 6 with a band.
 - The remaining gaps are the model-release wording (H4p) and long replies at a ceiling (H5 and H5p judge check 7).
+
+## Round 4 (2026-10-22)
+
+Prediction: [predictions/r04.yaml](predictions/r04.yaml), committed at aa6ee120 (05:15Z) before any harness work. The full run started at 05:19Z. Same as last round is r03 E. Order checks read the numbered list by default this round, as the prediction stated.
+
+### Misses (the other 30 of 40 cells hit)
+
+| Task | Config | Predicted | Measured | Same as last round | Closer |
+|---|---|---|---|---|---|
+| T6 | E | 1.00 ± 0.10 | 0.75 | 1.00 | naive |
+| T6 | F | 1.00 ± 0.10 | 0.62 | 1.00 | naive |
+| T7 | E | 1.00 ± 0.10 | 0.88 | 1.00 | tie |
+| H2 | F | 0.88 ± 0.12 | 0.75 | 0.38 | prediction |
+| H5 | F | 0.85 ± 0.15 | 0.50 | 0.75 | naive |
+| H2p | E | 1.00 ± 0.10 | 0.88 | 0.75 | tie |
+| H2p | F | 1.00 ± 0.10 | 0.75 | 0.75 | naive |
+| H4p | E | 0.60 ± 0.20 | 0.88 | 0.38 | prediction |
+| E3 | E | 0.50 ± 0.25 | 0.17 (handback variant 0.83) | | |
+| E3 | F | 0.70 ± 0.25 | 0.17 (handback variant 1.00) | | |
+
+30 of 40 cells hit (r03: 27 of 40, r02: 28 of 48, r01: 2 of 21). Where the naive guess applies and differs, the prediction was closer 8 times and the naive guess 3 times.
+
+### Summary metrics
+
+| Metric | Predicted | Measured | Verdict |
+|---|---|---|---|
+| Text mean E | 0.93 ± 0.04 | 0.92 | hit |
+| Text mean F | 0.96 ± 0.04 | 0.91 | miss |
+| F minus E | +0.03 ± 0.04 | -0.01 | hit |
+| F root characters | 3,500 or less | 2,477 (body) | hit |
+| Peeks and escapes | 0 | 0 | hit |
+| Cost | about 582 agents, 13M tokens, 30 to 45 min | 582 agents, 13.7M tokens, 39 min | hit |
+
+### Which Why broke
+
+- **H5, F 0.85:** "S3 adds the failure entry for judge 5." It did, and H5p rose to 1.00. But shortening the root cut the sentence that tells the user the tasks no longer separate the configs. Judge check 2 failed in 4 of 8 F trials. The short root removed a behavior along with the words.
+- **T6, 1.00 for both:** "Same as r03." The `noedit` check failed 5 times while judge check 1 never failed. It is the same suspect check that r02's analysis named (F22).
+- **E3, 0.50 and 0.70:** both configs wrote the log, the failure entry, and harder proposals, and stopped without a round 3 prediction. The handback check missed "wait for your answer on D1" (F21).
+- **H4p, E 0.60:** the widened check fixed it more than predicted. E reached 0.88.
+
+### Install decision
+
+The pre-registered rule keeps E: F's text mean is within 0.02 and its E2E is not lower, but its H5 dropped by 0.25, which is more than 0.15. E stays installed and goes into the upstream PR.

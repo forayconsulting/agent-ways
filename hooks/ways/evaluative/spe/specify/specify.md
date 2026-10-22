@@ -13,17 +13,6 @@ refire: frequent
 
 The spec says what the work must do and what counts as done right. In Claude Code the user's plan mode prompt is the spec, often in one or two sentences. Claude turns it into testable requirements.
 
-## Files
-
-| Path | Content |
-|---|---|
-| `spe/spec/transcripts/<date>-rNN.md` | The user's prompt and planning answers, verbatim, never edited |
-| `spe/spec/spec.md` | One requirement table per round |
-| `spe/spec/disagreements.md` | Open decisions with an owner, and logged defaults |
-| `spe/plans/rNN.md`, `spe/predictions/rNN.yaml` | The approved plan and the prediction, saved before the run |
-| `spe/evals/harness/rNN-workflow.js` | The round's Workflow script |
-| `spe/prediction-log.md`, `spe/failures.md` | Predicted versus measured, and F-numbered failure types |
-
 ## Keep the raw record
 
 Save the prompt and every planning answer word for word in `spe/spec/transcripts/<date>-rNN.md`. Add any plan review corrections the user made. Never edit this file later. Every other document cites it.

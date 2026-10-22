@@ -98,3 +98,11 @@ Source: the user's round 1 prompt, [transcripts/2026-10-21-r01.md](transcripts/2
 | S5 | Keep E2E as a standing regression suite, and add an E2E for the ceiling moment | r03 E2E caught D's ceremony that text could not separate from action |
 | S6 | Verify the tools: lane live once the engine reaches the live install (P8) | Still deferred |
 | S7 | Rerun the trigger cases against an isolated corpus that includes the tree under test | The project-copy trigger test cannot clear the semantic floor |
+
+## Proposed for round 5 (not yet agreed)
+
+| ID | Proposed change | Why (round 4 evidence) |
+|---|---|---|
+| U1 | Config G: F plus the restored "tasks no longer separate the configs" clause | F23. F otherwise held E's results with a root half the size |
+| U2 | Widen the handback check and fix or drop the T6 noedit check | F21, F22 |
+| U3 | Verify the tools: lane live once the upstream PRs merge and `ways manage update` runs | Deferred since round 1 |

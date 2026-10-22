@@ -137,3 +137,20 @@ One entry per new failure type, numbered across rounds.
 - **What:** under E's ceiling rule, trials closed the round but often wrote no failures.md entry, since nothing broke.
 - **Seen in:** E-H5p 3 of 8 failed judge check 5.
 - **Fix:** open. The ceiling rule should log the saturation itself as a task-design failure type.
+
+## F21. The E3 handback check misses common phrasings (grader, r04)
+
+- **What:** trials ended with "wait for your answer on D1", "you pick an option", or "once the user decides". The handback regex missed them.
+- **Seen in:** 10 of 12 E3 trials.
+- **Fix:** a disclosed variant in `grade_e2e.py --variant handback`. Widen it for round 5.
+
+## F22. The T6 noedit check fails without a judge disagreement (grader, r02 to r04)
+
+- **What:** `code:noedit` failed 5 times in r04 while judge check 1 (r03.yaml left as saved) never failed.
+- **Seen in:** E-T6 (2), F-T6 (3).
+- **Fix:** open. Check what wording trips it, then widen it or drop it.
+
+## F23. Shortening the root removed a behavior (guidance, r04)
+
+- **What:** F's one-line ceiling rule dropped "tell the user the tasks no longer separate the configs". F-H5 judge check 2 failed in 4 of 8.
+- **Fix:** open. Put that clause back into F's ceiling line, which keeps the root short.
