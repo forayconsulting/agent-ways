@@ -3,7 +3,7 @@
 r01 is kept in ROUNDS for the record. Its built script is committed. Rebuilding
 it now would pick up later way edits, so do not rebuild r01.
 
-Run from the repo root: python3 -I spe/evals/harness/build_workflow.py r03
+Run from the repo root: python3 -I spe/evals/harness/build_workflow.py r04
 Way bodies are read with the frontmatter stripped, as the hooks deliver them.
 """
 import json
@@ -27,6 +27,15 @@ ROUNDS = {
         "tasks": [f"T{i}" for i in range(1, 8)],
         "configs": {"A": {}, "B": {"base": "root_r01", "children": True}, "C": {"base": "slim"}},
         "notes": "A = no SPE guidance, B = a tree of ways (root plus one child per moment), C = one slim file.",
+    },
+    "r04": {
+        "tasks": [f"T{i}" for i in range(1, 8)] + [f"H{i}" for i in range(1, 6)] + [f"H{i}p" for i in range(1, 6)],
+        "configs": {"E": {"set": "E"}, "F": {"set": "F"}},
+        "e2e_configs": {"E": {"set": "E"}, "F": {"set": "F"}},
+        "e2e_tasks": ["E1", "E2", "E3"],
+        "way_sets": {"E": "spe/evals/configs/E-r03", "F": "tree"},
+        "order_list": True,
+        "notes": "E = the r03 winner (scope, ceiling, gate, and pinning rules), frozen. F = E with a much shorter root (detail moved to the children), a saturation failure entry in the close-out child, and named metrics for a model release. H3 and H3p are control tasks where no SPE ceremony is the right answer. Tasks ending in p are paraphrases of the H tasks.",
     },
     "r03": {
         "tasks": [f"T{i}" for i in range(1, 8)] + [f"H{i}" for i in range(1, 6)] + [f"H{i}p" for i in range(1, 6)],
@@ -60,6 +69,18 @@ def main(round_id):
             "slim2": body(ROOT / "spe/evals/configs/C2-slim.md"),
         },
     }
+    if round_id == "r04":
+        def way_set(d):
+            if d == "tree":
+                return {"root": body(WAYS / "spe.md"), **{c: body(WAYS / f"{c}/{c}.md") for c in ("specify", "predict", "evaluate", "learn")}}
+            d = ROOT / d
+            return {"root": body(d / "spe.md"), **{c: body(d / f"{c}.md") for c in ("specify", "predict", "evaluate", "learn")}}
+        data["way_sets"] = {k: way_set(v) for k, v in spec["way_sets"].items()}
+        data["e2e_configs"] = spec["e2e_configs"]
+        data["e2e_tasks"] = [json.loads((ROOT / f"spe/evals/e2e/{t}.json").read_text()) for t in spec["e2e_tasks"]]
+        data["fixture_script"] = str(ROOT / "spe/evals/e2e/make_fixture.sh")
+        data["order_list"] = spec["order_list"]
+        data["ways"] = {}
     if round_id == "r03":
         def way_set(d):
             return {"root": body(d / "spe.md"), **{c: body(d / f"{c}.md") for c in ("specify", "predict", "evaluate", "learn")}}

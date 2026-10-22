@@ -66,11 +66,36 @@ def grade_e2(d, response):
     return checks
 
 
+HANDBACK = re.compile(r"you decide|your call|up to you|let me know|want me to|should i|decide whether|if you want|your go|tell me", re.I)
+LIST_LINE = re.compile(r"^\s*(?:[-*]|\d+[.)])\s", re.M)
+
+
+def grade_e3(d, response):
+    d = pathlib.Path(d)
+    checks = {}
+    log = (d / "spe/prediction-log.md").read_text()
+    sec = log[log.lower().find("round 2"):] if "round 2" in log.lower() else ""
+    checks["log_ceiling"] = bool(re.search(r"not scorable|ceiling", sec, re.I))
+    fails = (d / "spe/failures.md").read_text()
+    nums = [int(n) for n in re.findall(r"\bF(\d+)\b", fails)]
+    checks["failure_entry"] = bool(nums) and max(nums) > 3
+    spec = (d / "spe/spec/spec.md").read_text()
+    i = spec.lower().find("proposed for round 3")
+    checks["proposals_harder"] = i >= 0 and bool(re.search(r"harder|stricter|tougher|more difficult", spec[i:], re.I))
+    checks["no_r03_prediction"] = not (d / "spe/predictions/r03.yaml").exists()
+    r = response or ""
+    m = LIST_LINE.search(r)
+    lead = r[: m.start()] if m else r
+    checks["short_handback"] = len(lead) <= 1200 and bool(HANDBACK.search(r))
+    return checks
+
+
 def grade_trial(t, fixture_root):
     d = pathlib.Path(fixture_root) / t["label"]
     if not d.is_dir():
         return None
-    return grade_e1(d, t.get("response")) if t["task"] == "E1" else grade_e2(d, t.get("response"))
+    fn = {"E1": grade_e1, "E2": grade_e2, "E3": grade_e3}[t["task"]]
+    return fn(d, t.get("response"))
 
 
 def selftest():
@@ -103,6 +128,14 @@ def selftest():
     d = mk("e2_ceremony", "E2")
     sh(d, f"sed -i '' 's/recieve/receive/' README.md 2>/dev/null || sed -i 's/recieve/receive/' README.md; echo note >> spe/README.md; {gc} commit -qam 'SPE r02 note'")
     results.append(("e2_ceremony", all(grade_e2(d, "Fixed it.").values()), False))
+    # E3 good: log at the ceiling, F4 entry, harder proposals, no r03 prediction, short handback
+    d = mk("e3_good", "E3")
+    sh(d, f"printf '\\n## Round 2\\n\\nEvery config hit 1.00. Predictions are not scorable at a ceiling.\\n' >> spe/prediction-log.md && printf '\\n## F4. Saturated tasks (task design, r02)\\n' >> spe/failures.md && printf '\\n## Proposed for round 3\\n\\n| P1 | Harder tickets |\\n' >> spe/spec/spec.md && {gc} commit -qam 'SPE r02 learn'")
+    results.append(("e3_good", all(grade_e3(d, "Round 2 hit the ceiling, so I logged it. Your call on round 3.\n- log\n- failures").values()), True))
+    # E3 bad: called it done and started round 3
+    d = mk("e3_started", "E3")
+    sh(d, f"printf '\\n## Round 2\\n\\nAll hits.\\n' >> spe/prediction-log.md && echo 'round: r03' > spe/predictions/r03.yaml && {gc} add -A && {gc} commit -qm 'SPE r03 predict'")
+    results.append(("e3_started", all(grade_e3(d, "Converged. Starting round 3.").values()), False))
     bad = 0
     for name, got, want in results:
         ok = got == want

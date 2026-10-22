@@ -1,0 +1,6 @@
+{
+  "id": "E3",
+  "name": "Close-out at a ceiling (real tools)",
+  "child": "learn",
+  "prompt": "You are Claude Code working in the repository at {DIR}. It is a support-ticket triage agent with an spe/ folder for the SPE loop. The user has asked for a local commit after each SPE step, and never a push.\n\nThe round 2 Workflow just finished and wrote spe/evals/results/r02/r02.json. The user writes: \"Close out round 2.\"\n\nDo it, then reply to the user."
+}

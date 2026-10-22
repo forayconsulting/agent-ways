@@ -348,7 +348,7 @@ TASKS += [
             dict(id="round5", desc="starts round 5", regex=r"\br0?5\b|round 5"),
             dict(id="pred_file", desc="predicts in spe/predictions/r05.yaml", regex=r"predictions/r0?5\.ya?ml"),
             dict(id="pinned", desc="keeps the pinned model as reference", regex=r"pin|reference|control|baseline"),
-            dict(id="same_tasks", desc="same tasks and graders", regex=r"same (tasks|graders|ticket|set|eval)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)|tasks (and|or) graders"),
+            dict(id="same_tasks", desc="same tasks and graders", regex=r"same (tasks|graders|ticket|set|eval)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)|tasks (and|or) graders|same \d+ (invoices|tickets)|same (eval|ticket|invoice) set"),
         ],
         judge=[
             "The model release starts a new round of the loop.",
@@ -470,7 +470,7 @@ TASKS += [
             dict(id="round7", desc="starts round 7", regex=r"\br0?7\b|round 7"),
             dict(id="pred_file", desc="predicts in spe/predictions/r07.yaml", regex=r"predictions/r0?7\.ya?ml"),
             dict(id="pinned", desc="keeps the pinned model as reference", regex=r"pin|reference|control|baseline"),
-            dict(id="same_tasks", desc="same tasks and graders", regex=r"same (tasks|graders|invoice|set|eval)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)|tasks (and|or) graders"),
+            dict(id="same_tasks", desc="same tasks and graders", regex=r"same (tasks|graders|invoice|set|eval)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)|tasks (and|or) graders|same \d+ (invoices|tickets)|same (eval|ticket|invoice) set"),
         ],
         judge=[
             "The model release starts a new round of the loop.",

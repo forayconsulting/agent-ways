@@ -28,7 +28,7 @@
     {
       "id": "same_tasks",
       "desc": "same tasks and graders",
-      "regex": "same (tasks|graders|ticket|set|eval)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)|tasks (and|or) graders"
+      "regex": "same (tasks|graders|ticket|set|eval)|tasks and graders (stay|unchanged|fixed)|unchanged (tasks|graders)|tasks (and|or) graders|same \\d+ (invoices|tickets)|same (eval|ticket|invoice) set"
     }
   ],
   "judge": [

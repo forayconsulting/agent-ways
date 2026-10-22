@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Build an SPE E2E fixture repo. Usage: make_fixture.sh <dir> <E1|E2>
+# Build an SPE E2E fixture repo. Usage: make_fixture.sh <dir> <E1|E2|E3>
 # E1: round 1 closed, the round 2 plan was just approved (.plans/quiet-river.md).
 # E2: round 2 prediction and harness are committed, and the round 2 Workflow is running.
+# E3: round 2 ran and every config scored 1.00. Close-out has not started.
 set -euo pipefail
 DIR="$1"; SCEN="$2"
 case "$DIR" in /tmp/spe-e2e/*) ;; *) echo "refusing: fixture dir must be under /tmp/spe-e2e/" >&2; exit 2;; esac
@@ -132,6 +133,16 @@ if [ "$SCEN" = "E2" ]; then
   g add -A; g commit -qm "SPE r02 evaluate (harness): graders, tasks, r02 workflow"
   echo "r02 Workflow running since 14:02 (task w7k2)" > .workflow-running
   g add -A; g commit -qm "chore: plan file and run marker"
+fi
+if [ "$SCEN" = "E3" ]; then
+  cp .plans/quiet-river.md spe/plans/r02.md
+  printf '# Saved before the eval ran. Do not edit after the run.\nround: r02\ncategory_accuracy: {A: [0.84, 0.04], B: [0.85, 0.04], C: [0.86, 0.04], D: [0.78, 0.06]}\n' > spe/predictions/r02.yaml
+  g add -A; g commit -qm "SPE r02 predict: prediction r02"
+  echo "// r02 Workflow script, ROUND = 'r02'" > spe/evals/harness/r02-workflow.js
+  g add -A; g commit -qm "SPE r02 evaluate (harness): graders, tasks, r02 workflow"
+  mkdir -p spe/evals/results/r02
+  echo '{"A": {"category_acc": 1.00, "priority_acc": 1.00, "judge_mean": 7.0}, "B": {"category_acc": 1.00, "priority_acc": 1.00, "judge_mean": 7.0}, "C": {"category_acc": 1.00, "priority_acc": 1.00, "judge_mean": 7.0}, "D": {"category_acc": 1.00, "priority_acc": 1.00, "judge_mean": 7.0}, "trials_per_cell": 5, "tickets": 40}' > spe/evals/results/r02/r02.json
+  g add -A; g commit -qm "SPE r02 evaluate (results): every config 1.00"
 fi
 git rev-parse HEAD > .git/fixture-base
 echo "fixture $SCEN ready at $DIR"

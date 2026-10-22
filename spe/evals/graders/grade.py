@@ -36,6 +36,8 @@ SAME_TASKS = r"same (tasks|graders|ticket|set|eval)|tasks and graders (stay|unch
 VARIANTS = {"fentry": {("T4", "fentry"): FENTRY, ("T6", "fentry"): FENTRY},
             "same_tasks": {("H4", "same_tasks"): SAME_TASKS},
             "order_list": {}}
+# From round 4 on, order checks read the numbered list by default (r03 F17).
+ORDER_LIST_DEFAULT = False
 LIST_START = re.compile(r"^\s*(?:\*\*)?1[.)]", re.M)
 VARIANT = None
 
@@ -47,7 +49,7 @@ def code_checks(task, text):
             c = {**c, "regex": VARIANTS[VARIANT][(task["id"], c["id"])]}
         if c.get("order"):
             body = text
-            if VARIANT == "order_list" and (m := LIST_START.search(text)):
+            if (VARIANT == "order_list" or ORDER_LIST_DEFAULT) and (m := LIST_START.search(text)):
                 body = text[m.start():]
             a = re.search(c["order"][0], body, re.I)
             b = re.search(c["order"][1], body, re.I)
@@ -146,6 +148,8 @@ def grade(results_dir):
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         sys.exit(0 if selftest() else 1)
+    if "--order-list" in sys.argv:
+        ORDER_LIST_DEFAULT = True
     if "--variant" in sys.argv:
         VARIANT = sys.argv[sys.argv.index("--variant") + 1]
     grade(sys.argv[1])

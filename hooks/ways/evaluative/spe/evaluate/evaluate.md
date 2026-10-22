@@ -33,7 +33,7 @@ The eval runs the same tasks under each configuration. The tasks and graders sta
 
 ## A new model
 
-When a new model ships, keep the pinned model as the reference config and add the new model as a new config that changes only the model. Same tasks and graders. Do not switch production before the eval.
+When a new model ships, keep the pinned model as the reference config and add the new model as a new config that changes only the model. Same tasks and graders. Compare accuracy, cost, tokens, and time per task against the pinned config. Do not switch production before the eval.
 
 ## Keep the answer keys hidden
 

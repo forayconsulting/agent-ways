@@ -102,8 +102,11 @@ function codeChecks(task, text) {
   const out = {}
   for (const c of task.code) {
     if (c.order) {
-      const a = text.search(new RegExp(c.order[0], 'i'))
-      const b = text.search(new RegExp(c.order[1], 'i'))
+      // r04 on: read only the numbered action list when there is one (r03 F17)
+      let body = text
+      if (DATA.order_list) { const m = text.search(/^\s*(?:\*\*)?1[.)]/m); if (m >= 0) body = text.slice(m) }
+      const a = body.search(new RegExp(c.order[0], 'i'))
+      const b = body.search(new RegExp(c.order[1], 'i'))
       out[c.id] = a >= 0 && (b < 0 || a < b)
       continue
     }

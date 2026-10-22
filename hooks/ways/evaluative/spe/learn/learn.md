@@ -44,7 +44,7 @@ A grader bug found after the run is a failure entry. Disclose any regrade in the
 
 ## At a ceiling
 
-If every config hits the metric's maximum, record each prediction as not scorable, leave the stop streak unchanged, and check once for a leak or a grader bug. Then tell the user in two or three sentences that the tasks no longer separate the configs, propose harder tasks or stricter graders, and let the user decide.
+If every config hits the metric's maximum, record each prediction as not scorable, leave the stop streak unchanged, and check once for a leak or a grader bug. Log the saturation in failures.md as a task-design failure: every config hit the maximum, so the tasks no longer separate them. Then tell the user in two or three sentences that the tasks no longer separate the configs, propose harder tasks or stricter graders, and let the user decide.
 
 ## Long unattended loops
 
