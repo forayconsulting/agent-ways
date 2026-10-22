@@ -42,3 +42,14 @@
 | Q6 real tool trials | Adopted as the E2E suite (fixtures in /tmp). Live tools: lane stays deferred | r01 F9 |
 | Q7 paraphrases | One paraphrase per H task. Cross-family or human judge check deferred | Workflows run Claude models only |
 | Configs | D (anchor, frozen copy) and E (D plus Q1 to Q4). A only in E2E. C and C2 retired | r02 result |
+
+## Round 4 defaults
+
+| Item | Default | Why |
+|---|---|---|
+| S1 to S4 | Bundled into config F: a shorter root, the saturation failure entry, the named model-release metrics | Each targets different tasks |
+| S2 graders | order_list is the default order check, same_tasks widened, for every config | r03 F17, F19 |
+| S5 | E2E E1, E2, and a new E3 (ceiling close-out) for E and F | r03 E2E separated configs that text could not |
+| S6 | Deferred. The user chose ways-only live, engine after the upstream merge | User decision |
+| S7 | Live trigger check after install, counting context_cap misses | A project copy cannot clear the semantic floor |
+| Anchor | E frozen in spe/evals/configs/E-r03. A and D retired | E led on every target task |

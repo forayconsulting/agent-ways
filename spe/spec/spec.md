@@ -46,11 +46,21 @@ Source: the user's round 1 prompt, [transcripts/2026-10-21-r01.md](transcripts/2
 | R22 | On disk, the plan copy and the prediction exist and are committed before any harness file | r01 F9, Q6 | E1 git log order |
 | R23 | The behavior holds on reworded scenarios | Q7 | H1p to H5p |
 
+## Round 4 requirements
+
+| ID | Requirement | Source | Test |
+|---|---|---|---|
+| R24 | The root fits the hook budget beside the other ways a prompt fires | r03 F18, S1 | live trigger check, 0 context_cap misses on 20 SPE prompts |
+| R25 | A saturated round logs the saturation as a task-design failure type | r03 F20, S3 | H5, H5p judge 5, E3 |
+| R26 | A model-release plan names accuracy, cost, tokens, and time per task | r03 F19, S4 | H4, H4p judge 7 |
+| R27 | At a real ceiling close-out, the agent writes "not scorable" in the log, adds a failure entry, proposes harder tasks, and hands back without starting a round | S5 | E3 fixture checks |
+
 ## Revision history
 
 - 2026-10-21: round 1 requirements R1 to R9.
 - 2026-10-21: round 2 requirements R10 to R17, from proposals P1 to P6 (see disagreements.md for the round 2 defaults).
 - 2026-10-21: round 3 requirements R18 to R23, from proposals Q1 to Q7.
+- 2026-10-21: round 4 requirements R24 to R27, from proposals S1 to S5.
 
 ## Proposed for round 2 (not yet agreed)
 
